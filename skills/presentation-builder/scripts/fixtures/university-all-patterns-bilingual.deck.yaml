@@ -1,0 +1,1169 @@
+schemaVersion: 1
+template: university
+metadata:
+  title:
+    en: "Graph Neural Networks for Molecular Property Prediction"
+    pl: "Grafowe sieci neuronowe w predykcji własności molekularnych"
+  subtitle:
+    en: "Bilingual all-pattern generator fixture"
+    pl: "Dwujęzyczny przykład generatora ze wszystkimi wzorcami"
+  speaker:
+    en: "Your Name"
+    pl: "Imię i nazwisko"
+  date:
+    en: "17 May 2026"
+    pl: "17 maja 2026"
+  unit:
+    en: "Faculty of Information and Communication Technology"
+    pl: "Wydział Informatyki i Telekomunikacji"
+  advisor:
+    en: "Prof. A. Example"
+    pl: "Prof. A. Example"
+  programme:
+    en: "Computer Science seminar"
+    pl: "Seminarium z informatyki"
+  venue:
+    en: "Wrocław University of Science and Technology"
+    pl: "Politechnika Wrocławska"
+  footer:
+    en: "Wrocław University of Science and Technology · 2026"
+    pl: "Politechnika Wrocławska · 2026"
+  language:
+    default: en
+    available: [en, pl]
+theme:
+  density: compact
+  partners: true
+  bullets: diamond
+slides:
+  - id: cover
+    pattern: cover
+    title:
+      en: "Graph Neural Networks for Molecular Property Prediction"
+      pl: "Grafowe sieci neuronowe w predykcji własności molekularnych"
+    subtitle:
+      en: "A bilingual fixture for every generated slide pattern"
+      pl: "Dwujęzyczny przykład każdego generowanego wzorca slajdu"
+    unit:
+      en: "Faculty of Information and Communication Technology"
+      pl: "Wydział Informatyki i Telekomunikacji"
+    fields:
+      Speaker:
+        en: "Your Name"
+        pl: "Imię i nazwisko"
+      Date:
+        en: "17 May 2026"
+        pl: "17 maja 2026"
+      Advisor:
+        en: "Prof. A. Example"
+        pl: "Prof. A. Example"
+      Programme:
+        en: "Computer Science seminar"
+        pl: "Seminarium z informatyki"
+    notes: "Cover. Introduce the bilingual fixture and PWR shell."
+    script:
+      cue:
+        en: "[confirm English language mode]"
+        pl: "[potwierdź tryb języka polskiego]"
+      text:
+        en: "Welcome. This fixture demonstrates every generator pattern in the university template."
+        pl: "Dzień dobry. Ten przykład pokazuje każdy wzorzec generatora w szablonie uczelnianym."
+      transition:
+        en: "First, the agenda."
+        pl: "Najpierw plan prezentacji."
+  - id: agenda
+    pattern: agenda
+    eyebrow:
+      en: "Outline"
+      pl: "Plan"
+    title:
+      en: "Agenda"
+      pl: "Agenda"
+    subtitle:
+      en: "Six sections and one appendix"
+      pl: "Sześć części i jeden dodatek"
+    items:
+      - title:
+          en: "Background"
+          pl: "Tło"
+        meta:
+          en: "5 min"
+          pl: "5 min"
+      - title:
+          en: "Method"
+          pl: "Metoda"
+        meta:
+          en: "10 min"
+          pl: "10 min"
+      - title:
+          en: "Results"
+          pl: "Wyniki"
+        meta:
+          en: "7 min"
+          pl: "7 min"
+      - title:
+          en: "Discussion"
+          pl: "Dyskusja"
+        meta:
+          en: "5 min"
+          pl: "5 min"
+      - title:
+          en: "Backup"
+          pl: "Dodatek"
+        meta:
+          en: "as needed"
+          pl: "w razie potrzeby"
+    notes: "Agenda. Keep the bilingual sequence compact."
+    script:
+      text:
+        en: "The talk follows the same structure as the original template: background, method, results, discussion, and backup."
+        pl: "Prezentacja zachowuje strukturę oryginalnego szablonu: tło, metodę, wyniki, dyskusję i dodatek."
+      transition:
+        en: "We start with a definition."
+        pl: "Zaczynamy od definicji."
+  - id: definition
+    pattern: definition
+    eyebrow:
+      en: "Background"
+      pl: "Tło"
+    title:
+      en: "What is a graph neural network?"
+      pl: "Czym jest grafowa sieć neuronowa?"
+    tag:
+      en: "Definition"
+      pl: "Definicja"
+    term:
+      en: "Graph Neural Network"
+      pl: "Grafowa sieć neuronowa"
+    notation: "G = (V, E), h<sub>v</sub><sup>(k)</sup>"
+    body:
+      en: "A GNN updates node, edge, or graph representations by aggregating information over graph neighborhoods."
+      pl: "GSN aktualizuje reprezentacje węzłów, krawędzi lub grafu przez agregację informacji z sąsiedztwa."
+    sideTitle:
+      en: "For molecules"
+      pl: "Dla molekuł"
+    items:
+      - title:
+          en: "Atoms"
+          pl: "Atomy"
+        body:
+          en: "nodes with features"
+          pl: "węzły z cechami"
+      - title:
+          en: "Bonds"
+          pl: "Wiązania"
+        body:
+          en: "typed graph edges"
+          pl: "typowane krawędzie grafu"
+      - title:
+          en: "Readout"
+          pl: "Odczyt"
+        body:
+          en: "one vector per molecule"
+          pl: "jeden wektor na molekułę"
+    notes: "Definition. Establish shared vocabulary."
+    script:
+      text:
+        en: "A molecule becomes a graph, and a GNN learns how atom neighborhoods should influence the final property prediction."
+        pl: "Molekuła staje się grafem, a GSN uczy się wpływu sąsiedztw atomów na końcową predykcję własności."
+      transition:
+        en: "Now split the talk into background."
+        pl: "Teraz przechodzimy do części z tłem."
+  - id: section-background
+    pattern: section-divider
+    railTitle:
+      en: "Section 01"
+      pl: "Sekcja 01"
+    number:
+      en: "01"
+      pl: "01"
+    eyebrow:
+      en: "Section"
+      pl: "Sekcja"
+    title:
+      en: "Background"
+      pl: "Tło"
+    subtitle:
+      en: "Why molecular structure is awkward for fixed tables."
+      pl: "Dlaczego struktura molekuł nie pasuje do stałych tabel."
+    meta:
+      en: "Section 01 of 25"
+      pl: "Sekcja 01 z 25"
+    duration:
+      en: "5 min"
+      pl: "5 min"
+    notes: "Section divider — Background."
+    script:
+      cue:
+        en: "[short pause]"
+        pl: "[krótka pauza]"
+      text:
+        en: "The background section explains why graph structure is the natural input."
+        pl: "Część z tłem wyjaśnia, dlaczego struktura grafowa jest naturalnym wejściem."
+      transition:
+        en: "The problem has three parts."
+        pl: "Problem ma trzy części."
+  - id: background-problem
+    pattern: bullets
+    eyebrow:
+      en: "Background · Problem"
+      pl: "Tło · Problem"
+    title:
+      en: "Molecules are small, irregular graphs"
+      pl: "Molekuły są małymi, nieregularnymi grafami"
+    subtitle:
+      en: "The data shape is the modeling challenge."
+      pl: "Kształt danych jest wyzwaniem modelowania."
+    items:
+      - title:
+          en: "Variable topology"
+          pl: "Zmienna topologia"
+        body:
+          en: "Atom counts and bond patterns differ."
+          pl: "Liczby atomów i wzorce wiązań są różne."
+      - title:
+          en: "Permutation symmetry"
+          pl: "Symetria permutacji"
+        body:
+          en: "Renumbering atoms must not change predictions."
+          pl: "Zmiana numeracji atomów nie może zmieniać predykcji."
+      - title:
+          en: "Sparse labels"
+          pl: "Rzadkie etykiety"
+        body:
+          en: "Assays are costly and noisy."
+          pl: "Testy są kosztowne i zaszumione."
+    notes: "Background. State the structural modeling challenge."
+    script:
+      text:
+        en: "The challenge is that the input is not a fixed table. It is an irregular object with symmetries."
+        pl: "Wyzwanie polega na tym, że wejście nie jest stałą tabelą. To nieregularny obiekt z symetriami."
+      transition:
+        en: "A quote captures the motivation."
+        pl: "Motywację dobrze oddaje cytat."
+  - id: motivation-quote
+    pattern: quote
+    title:
+      en: "Motivation"
+      pl: "Motywacja"
+    quote:
+      en: "The graph is the molecule; the descriptor is only a lossy summary."
+      pl: "Graf jest molekułą; deskryptor jest tylko stratnym streszczeniem."
+    author:
+      en: "Seminar framing"
+      pl: "Rama seminarium"
+    source:
+      en: "molecular ML practice"
+      pl: "praktyka molekularnego uczenia maszynowego"
+    notes: "Quote. Read slowly."
+    script:
+      cue:
+        en: "[read slowly]"
+        pl: "[czytaj wolniej]"
+      text:
+        en: "The quote is a reminder that descriptors simplify a structure before the model can learn from it."
+        pl: "Cytat przypomina, że deskryptory upraszczają strukturę zanim model może się z niej uczyć."
+      transition:
+        en: "The domain scale makes the approach practical."
+        pl: "Skala domeny sprawia, że podejście jest praktyczne."
+  - id: domain-context
+    pattern: full-bleed
+    railTitle:
+      en: "Domain context"
+      pl: "Kontekst domeny"
+    eyebrow:
+      en: "Background · Domain context"
+      pl: "Tło · Kontekst domeny"
+    title:
+      en: "Drug-like molecules are small enough for message passing"
+      pl: "Molekuły lekopodobne są dość małe dla propagacji komunikatów"
+    subtitle:
+      en: "Most benchmark graphs have tens of atoms."
+      pl: "Większość grafów benchmarkowych ma dziesiątki atomów."
+    image:
+      slotId: "bleed-context"
+      placeholder:
+        en: "Drop a domain photo here"
+        pl: "Upuść tutaj zdjęcie domeny"
+    notes: "Domain context. Exercise full-bleed image slot."
+    script:
+      text:
+        en: "Molecular graphs are small compared with social or web graphs, so repeated local updates are computationally feasible."
+        pl: "Grafy molekularne są małe w porównaniu z grafami społecznymi lub sieciowymi, więc lokalne aktualizacje są wykonalne obliczeniowo."
+      transition:
+        en: "Now move to the method section."
+        pl: "Teraz przechodzimy do metody."
+  - id: section-method
+    pattern: section-divider
+    railTitle:
+      en: "Section 02"
+      pl: "Sekcja 02"
+    number:
+      en: "02"
+      pl: "02"
+    eyebrow:
+      en: "Section"
+      pl: "Sekcja"
+    title:
+      en: "Method"
+      pl: "Metoda"
+    subtitle:
+      en: "Parse, featurize, pass messages, pool, predict."
+      pl: "Parsuj, twórz cechy, propaguj komunikaty, agreguj, predykuj."
+    meta:
+      en: "Section 02 of 25"
+      pl: "Sekcja 02 z 25"
+    duration:
+      en: "10 min"
+      pl: "10 min"
+    notes: "Section divider — Method."
+    script:
+      text:
+        en: "The method section follows the graph through the model."
+        pl: "Część metody prowadzi graf przez model."
+      transition:
+        en: "Start with the pipeline."
+        pl: "Zaczynamy od potoku."
+  - id: method-pipeline
+    pattern: pipeline
+    eyebrow:
+      en: "Method · Pipeline"
+      pl: "Metoda · Potok"
+    title:
+      en: "The molecular GNN workflow has five stages"
+      pl: "Przepływ pracy molekularnej GSN ma pięć etapów"
+    steps:
+      - title:
+          en: "Parse"
+          pl: "Parsowanie"
+        body:
+          en: "SMILES to graph."
+          pl: "SMILES do grafu."
+        tag:
+          en: "input"
+          pl: "wejście"
+      - title:
+          en: "Featurize"
+          pl: "Cechy"
+        body:
+          en: "Atoms and bonds."
+          pl: "Atomy i wiązania."
+        tag:
+          en: "x, e"
+          pl: "x, e"
+      - title:
+          en: "Message pass"
+          pl: "Komunikaty"
+        body:
+          en: "Update node states."
+          pl: "Aktualizuj stany węzłów."
+        tag:
+          en: "layers"
+          pl: "warstwy"
+      - title:
+          en: "Readout"
+          pl: "Odczyt"
+        body:
+          en: "Pool graph vector."
+          pl: "Agreguj wektor grafu."
+        tag:
+          en: "pool"
+          pl: "pool"
+      - title:
+          en: "Predict"
+          pl: "Predykcja"
+        body:
+          en: "Estimate property."
+          pl: "Oszacuj własność."
+        tag:
+          en: "output"
+          pl: "wyjście"
+    notes: "Pipeline. Walk left to right."
+    script:
+      text:
+        en: "The pipeline is parse, featurize, message pass, readout, and prediction."
+        pl: "Potok obejmuje parsowanie, cechy, komunikaty, odczyt i predykcję."
+      transition:
+        en: "Compare this with a fingerprint baseline."
+        pl: "Porównajmy to z bazą fingerprintów."
+  - id: method-comparison
+    pattern: comparison
+    eyebrow:
+      en: "Method · Comparison"
+      pl: "Metoda · Porównanie"
+    title:
+      en: "Fingerprints are fixed; GNN features are learned"
+      pl: "Fingerprinty są stałe; cechy GSN są uczone"
+    items:
+      - tag:
+          en: "A · Fingerprint"
+          pl: "A · Fingerprint"
+        title:
+          en: "Hand-coded neighborhoods"
+          pl: "Ręcznie zakodowane sąsiedztwa"
+        body:
+          en: "Fast, strong, and fixed before training."
+          pl: "Szybkie, mocne i ustalone przed treningiem."
+        points:
+          - en: "robust baseline"
+            pl: "odporna baza"
+          - en: "limited adaptation"
+            pl: "ograniczona adaptacja"
+      - tag:
+          en: "B · GNN"
+          pl: "B · GSN"
+        title:
+          en: "Learned message passing"
+          pl: "Uczona propagacja komunikatów"
+        body:
+          en: "Flexible, but more sensitive to protocol."
+          pl: "Elastyczna, lecz bardziej wrażliwa na protokół."
+        points:
+          - en: "task-specific features"
+            pl: "cechy zależne od zadania"
+          - en: "needs regularization"
+            pl: "wymaga regularyzacji"
+    notes: "Comparison. Exercise two-column layout."
+    script:
+      text:
+        en: "Fingerprints encode structure before learning, while GNNs learn how to use the structure for the task."
+        pl: "Fingerprinty kodują strukturę przed uczeniem, a GSN uczą się wykorzystywać strukturę dla zadania."
+      transition:
+        en: "There are three common model families."
+        pl: "Istnieją trzy popularne rodziny modeli."
+  - id: method-families
+    pattern: comparison-3col
+    eyebrow:
+      en: "Method · Three families"
+      pl: "Metoda · Trzy rodziny"
+    title:
+      en: "Most molecular GNNs fall into three families"
+      pl: "Większość molekularnych GSN należy do trzech rodzin"
+    items:
+      - tag:
+          en: "Spectral"
+          pl: "Spektralne"
+        title:
+          en: "Graph convolutions"
+          pl: "Sploty grafowe"
+        body:
+          en: "Filters through graph operators."
+          pl: "Filtry przez operatory grafowe."
+        points:
+          - en: "theoretical"
+            pl: "teoretyczne"
+          - en: "less used here"
+            pl: "rzadziej używane tutaj"
+      - tag:
+          en: "Spatial"
+          pl: "Przestrzenne"
+        title:
+          en: "MPNN / GINE"
+          pl: "MPNN / GINE"
+        body:
+          en: "Local bond-aware aggregation."
+          pl: "Lokalna agregacja z wiązaniami."
+        points:
+          - en: "chemistry aligned"
+            pl: "zgodne z chemią"
+          - en: "strong baseline"
+            pl: "mocna baza"
+      - tag:
+          en: "Attention"
+          pl: "Uwaga"
+        title:
+          en: "GAT / transformers"
+          pl: "GAT / transformatory"
+        body:
+          en: "Weighted neighbors or tokens."
+          pl: "Ważeni sąsiedzi lub tokeny."
+        points:
+          - en: "flexible"
+            pl: "elastyczne"
+          - en: "more costly"
+            pl: "droższe"
+    notes: "Three columns. Keep copy short for both languages."
+    script:
+      text:
+        en: "The spatial family is the default practical choice for this fixture."
+        pl: "Rodzina przestrzenna jest domyślnym praktycznym wyborem w tym przykładzie."
+      transition:
+        en: "The update rule shows why."
+        pl: "Reguła aktualizacji pokazuje dlaczego."
+  - id: update-rule
+    pattern: equation
+    eyebrow:
+      en: "Method · Update rule"
+      pl: "Metoda · Reguła aktualizacji"
+    title:
+      en: "Message passing is a repeated local update"
+      pl: "Propagacja komunikatów to powtarzana lokalna aktualizacja"
+    equation: '<span class="var">h</span><sub>v</sub><sup>(k+1)</sup> <span class="op">=</span> <span class="fn">φ</span>(<span class="var">h</span><sub>v</sub><sup>(k)</sup>, <span class="agg">AGG</span><sub>u∈N(v)</sub> <span class="fn">ψ</span>(<span class="var">h</span><sub>u</sub><sup>(k)</sup>, <span class="var">e</span><sub>uv</sub>))'
+    caption:
+      en: "AGG is permutation invariant."
+      pl: "AGG jest niezmiennicze względem permutacji."
+    variables:
+      - term:
+          en: "node state"
+          pl: "stan węzła"
+        desc:
+          en: "representation of one atom"
+          pl: "reprezentacja jednego atomu"
+      - term:
+          en: "bond features"
+          pl: "cechy wiązania"
+        desc:
+          en: "edge information"
+          pl: "informacja krawędzi"
+    notes: "Equation. Exercise raw equation HTML and localized caption."
+    script:
+      text:
+        en: "Each layer updates an atom using messages from its neighbors, and the aggregation must ignore atom numbering."
+        pl: "Każda warstwa aktualizuje atom komunikatami od sąsiadów, a agregacja musi ignorować numerację atomów."
+      transition:
+        en: "The training loop is short."
+        pl: "Pętla treningowa jest krótka."
+  - id: pseudocode
+    pattern: code
+    eyebrow:
+      en: "Method · Pseudocode"
+      pl: "Metoda · Pseudokod"
+    title:
+      en: "A minimal training step fits on one slide"
+      pl: "Minimalny krok treningu mieści się na jednym slajdzie"
+    filename:
+      en: "train_step.py"
+      pl: "train_step.py"
+    language: "python"
+    code: |
+      for batch in loader:
+          graph, y = batch.graph, batch.y
+          pred = model(graph.x, graph.edge_index, graph.edge_attr)
+          loss = criterion(pred, y)
+          loss.backward()
+          optimizer.step()
+    items:
+      - title:
+          en: "Batch object"
+          pl: "Obiekt batch"
+        body:
+          en: "packs many small molecules"
+          pl: "pakuje wiele małych molekuł"
+      - title:
+          en: "Edge index"
+          pl: "Indeks krawędzi"
+        body:
+          en: "stores sparse connectivity"
+          pl: "przechowuje rzadkie połączenia"
+    notes: "Code. Exercise code block with notes."
+    script:
+      text:
+        en: "This code is compact because the graph library handles batching and sparse connectivity."
+        pl: "Kod jest krótki, bo biblioteka grafowa obsługuje batchowanie i rzadkie połączenia."
+      transition:
+        en: "Now summarize the result."
+        pl: "Teraz podsumujmy wynik."
+  - id: headline-stat
+    pattern: big-number
+    eyebrow:
+      en: "Results · Headline"
+      pl: "Wyniki · Teza"
+    title:
+      en: "GNNs improve the average score"
+      pl: "GSN poprawiają średni wynik"
+    value:
+      en: "+4.2"
+      pl: "+4,2"
+    unit:
+      en: "%"
+      pl: "%"
+    label:
+      en: "Mean ROC-AUC improvement"
+      pl: "Średnia poprawa ROC-AUC"
+    body:
+      en: "Average gain over the fingerprint baseline across compact fixture tasks."
+      pl: "Średni zysk względem bazy fingerprintów w zadaniach przykładowych."
+    footnote:
+      en: "Fixture values, not a new benchmark."
+      pl: "Wartości przykładowe, nie nowy benchmark."
+    notes: "Big number. Exercise headline stat."
+    script:
+      text:
+        en: "The headline number is useful, but we should immediately inspect where it comes from."
+        pl: "Liczba główna jest przydatna, ale od razu trzeba sprawdzić, skąd pochodzi."
+      transition:
+        en: "The chart gives that breakdown."
+        pl: "Wykres pokazuje ten podział."
+  - id: per-dataset-chart
+    pattern: bar-chart
+    eyebrow:
+      en: "Results · Per-dataset chart"
+      pl: "Wyniki · Wykres zbiorów"
+    title:
+      en: "The largest gains appear on toxicity tasks"
+      pl: "Największe zyski widać w zadaniach toksyczności"
+    bars:
+      - label:
+          en: "BBBP"
+          pl: "BBBP"
+        value:
+          en: "+3.1"
+          pl: "+3,1"
+        height: 54
+      - label:
+          en: "Tox21"
+          pl: "Tox21"
+        value:
+          en: "+4.7"
+          pl: "+4,7"
+        height: 66
+      - label:
+          en: "ClinTox"
+          pl: "ClinTox"
+        value:
+          en: "+8.4"
+          pl: "+8,4"
+        height: 88
+        win: true
+      - label:
+          en: "BACE"
+          pl: "BACE"
+        value:
+          en: "+2.8"
+          pl: "+2,8"
+        height: 48
+      - label:
+          en: "SIDER"
+          pl: "SIDER"
+        value:
+          en: "-0.9"
+          pl: "-0,9"
+        height: 28
+    calloutValue:
+      en: "+8.4%"
+      pl: "+8,4%"
+    callout:
+      en: "largest fixture gain"
+      pl: "największy zysk przykładu"
+    chartNotes:
+      - en: "Bars show best GNN minus baseline."
+        pl: "Słupki pokazują najlepszą GSN minus baza."
+      - en: "Negative values mark failure cases."
+        pl: "Wartości ujemne oznaczają przypadki porażki."
+    notes: "Bar chart. Include win bar and callouts."
+    script:
+      text:
+        en: "The largest gain is ClinTox, while SIDER remains a difficult case."
+        pl: "Największy zysk dotyczy ClinTox, a SIDER pozostaje trudnym przypadkiem."
+      transition:
+        en: "A table complements the chart."
+        pl: "Tabela uzupełnia wykres."
+  - id: results-table
+    pattern: table
+    eyebrow:
+      en: "Results · Table"
+      pl: "Wyniki · Tabela"
+    title:
+      en: "The table keeps numeric alignment visible"
+      pl: "Tabela pokazuje wyrównanie kolumn liczbowych"
+    columns:
+      - id: "model"
+        label:
+          en: "Model"
+          pl: "Model"
+      - id: "bbbp"
+        label:
+          en: "BBBP"
+          pl: "BBBP"
+        numeric: true
+        align: right
+      - id: "tox21"
+        label:
+          en: "Tox21"
+          pl: "Tox21"
+        numeric: true
+        align: right
+      - id: "clintox"
+        label:
+          en: "ClinTox"
+          pl: "ClinTox"
+        numeric: true
+        align: right
+      - id: "mean"
+        label:
+          en: "Mean"
+          pl: "Średnia"
+        numeric: true
+        align: right
+    rows:
+      - model:
+          en: "Morgan + RF"
+          pl: "Morgan + RF"
+        bbbp: 70.1
+        tox21: 74.0
+        clintox: 81.2
+        mean: 75.1
+      - model:
+          en: "GCN"
+          pl: "GCN"
+        bbbp: 71.8
+        tox21: 76.3
+        clintox: 84.6
+        mean: 77.6
+      - model:
+          en: "GINE"
+          pl: "GINE"
+        bbbp: 73.2
+        tox21: 78.7
+        clintox: 89.6
+        mean: 80.5
+        best: true
+      - model:
+          en: "GraphGPS"
+          pl: "GraphGPS"
+        bbbp: 72.5
+        tox21: 78.1
+        clintox: 87.3
+        mean: 79.3
+    caption:
+      en: "The highlighted row exercises row.best styling."
+      pl: "Wyróżniony wiersz sprawdza styl row.best."
+    notes: "Table. Numeric columns and best row are required."
+    script:
+      text:
+        en: "The main renderer features here are numeric columns and a highlighted best row."
+        pl: "Główne cechy renderera na tym slajdzie to kolumny liczbowe i wyróżniony najlepszy wiersz."
+      transition:
+        en: "Next, an architecture image slot."
+        pl: "Dalej mamy miejsce na diagram architektury."
+  - id: architecture
+    pattern: image-led
+    eyebrow:
+      en: "Results · Architecture"
+      pl: "Wyniki · Architektura"
+    title:
+      en: "The architecture is intentionally small"
+      pl: "Architektura jest celowo mała"
+    items:
+      - title:
+          en: "Atom encoder"
+          pl: "Enkoder atomów"
+        body:
+          en: "maps categorical features"
+          pl: "mapuje cechy kategoryczne"
+      - title:
+          en: "GINE blocks"
+          pl: "Bloki GINE"
+        body:
+          en: "bond-aware messages"
+          pl: "komunikaty z wiązaniami"
+      - title:
+          en: "Global pooling"
+          pl: "Globalne agregowanie"
+        body:
+          en: "one graph vector"
+          pl: "jeden wektor grafu"
+    image:
+      slotId: "fig-architecture"
+      placeholder:
+        en: "Drop your architecture diagram here"
+        pl: "Upuść tutaj diagram architektury"
+    caption:
+      en: "Image-led layout with an architecture slot."
+      pl: "Układ z obrazem i miejscem na architekturę."
+    notes: "Image-led. Exercise architecture slot."
+    script:
+      text:
+        en: "This slide combines a large image slot with compact explanatory bullets."
+        pl: "Ten slajd łączy duże miejsce na obraz z krótkimi punktami objaśniającymi."
+      transition:
+        en: "The grid pattern supports qualitative examples."
+        pl: "Wzorzec siatki obsługuje przykłady jakościowe."
+  - id: qualitative-grid
+    pattern: image-grid
+    eyebrow:
+      en: "Results · Qualitative"
+      pl: "Wyniki · Jakościowo"
+    title:
+      en: "Six sample slots support side-by-side inspection"
+      pl: "Sześć miejsc na próbki wspiera porównanie obok siebie"
+    images:
+      - slotId: "qual-1"
+        placeholder:
+          en: "Sample 1"
+          pl: "Próbka 1"
+        caption:
+          en: "Aspirin"
+          pl: "Aspiryna"
+        meta:
+          en: "TP"
+          pl: "TP"
+      - slotId: "qual-2"
+        placeholder:
+          en: "Sample 2"
+          pl: "Próbka 2"
+        caption:
+          en: "Caffeine"
+          pl: "Kofeina"
+        meta:
+          en: "TP"
+          pl: "TP"
+      - slotId: "qual-3"
+        placeholder:
+          en: "Sample 3"
+          pl: "Próbka 3"
+        caption:
+          en: "Sucrose"
+          pl: "Sacharoza"
+        meta:
+          en: "FN"
+          pl: "FN"
+      - slotId: "qual-4"
+        placeholder:
+          en: "Sample 4"
+          pl: "Próbka 4"
+        caption:
+          en: "Ibuprofen"
+          pl: "Ibuprofen"
+        meta:
+          en: "TP"
+          pl: "TP"
+      - slotId: "qual-5"
+        placeholder:
+          en: "Sample 5"
+          pl: "Próbka 5"
+        caption:
+          en: "Fragment"
+          pl: "Fragment"
+        meta:
+          en: "FP"
+          pl: "FP"
+      - slotId: "qual-6"
+        placeholder:
+          en: "Sample 6"
+          pl: "Próbka 6"
+        caption:
+          en: "Benzene"
+          pl: "Benzen"
+        meta:
+          en: "TN"
+          pl: "TN"
+    notes: "Image grid. Include qual-1 through qual-6 slots."
+    script:
+      text:
+        en: "The six slots exercise the full image grid and the qualitative caption style."
+        pl: "Sześć miejsc sprawdza pełną siatkę obrazów i styl podpisów jakościowych."
+      transition:
+        en: "Now move to the discussion claims."
+        pl: "Teraz przechodzimy do tez dyskusji."
+  - id: contributions
+    pattern: contributions
+    eyebrow:
+      en: "Discussion · Contributions"
+      pl: "Dyskusja · Wkład"
+    title:
+      en: "The study contributes three practical claims"
+      pl: "Badanie wnosi trzy praktyczne tezy"
+    fitFooter: true
+    items:
+      - title:
+          en: "Representation"
+          pl: "Reprezentacja"
+        body:
+          en: "Graph structure improves several tasks."
+          pl: "Struktura grafowa poprawia kilka zadań."
+        tag:
+          en: "Claim 1"
+          pl: "Teza 1"
+      - title:
+          en: "Ablation"
+          pl: "Ablacja"
+        body:
+          en: "Bonds and pooling explain much of the gap."
+          pl: "Wiązania i pooling wyjaśniają dużą część różnicy."
+        tag:
+          en: "Claim 2"
+          pl: "Teza 2"
+      - title:
+          en: "Protocol"
+          pl: "Protokół"
+        body:
+          en: "Repeated splits stabilize conclusions."
+          pl: "Powtarzane podziały stabilizują wnioski."
+        tag:
+          en: "Claim 3"
+          pl: "Teza 3"
+    notes: "Contributions. Exercise claim cards."
+    script:
+      text:
+        en: "The contribution slide presents three compact claims rather than a long list."
+        pl: "Slajd wkładu pokazuje trzy krótkie tezy zamiast długiej listy."
+      transition:
+        en: "Balance those claims with limitations."
+        pl: "Zrównoważmy te tezy ograniczeniami."
+  - id: limitations
+    pattern: limitations
+    eyebrow:
+      en: "Discussion · Limitations"
+      pl: "Dyskusja · Ograniczenia"
+    title:
+      en: "Limitations shape how to read the results"
+      pl: "Ograniczenia wpływają na interpretację wyników"
+    items:
+      - title:
+          en: "Small labels"
+          pl: "Małe etykiety"
+        body:
+          en: "Some assays have few positives."
+          pl: "Niektóre testy mają mało pozytywów."
+        fixLabel:
+          en: "Mitigation"
+          pl: "Mitigacja"
+        fix:
+          en: "Report variance."
+          pl: "Raportuj wariancję."
+      - title:
+          en: "Scaffold shift"
+          pl: "Zmiana szkieletu"
+        body:
+          en: "Random splits can overstate generalization."
+          pl: "Losowe podziały mogą zawyżać generalizację."
+        fixLabel:
+          en: "Mitigation"
+          pl: "Mitigacja"
+        fix:
+          en: "Use scaffold splits."
+          pl: "Użyj podziałów scaffold."
+      - title:
+          en: "Interpretability"
+          pl: "Interpretowalność"
+        body:
+          en: "Attention is not explanation."
+          pl: "Uwaga nie jest wyjaśnieniem."
+        fixLabel:
+          en: "Mitigation"
+          pl: "Mitigacja"
+        fix:
+          en: "Validate perturbations."
+          pl: "Waliduj perturbacje."
+    notes: "Limitations. Exercise mitigation column."
+    script:
+      text:
+        en: "These limitations make the fixture realistic and test the mitigation layout."
+        pl: "Te ograniczenia czynią przykład realistycznym i sprawdzają układ mitigacji."
+      transition:
+        en: "The timeline turns this into work."
+        pl: "Oś czasu zamienia to w plan pracy."
+  - id: timeline
+    pattern: timeline
+    eyebrow:
+      en: "Plan · Timeline"
+      pl: "Plan · Oś czasu"
+    title:
+      en: "The project plan has four milestones"
+      pl: "Plan projektu ma cztery kamienie milowe"
+    items:
+      - date:
+          en: "Week 1"
+          pl: "Tydzień 1"
+        title:
+          en: "Reproduce"
+          pl: "Reprodukcja"
+        body:
+          en: "Run baselines."
+          pl: "Uruchom bazy."
+      - date:
+          en: "Week 2"
+          pl: "Tydzień 2"
+        title:
+          en: "Ablate"
+          pl: "Ablacja"
+        body:
+          en: "Test key choices."
+          pl: "Testuj kluczowe wybory."
+      - date:
+          en: "Week 3"
+          pl: "Tydzień 3"
+        title:
+          en: "Analyze"
+          pl: "Analiza"
+        body:
+          en: "Inspect errors."
+          pl: "Sprawdź błędy."
+      - date:
+          en: "Week 4"
+          pl: "Tydzień 4"
+        title:
+          en: "Write"
+          pl: "Pisanie"
+        body:
+          en: "Prepare report."
+          pl: "Przygotuj raport."
+    notes: "Timeline. Exercise milestone columns."
+    script:
+      text:
+        en: "The timeline is compact so both English and Polish labels fit."
+        pl: "Oś czasu jest zwarta, aby zmieściły się etykiety angielskie i polskie."
+      transition:
+        en: "Acknowledge support next."
+        pl: "Dalej podziękujemy za wsparcie."
+  - id: acknowledgements
+    pattern: acknowledgements
+    eyebrow:
+      en: "Acknowledgements"
+      pl: "Podziękowania"
+    title:
+      en: "This work relies on people and infrastructure"
+      pl: "Ta praca opiera się na ludziach i infrastrukturze"
+    groups:
+      - title:
+          en: "Advising"
+          pl: "Opieka"
+        items:
+          - name:
+              en: "Prof. A. Example"
+              pl: "Prof. A. Example"
+            role:
+              en: "advisor"
+              pl: "opiekun"
+          - name:
+              en: "Dr B. Reviewer"
+              pl: "Dr B. Reviewer"
+            role:
+              en: "feedback"
+              pl: "uwagi"
+      - title:
+          en: "Community"
+          pl: "Społeczność"
+        items:
+          - name:
+              en: "GNN Reading Group"
+              pl: "Grupa czytelnicza GSN"
+            role:
+              en: "discussion"
+              pl: "dyskusja"
+      - title:
+          en: "Support"
+          pl: "Wsparcie"
+        items:
+          - name:
+              en: "Compute cluster"
+              pl: "Klaster obliczeniowy"
+            grant:
+              en: "GPU hours"
+              pl: "godziny GPU"
+    notes: "Acknowledgements. Exercise grouped lists."
+    script:
+      text:
+        en: "This slide thanks advisors, reviewers, community members, and infrastructure support."
+        pl: "Ten slajd dziękuje opiekunom, recenzentom, społeczności i wsparciu infrastruktury."
+      transition:
+        en: "The source trail is next."
+        pl: "Dalej pokazujemy źródła."
+  - id: references
+    pattern: references
+    eyebrow:
+      en: "References"
+      pl: "Bibliografia"
+    title:
+      en: "References"
+      pl: "Bibliografia"
+    items:
+      - authors:
+          en: "Gilmer et al."
+          pl: "Gilmer i in."
+        venue:
+          en: "Neural message passing for quantum chemistry. ICML, 2017."
+          pl: "Neural message passing for quantum chemistry. ICML, 2017."
+      - authors:
+          en: "Wu et al."
+          pl: "Wu i in."
+        venue:
+          en: "MoleculeNet benchmark. Chem. Sci., 2018."
+          pl: "Benchmark MoleculeNet. Chem. Sci., 2018."
+      - authors:
+          en: "Xu et al."
+          pl: "Xu i in."
+        venue:
+          en: "How powerful are GNNs? ICLR, 2019."
+          pl: "How powerful are GNNs? ICLR, 2019."
+      - authors:
+          en: "Veličković et al."
+          pl: "Veličković i in."
+        venue:
+          en: "Graph attention networks. ICLR, 2018."
+          pl: "Graph attention networks. ICLR, 2018."
+    notes: "References. Keep to four items to avoid overflow."
+    script:
+      text:
+        en: "The references slide keeps the source trail visible without becoming too dense."
+        pl: "Slajd bibliografii pokazuje źródła bez nadmiernego zagęszczenia."
+      transition:
+        en: "Now invite questions."
+        pl: "Teraz zapraszamy do pytań."
+  - id: qa
+    pattern: qa
+    railTitle:
+      en: "Q&A"
+      pl: "Pytania"
+    eyebrow:
+      en: "Thank you"
+      pl: "Dziękuję"
+    title:
+      en: "Questions?"
+      pl: "Pytania?"
+    subtitle:
+      en: "Questions are welcome in English or Polish."
+      pl: "Pytania można zadawać po angielsku lub po polsku."
+    fields:
+      Contact:
+        en: "your.name@pwr.edu.pl"
+        pl: "imie.nazwisko@pwr.edu.pl"
+      Slides:
+        en: "generator fixture"
+        pl: "przykład generatora"
+      Code:
+        en: "all-pattern deck.yaml"
+        pl: "deck.yaml ze wszystkimi wzorcami"
+    notes: "Q&A. Invite bilingual questions."
+    script:
+      cue:
+        en: "[smile]"
+        pl: "[uśmiech]"
+      text:
+        en: "Thank you. I welcome questions in English or Polish."
+        pl: "Dziękuję. Zapraszam do pytań po angielsku lub po polsku."
+      transition:
+        en: "The appendix is available if needed."
+        pl: "Dodatek jest dostępny w razie potrzeby."
+  - id: appendix
+    pattern: appendix-divider
+    railTitle:
+      en: "Appendix"
+      pl: "Dodatek"
+    number:
+      en: "A"
+      pl: "A"
+    eyebrow:
+      en: "Backup"
+      pl: "Dodatek"
+    title:
+      en: "Appendix"
+      pl: "Dodatek"
+    subtitle:
+      en: "Detailed hyperparameters and extra figures live in backup."
+      pl: "Szczegółowe hiperparametry i dodatkowe rysunki są w części zapasowej."
+    meta:
+      en: "Backup material"
+      pl: "Materiał zapasowy"
+    duration:
+      en: "as needed"
+      pl: "w razie potrzeby"
+    notes: "Appendix divider. Last slide and second divider-like pattern."
+    script:
+      text:
+        en: "The appendix slide is the backup entry point and also exercises the dark divider pattern."
+        pl: "Slajd dodatku jest wejściem do materiału zapasowego i sprawdza ciemny wzorzec dzielnika."
+      transition:
+        en: "End of fixture."
+        pl: "Koniec przykładu."

@@ -2,10 +2,12 @@
 
 Each entry below is one template available to this skill. To pick a template, match the user's brief against the "best for" line and the strengths/weaknesses.
 
+`deck.yaml` is the authoring surface. Templates are renderer/shell targets selected by `template: <id>`; the generator expands YAML fields into `deck.html`, `script.md`, `README.md`, and support files. Do not hand-edit template HTML as the default workflow.
+
 When adding a new template:
-1. Drop its source files into `assets/templates/<id>/` (and any image/logo dependencies in a nested folder).
+1. Drop its renderer shell and support files into `assets/templates/<id>/` (and any image/logo dependencies in a nested folder).
 2. Append a new section here following the format below.
-3. If the template introduces slide patterns that don't already exist in `slide-patterns.md`, add them there.
+3. If the template introduces slide patterns that don't already exist, add their source fields to `pattern-schema.md` and guidance to `slide-patterns.md`.
 
 ---
 
@@ -13,8 +15,8 @@ When adding a new template:
 
 - **ID:** `seminar`
 - **Folder:** `assets/templates/seminar/`
-- **Entry file:** `seminar-template.html`
-- **Companion files:** `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`
+- **Renderer/shell:** seminar HTML shell rendered from `deck.yaml`; not the default file to edit by hand.
+- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`
 - **Asset dependencies:** none — fully self-contained, only Google Fonts over the network.
 - **Aspect / resolution:** 1920 × 1080 (16:9)
 - **Default deck length:** 25 slides
@@ -30,7 +32,7 @@ When adding a new template:
 **Strengths**
 - Serious editorial typography; reads like a research paper, not a sales pitch.
 - Rich primitives for the slide types academics actually need: definition card, numbered/bulleted lists, pull-quote, full-bleed photo intro, pipeline/process diagram, 2- and 3-column comparison, equation showcase, syntax-highlighted code, big-number stat, bar chart, data table with delta highlighting, image-led layout, 6-tile image grid, numbered contributions cards, paired limitation-with-mitigation list, timeline, two-column references list, acknowledgements, formal Q&A closer, dark appendix divider.
-- Built-in theme tokens: light/dark, three density variants (`compact`/regular/`spacious`), action-style vs topic-style titles, footer toggle, light vs dark code blocks, fully customizable accent color and font stack.
+- Built-in v1 theme tokens: `dark`, three density variants (`compact`/regular/`spacious`), action-style vs topic-style titles, footer toggle, light vs dark code blocks, customizable accent color, and implemented font pairs.
 
 **Weaknesses / when not to pick**
 - Not designed for product/marketing decks — feels too dry for sales.
@@ -38,16 +40,16 @@ When adding a new template:
 - No animation. If the user wants kinetic typography or build-ins, this template won't deliver.
 - No institutional branding — pick `university` if the user needs PWR (Wrocław Tech) chrome.
 
-**Available slide patterns** (see `slide-patterns.md` for snippets)
+**Available slide patterns** (see `slide-patterns.md` for intent and `pattern-schema.md` for fields)
 `cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
 
-**Built-in customization knobs** (see `customization.md`)
-- `body.dark` — dark mode
-- `body.compact` / `body.spacious` — density
-- `body.action-titles` — sentence-style titles instead of noun-style
-- `body.no-footer` — hide the bottom chrome
-- `body.code-light` — render code blocks on a light background instead of the default near-black
-- CSS vars on `:root`: `--accent`, `--bg`, `--fg`, `--muted`, `--hair`, `--soft`, `--font-sans`, `--font-display`, `--font-mono`, plus the type and spacing scale.
+**Built-in customization knobs** (set in `deck.yaml`, rendered as body classes/CSS variables; see `customization.md`)
+- `theme.dark: true|false`
+- `theme.density: compact|regular|spacious`
+- `theme.titleStyle: action|topic`
+- `theme.footer: true|false`
+- `theme.codeTheme: dark|light`
+- `theme.accent`, `theme.fontPair: plex|grotesk|dm|serif`, `theme.classes`
 
 ---
 
@@ -55,8 +57,8 @@ When adding a new template:
 
 - **ID:** `university`
 - **Folder:** `assets/templates/university/`
-- **Entry file:** `university-template.html`
-- **Companion files:** `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`
+- **Renderer/shell:** university HTML shell rendered from `deck.yaml`; not the default file to edit by hand.
+- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`, `assets/uni/*.png`
 - **Asset dependencies:** `assets/uni/*.png` — official PWR (Politechnika Wrocławska / Wrocław University of Science and Technology) logos and partner marks. **These must be copied alongside the HTML** for the deck to render correctly. Filenames the HTML expects:
   - `pwr-en-horiz.png`, `pwr-pl-horiz.png` — horizontal lockups (cover, English/Polish)
   - `pwr-en-horiz-white.png`, `pwr-pl-horiz-white.png` — horizontal lockups on red rail (white versions, all non-cover slides)
@@ -70,30 +72,67 @@ When adding a new template:
 **Best for**
 - Any presentation given as a Politechnika Wrocławska / Wrocław University of Science and Technology affiliate (student, PhD candidate, faculty).
 - Thesis defences, MSc/PhD seminars, project reviews, conference talks where institutional affiliation should be visible on every slide.
-- **Bilingual EN/PL talks** — every translatable string is wrapped in an `<span class="i18n" data-en="..." data-pl="...">` and a single body class toggles language. Useful for talks where you want to ship one deck and switch language at a button.
+- **Bilingual EN/PL talks** — localized text is declared with `{en, pl}` objects and `metadata.language.available: [en, pl]`; generated HTML wraps translatable strings for the template language mechanism.
 
 **Strengths**
 - Locked, audit-able brand. Top red rail with white horizontal lockup, footer with partner logos (HR Excellence, Unite!, IEP), red-paneled cover with vertical eagle.
 - Same 25-slide pattern catalog as seminar, with PWR-styled chrome on every slide.
-- First-class i18n: write content twice (EN + PL), flip with `<body class="lang-en">` / `<body class="lang-pl">`.
+- First-class i18n: write content twice (EN + PL) under localized objects; the default locale is selected by `metadata.language.default` and rendered as `body.lang-en` / `body.lang-pl`.
 
 **Weaknesses / when not to pick**
 - Only appropriate for PWR-affiliated speakers. Using PWR chrome without affiliation is brand misuse.
 - The brand palette dominates — if the user wants a custom color scheme, `seminar` is the better base.
 - The cover slide layout is hard-coded around the eagle logo and red panel; can't be substantially restructured without breaking the brand.
 
-**Available slide patterns** (see `slide-patterns.md` for snippets)
+**Available slide patterns** (see `slide-patterns.md` for intent and `pattern-schema.md` for fields)
 Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
 
-**Built-in customization knobs** (see `customization.md`)
-- `body.lang-en` / `body.lang-pl` — language swap (mutually exclusive; default `lang-en`)
-- `body.dark` — dark mode (inverts to brown/cream)
-- `body.compact` / `body.spacious` — density
-- `body.no-footer` — hide footer entirely
-- `body.no-partners` — hide just the partner logos (keep speaker/page chrome)
-- `body.code-light` — render code blocks on cream background instead of near-black
-- `body.bullets-square` / `body.bullets-dash` — bullet glyph variants
-- CSS vars on `:root`: brand-locked `--pwr-red`, `--pwr-cream`, `--pwr-bg`, `--pwr-ink`, `--pwr-muted`, `--pwr-hair`. Type scale (`--t-title`, `--t-body`, etc.) and spacing tokens are tweakable. Do **not** change `--pwr-red` or `--pwr-cream` unless the user explicitly invokes a brand exception.
+**Built-in customization knobs** (set in `deck.yaml`, rendered as body classes/CSS variables; see `customization.md`)
+- `metadata.language.default: en|pl`, `metadata.language.available: [en, pl]`, and localized objects for translatable text
+- `theme.dark: true|false`
+- `theme.density: compact|regular|spacious`
+- `theme.footer: true|false`, `theme.partners` or `theme.showPartners`
+- `theme.codeTheme: dark|light`
+- `theme.bullets: diamond|square|dash`
+- Brand tokens are locked: use `theme.red` / `theme.pwrRed` only when the user explicitly invokes a brand exception.
+
+---
+
+## keynote
+
+- **ID:** `keynote`
+- **Folder:** `assets/templates/keynote/`
+- **Renderer/shell:** generated from the preserved source file `keynote-template.html`; generator materializes the shell at build time.
+- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`
+- **Asset dependencies:** none in the current HTML; if future images/fonts are added, keep relative paths under `assets/templates/keynote/assets/`.
+- **Aspect / resolution:** 1920 × 1080 (16:9)
+- **Default deck length:** 23 slides in the original source template.
+- **Default fonts:** Geist + Geist Mono, with Instrument Serif for italic editorial emphasis.
+- **Default palette:** warm black background, cream foreground, coral accent `#ff5836`; optional paper/light mode.
+
+**Best for**
+- Product keynotes, conference talks, launches, narrative talks, and visually stronger presentations where the tone should feel editorial rather than academic.
+- Talks that benefit from large titles, serif emphasis, dramatic dividers, and a polished dark/paper aesthetic.
+
+**Strengths**
+- Strong keynote-style visual identity with large editorial typography.
+- Built-in dark and paper modes, accent color presets, density variants, footer toggle, and italic emphasis toggle.
+- Supports the shared generator catalog: cover, agenda, dividers, definition, bullets, quote, full-bleed image, pipeline, comparison, equation, code, headline stat, chart, table, image layouts, claims, limitations, timeline, references, Q&A.
+
+**Weaknesses / when not to pick**
+- Less conservative than `seminar`; not ideal for dense academic material or formal institutional decks.
+- Uses online Google Fonts unless fonts are cached or swapped manually.
+- No institutional branding; choose `university` for PWR-branded decks.
+
+**Available slide patterns**
+`cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
+
+**Built-in customization knobs**
+- `theme.accent`
+- `theme.paper: true|false` or `theme.dark: false` for paper/light mode
+- `theme.density: compact|regular|spacious`
+- `theme.footer: true|false`
+- `theme.italics: true|false`
 
 ---
 
@@ -103,6 +142,7 @@ Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divide
 |-------------------------------------------------------------------|--------------|
 | Mentions PWR, Politechnika Wrocławska, Wrocław Tech, W11/C-16, "my university", a Polish university context | `university` |
 | Needs Polish/English bilingual deck                               | `university` |
+| Product keynote, launch talk, visually editorial conference talk   | `keynote`    |
 | Wants custom colors / specific brand palette                      | `seminar`    |
 | Generic academic talk with no affiliation requirement             | `seminar`    |
 | Reading group, lab meeting, journal club, workshop                | `seminar`    |

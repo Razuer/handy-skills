@@ -2,6 +2,8 @@
 
 The script is what the user *says*, slide by slide. The deck argues with type and layout; the script argues with voice. They share content but not phrasing — never paste bullet text into the script verbatim.
 
+Author script material in `deck.yaml` under each `slides[].script`. The generator emits `script.md` in slide order and may also derive concise speaker-note JSON cues for `deck.html`.
+
 ## Voice
 
 Write the way the user would actually speak. That means:
@@ -14,19 +16,35 @@ Write the way the user would actually speak. That means:
 
 ## Structure of a section
 
-Each slide gets one section in `script.md`. Use this shape:
+Each slide gets one section in generated `script.md`. Use this source shape in `deck.yaml`:
+
+```yaml
+slides:
+  - pattern: bullets
+    title: "Retrieval changes the failure mode"
+    script:
+      cue: "pause before the contrast"
+      text: |
+        Here's the important shift.
+
+        RAG doesn't make the model know everything.
+        It moves the hard part into retrieval.
+      transition: "So now we need to look at the retriever itself."
+```
+
+The generated Markdown currently uses this shape:
 
 ```markdown
-## Slide N — {short slide title}
+## Slajd N - {short slide title}
 
-[optional stage cue: e.g. "click to advance after the table is on screen", "pause for 2 beats"]
+Cue: optional stage cue, e.g. "click to advance after the table is on screen"
 
 {The spoken text, in 1–4 short paragraphs.}
 
-> Transition into next slide.
+Transition: Transition into next slide.
 ```
 
-The final blockquote line is the **transition** — a single short sentence that bridges into the next slide. This is what makes the deck feel like one talk instead of a sequence of paragraphs.
+The `Transition:` line is a single short sentence that bridges into the next slide. This is what makes the deck feel like one talk instead of a sequence of paragraphs. If `slides[].script` is a plain string, the generator treats it as spoken text and omits cue/transition unless separately provided.
 
 ## Transitions
 
@@ -61,9 +79,9 @@ The last 30 seconds matter more than the cover. Don't end with "any questions?" 
 
 Example:
 ```markdown
-## Slide 15 — Q&A
+## Slajd 15 - Q&A
 
-[Hold this slide for the entire Q&A.]
+Cue: Hold this slide for the entire Q&A.
 
 So that's the case. Graphs let us learn molecular representations end-to-end,
 and on the benchmarks we tried, that's worth about eight percent of AUC over
@@ -83,11 +101,11 @@ Aim for **~140 words per minute** of speaking. So:
 - 20-minute talk → ~2,800 words.
 - 30-minute talk → ~4,200 words.
 
-After drafting, count words and check it lands within ±20% of the target. If it's over, the speaker will rush; under, they'll fill awkward silence. Trim or expand specific sections rather than padding evenly.
+After drafting, count words and check it lands within ±20% of the target. If it's over, the speaker will rush; under, they'll fill awkward silence. Trim or expand specific `slides[].script` entries rather than padding evenly. The generator may report timing estimates from the generated `script.md`, but the author is responsible for matching the requested slot.
 
 ## Stage cues
 
-Use bracketed `[cues]` inline only when the speaker needs to do something with their body or the slide:
+Use `cue` only when the speaker needs to do something with their body or the slide. The generator emits it as `Cue: ...`:
 
 - `[pause]` — full stop, 2 seconds of silence. Use after a punchline or before a question to the audience.
 - `[click to advance]` — explicit if there's a build or you want the speaker to wait until something is on screen.
@@ -105,7 +123,7 @@ Bad (reads like an essay):
 > representations, which is why graph neural networks have become an attractive
 > approach for this domain.
 
-Good (reads like a talk):
+Good source text (reads like a talk):
 
 > Here's the issue.
 >
@@ -115,11 +133,11 @@ Good (reads like a talk):
 > Every model we throw at it has to deal with that. And most of them deal with
 > it by ignoring it.
 >
-> [pause]
+> pause
 >
 > That's why graph neural networks are interesting here. They don't fight the
 > structure — they use it.
 >
-> > Let me show you what that looks like in practice.
+> Transition: Let me show you what that looks like in practice.
 
 Same content. The second version is half the length, twice the punch, and ends with a transition that bridges into the method slide.

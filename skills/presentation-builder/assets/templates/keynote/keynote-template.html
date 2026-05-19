@@ -1,0 +1,1950 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Keynote Template — A Field Guide to Calm Software</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ─── Keynote Template — design tokens ───────────────────────────── */
+  :root {
+    /* Color — warm-black editorial palette */
+    --bg:      #0f0e0c;
+    --bg-2:    #18161210;   /* faint surface on dark */
+    --surface: #1a1814;
+    --fg:      #f3ede0;
+    --muted:   #9a958a;
+    --hair:    #2a2722;
+    --accent:  #ff5836;     /* sunset coral */
+    --accent-d:#c8401e;
+
+    /* Type scale (1920×1080) */
+    --t-cover:    180px;
+    --t-divider:  300px;
+    --t-title:    88px;
+    --t-subtitle: 38px;
+    --t-body:     28px;
+    --t-small:    24px;
+    --t-mono:     24px;
+
+    /* Spacing */
+    --pad-top:    140px;
+    --pad-bottom: 120px;
+    --pad-x:      130px;
+    --gap-title:  56px;
+    --gap-item:   24px;
+    --gap-tight:  14px;
+
+    /* Fonts */
+    --font-sans:  "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono:  "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --font-serif: "Instrument Serif", "Times New Roman", Georgia, serif;
+  }
+
+  /* ─── Light/paper variant ───────────────────────────────────────── */
+  body.paper {
+    --bg:      #f4efe5;
+    --surface: #e9e2d3;
+    --fg:      #1b1812;
+    --muted:   #6a6358;
+    --hair:    #d9d1c0;
+    --accent:  #d6411e;
+    --accent-d:#9a2a10;
+  }
+
+  /* Density */
+  body.compact  { --pad-top: 100px; --pad-bottom: 90px; --pad-x: 100px; --gap-title: 40px; --gap-item: 18px; }
+  body.spacious { --pad-top: 180px; --pad-bottom: 160px; --pad-x: 160px; --gap-title: 72px; --gap-item: 32px; }
+
+  /* No-italic title style swap */
+  body.no-italics .serif-em { font-style: normal; color: var(--fg); }
+
+  /* ─── Base ───────────────────────────────────────────────────────── */
+  html, body { margin: 0; padding: 0; background: #050505; color: var(--fg); }
+  body { font-family: var(--font-sans); }
+
+  deck-stage { background: var(--bg); }
+  deck-stage::part(stage) { background: #050505; }
+
+  section.slide {
+    width: 1920px; height: 1080px;
+    background: var(--bg); color: var(--fg);
+    box-sizing: border-box;
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* ─── Chrome ─────────────────────────────────────────────────────── */
+  .chrome-top, .chrome-bot {
+    position: absolute; left: var(--pad-x); right: var(--pad-x);
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .chrome-top { top: 56px; }
+  .chrome-top .brand { color: var(--fg); display: inline-flex; gap: 10px; align-items: baseline; }
+  .chrome-top .brand .mark {
+    color: var(--accent); font-family: var(--font-serif); font-style: italic;
+    font-size: 26px; line-height: 1; margin-right: 4px;
+  }
+  .chrome-bot { bottom: 56px; border-top: 1px solid var(--hair); padding-top: 16px; }
+  body.no-footer .chrome-bot { display: none; }
+
+  /* ─── Typography primitives ──────────────────────────────────────── */
+  .eyebrow {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500; margin: 0;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before {
+    content: ""; display: inline-block;
+    width: 28px; height: 1px; background: var(--accent);
+  }
+  h1.title, h2.title {
+    font-family: var(--font-sans); font-size: var(--t-title);
+    font-weight: 500; line-height: 1.02; letter-spacing: -0.025em;
+    margin: 0; text-wrap: balance;
+  }
+  .serif-em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .subtitle {
+    font-family: var(--font-sans); font-size: var(--t-subtitle);
+    color: var(--muted); line-height: 1.25; letter-spacing: -0.005em;
+    margin: 0; max-width: 1400px; text-wrap: pretty;
+  }
+  .body { font-size: var(--t-body); line-height: 1.45; color: var(--fg); text-wrap: pretty; }
+  .mono { font-family: var(--font-mono); }
+
+  .content { flex: 1; display: flex; flex-direction: column; gap: var(--gap-title); min-height: 0; }
+  .stack { display: flex; flex-direction: column; gap: var(--gap-item); }
+  .stack-tight { display: flex; flex-direction: column; gap: var(--gap-tight); }
+
+  /* ═══ 01 · Cover ════════════════════════════════════════════════ */
+  section.slide.cover {
+    padding: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+  .cover-top {
+    padding: 56px var(--pad-x) 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline; gap: 32px;
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .cover-top .brand {
+    color: var(--fg); display: inline-flex; gap: 12px; align-items: baseline;
+  }
+  .cover-top .brand .mark {
+    color: var(--accent); font-family: var(--font-serif); font-style: italic;
+    font-size: 32px; line-height: 1; margin-right: 2px;
+  }
+  .cover-mid {
+    padding: 0 var(--pad-x);
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 36px; min-height: 0;
+  }
+  .cover-eyebrow { display: inline-flex; align-self: flex-start; }
+  .cover-title {
+    font-family: var(--font-sans); font-size: var(--t-cover);
+    font-weight: 500; line-height: 0.98; letter-spacing: -0.035em;
+    margin: 0; max-width: 1620px; text-wrap: balance;
+  }
+  .cover-title .serif-em {
+    font-size: 1.04em; letter-spacing: -0.02em;
+    /* slight optical lift */
+  }
+  .cover-sub {
+    font-size: 40px; line-height: 1.25; color: var(--muted);
+    max-width: 1300px; margin: 0; text-wrap: pretty;
+  }
+  .cover-bot {
+    padding: 28px var(--pad-x) 56px;
+    border-top: 1px solid var(--hair);
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 60px;
+    font-family: var(--font-mono); font-size: var(--t-mono);
+  }
+  .cover-bot dt { color: var(--muted); margin-bottom: 8px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .cover-bot dd { color: var(--fg); margin: 0; font-size: 26px; }
+  .cover-bot dd em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-size: 28px; }
+
+  /* ═══ 02 · Section divider ═════════════════════════════════════ */
+  section.slide.divider {
+    padding: 0;
+    display: grid; grid-template-rows: auto 1fr auto;
+    background: var(--bg);
+  }
+  section.slide.divider .div-top, section.slide.divider .div-bot {
+    padding: 56px var(--pad-x);
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  section.slide.divider .div-top { border-bottom: 1px solid var(--hair); }
+  section.slide.divider .div-bot { border-top: 1px solid var(--hair); }
+  section.slide.divider .div-mid {
+    padding: 60px var(--pad-x);
+    display: grid; grid-template-columns: auto 1fr;
+    column-gap: 80px; align-items: center;
+    min-height: 0;
+  }
+  .div-num {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: var(--t-divider);
+    line-height: 0.85; color: var(--accent);
+    letter-spacing: -0.02em;
+    font-weight: 400;
+  }
+  .div-block { display: flex; flex-direction: column; gap: 28px; max-width: 1200px; }
+  .div-eye {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .div-title {
+    font-family: var(--font-sans); font-size: 140px; font-weight: 500;
+    line-height: 0.96; letter-spacing: -0.035em; margin: 0;
+    text-wrap: balance;
+  }
+  .div-rule { width: 96px; height: 2px; background: var(--accent); }
+  .div-lede { font-size: 32px; line-height: 1.3; color: var(--muted); margin: 0; max-width: 980px; }
+
+  section.slide.divider.divider-inv { background: var(--accent); }
+  section.slide.divider.divider-inv .div-top,
+  section.slide.divider.divider-inv .div-bot { color: rgba(15,14,12,.65); border-color: rgba(15,14,12,.2); }
+  section.slide.divider.divider-inv .div-num,
+  section.slide.divider.divider-inv .div-eye { color: rgba(15,14,12,.78); }
+  section.slide.divider.divider-inv .div-title,
+  section.slide.divider.divider-inv .div-lede { color: #0f0e0c; }
+  section.slide.divider.divider-inv .div-rule { background: #0f0e0c; }
+
+  /* ═══ Agenda ═════════════════════════════════════════════════════ */
+  ol.agenda { list-style: none; padding: 0; margin: 0; }
+  ol.agenda li {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: baseline;
+    gap: 40px;
+    padding: 22px 0;
+    border-top: 1px solid var(--hair);
+    font-size: var(--t-body);
+  }
+  ol.agenda li:last-child { border-bottom: 1px solid var(--hair); }
+  ol.agenda .idx {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 48px; line-height: 0.9;
+    color: var(--accent); font-weight: 400;
+  }
+  ol.agenda .label { font-size: 36px; font-weight: 500; letter-spacing: -0.01em; }
+  ol.agenda .label em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  ol.agenda .dur { font-family: var(--font-mono); font-size: var(--t-small); color: var(--muted); }
+
+  /* ═══ Definition ═════════════════════════════════════════════════ */
+  .def-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 80px; flex: 1; align-items: stretch; min-height: 0; }
+  .def-card {
+    background: var(--surface);
+    padding: 56px 52px;
+    display: flex; flex-direction: column; gap: 24px;
+    border-top: 1px solid var(--accent);
+    position: relative;
+  }
+  .def-card::before {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 96px; height: 4px; background: var(--accent);
+  }
+  .def-tag {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+  }
+  .def-term {
+    font-family: var(--font-sans); font-size: 80px;
+    font-weight: 500; line-height: 1.0; letter-spacing: -0.025em;
+    margin: 0; text-wrap: balance;
+  }
+  .def-term em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  .def-notation {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 40px; color: var(--accent-d); margin: 0;
+    border-top: 1px solid var(--hair); padding-top: 18px;
+  }
+  .def-body { font-size: 30px; line-height: 1.4; color: var(--fg); margin: 0; text-wrap: pretty; }
+  .def-side { display: flex; flex-direction: column; gap: 20px; padding-top: 12px; }
+  .def-side-h {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+    border-bottom: 1px solid var(--hair); padding-bottom: 16px;
+  }
+
+  /* ═══ Bullets ════════════════════════════════════════════════════ */
+  ul.bullets { list-style: none; padding: 0; margin: 0; }
+  ul.bullets li {
+    display: grid; grid-template-columns: 80px 1fr;
+    align-items: baseline; gap: 24px;
+    padding: 26px 0;
+    border-top: 1px solid var(--hair);
+    font-size: var(--t-body);
+  }
+  ul.bullets li:last-child { border-bottom: 1px solid var(--hair); }
+  ul.bullets .b-num {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 48px; color: var(--accent); line-height: 0.9; font-weight: 400;
+  }
+  ul.bullets .b-title { font-weight: 500; font-size: 34px; letter-spacing: -0.01em; }
+  ul.bullets .b-title em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  ul.bullets .b-desc  { color: var(--muted); display: block; margin-top: 6px; font-size: 26px; line-height: 1.4; }
+
+  /* ═══ Quote ══════════════════════════════════════════════════════ */
+  .quote {
+    flex: 1; display: grid; grid-template-columns: 100px 1fr;
+    gap: 56px; align-items: center; min-height: 0;
+  }
+  .quote .mark {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 320px; line-height: 0.7; color: var(--accent); font-weight: 400;
+    align-self: start;
+    margin-top: 30px;
+  }
+  .quote .body-q {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 88px; line-height: 1.08; letter-spacing: -0.02em;
+    color: var(--fg); margin: 0; font-weight: 400;
+    max-width: 1500px; text-wrap: balance;
+  }
+  .quote .attr {
+    margin-top: 40px;
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline;
+    border-top: 1px solid var(--hair); padding-top: 18px;
+  }
+  .quote .attr .name { color: var(--fg); }
+  .quote .attr .ref  { font-family: var(--font-serif); font-style: italic;
+                        color: var(--accent); text-transform: none; letter-spacing: 0;
+                        font-size: 28px; }
+
+  /* ═══ Full-bleed image ══════════════════════════════════════════ */
+  section.slide.bleed { padding: 0; overflow: hidden; }
+  section.slide.bleed .bleed-img { position: absolute; inset: 0; }
+  section.slide.bleed image-slot { width: 100%; height: 100%; display: block; }
+  section.slide.bleed .bleed-shade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15,14,12,0.55) 0%, rgba(15,14,12,0) 30%, rgba(15,14,12,0) 50%, rgba(15,14,12,0.85) 100%);
+    pointer-events: none;
+  }
+  section.slide.bleed .bleed-chrome {
+    position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x);
+    color: rgba(243,237,224,.9); font-family: var(--font-mono); font-size: var(--t-mono);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+    z-index: 2;
+  }
+  section.slide.bleed .bleed-chrome .brand { color: #fff; display: inline-flex; gap: 10px; align-items: baseline; }
+  section.slide.bleed .bleed-chrome .mark { color: var(--accent); font-family: var(--font-serif); font-style: italic; font-size: 26px; }
+  section.slide.bleed .bleed-content {
+    position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 120px;
+    display: flex; flex-direction: column; gap: 24px;
+    z-index: 2; color: #fff;
+  }
+  section.slide.bleed .bleed-eye {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  section.slide.bleed .bleed-eye::before { content: ""; width: 28px; height: 1px; background: var(--accent); display: inline-block; }
+  section.slide.bleed .bleed-title {
+    font-family: var(--font-sans); font-size: 96px;
+    font-weight: 500; line-height: 1.0; letter-spacing: -0.03em;
+    margin: 0; color: #fff; max-width: 1500px; text-wrap: balance;
+  }
+  section.slide.bleed .bleed-title em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  section.slide.bleed .bleed-sub {
+    font-size: 32px; line-height: 1.3; color: rgba(255,255,255,.82); margin: 0; max-width: 1280px;
+  }
+  section.slide.bleed .bleed-cred {
+    position: absolute; bottom: 56px; right: var(--pad-x);
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: rgba(255,255,255,.55); letter-spacing: 0.12em; text-transform: uppercase; z-index: 2;
+  }
+
+  /* ═══ Pipeline ═══════════════════════════════════════════════════ */
+  .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .step {
+    background: var(--surface);
+    padding: 30px 26px;
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative;
+    border-top: 1px solid var(--accent);
+  }
+  .step::before {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 36%; height: 3px; background: var(--accent);
+  }
+  .step-idx {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 56px; line-height: 0.85; color: var(--accent);
+    font-weight: 400;
+  }
+  .step-h { font-size: 30px; font-weight: 500; line-height: 1.1; letter-spacing: -0.01em; margin: 0; }
+  .step-h em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  .step-d { font-size: 24px; line-height: 1.4; color: var(--muted); margin: 0; }
+  .step-tag {
+    margin-top: auto;
+    font-family: var(--font-mono); font-size: 24px;
+    color: var(--muted);
+    padding-top: 14px;
+    border-top: 1px dashed var(--hair);
+    letter-spacing: 0.04em;
+  }
+
+  /* ═══ Two-column comparison ═════════════════════════════════════ */
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; flex: 1; min-height: 0; }
+  .compare {
+    display: flex; flex-direction: column; gap: 18px;
+    padding: 30px 0 0;
+    border-top: 1px solid var(--hair);
+  }
+  .compare.alt { border-top-color: var(--accent); border-top-width: 2px; }
+  .compare-tag {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .compare.alt .compare-tag { color: var(--accent); }
+  .compare-h {
+    font-size: 48px; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; margin: 0;
+    text-wrap: balance;
+  }
+  .compare-h em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  .compare-body { font-size: var(--t-body); line-height: 1.4; color: var(--muted); margin: 0; }
+  .compare-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .compare-list li {
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 12px; padding: 16px 0; border-top: 1px solid var(--hair);
+    font-size: var(--t-small); line-height: 1.4; color: var(--fg);
+  }
+  .compare-list li::before { content: "→"; color: var(--muted); font-family: var(--font-mono); }
+  .compare.alt .compare-list li::before { color: var(--accent); }
+
+  /* ═══ Three-column ═══════════════════════════════════════════════ */
+  .cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; flex: 1; min-height: 0; }
+  .cols-3 .compare-h { font-size: 34px; line-height: 1.15; }
+  .cols-3 .compare-body { font-size: 24px; line-height: 1.4; }
+  .cols-3 .compare-list li { font-size: 24px; padding: 12px 0; line-height: 1.3; }
+
+  /* ═══ Equation showcase ═════════════════════════════════════════ */
+  .eq-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 64px; flex: 1; align-items: stretch; min-height: 0; }
+  .eq-display {
+    background: var(--surface);
+    border-top: 1px solid var(--accent);
+    padding: 64px 56px;
+    display: flex; flex-direction: column; gap: 36px;
+    justify-content: center;
+    position: relative;
+  }
+  .eq-display::before {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 30%; height: 3px; background: var(--accent);
+  }
+  .eq {
+    font-family: var(--font-serif);
+    font-size: 78px; line-height: 1.2;
+    text-align: center; color: var(--fg);
+    margin: 0;
+  }
+  .eq .var  { font-style: italic; }
+  .eq .op   { color: var(--accent); padding: 0 6px; font-style: normal; }
+  .eq .fn   { color: var(--accent); font-style: italic; }
+  .eq .agg  { font-family: var(--font-sans); font-style: normal; font-weight: 600;
+              font-size: 0.42em; letter-spacing: 0.06em; color: var(--accent);
+              vertical-align: 0.20em; }
+  .eq sub, .eq sup { font-size: 0.55em; line-height: 0; font-style: italic; }
+  .eq sub { vertical-align: -0.25em; }
+  .eq sup { vertical-align: 0.55em; }
+  .eq-cap { font-family: var(--font-mono); font-size: var(--t-mono);
+            color: var(--muted); text-align: center; margin: 0;
+            letter-spacing: 0.06em; }
+  dl.eq-vars { margin: 0; display: flex; flex-direction: column; gap: 18px; }
+  dl.eq-vars > div {
+    display: grid; grid-template-columns: 100px 1fr;
+    gap: 22px; align-items: baseline;
+    border-top: 1px solid var(--hair); padding-top: 16px;
+  }
+  dl.eq-vars > div:first-child { border-top: none; padding-top: 0; }
+  dl.eq-vars dt {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 34px; color: var(--accent);
+  }
+  dl.eq-vars dd { margin: 0; font-size: 24px; line-height: 1.4; color: var(--fg); }
+
+  /* ═══ Code ═══════════════════════════════════════════════════════ */
+  .code-grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: 56px; flex: 1; min-height: 0; }
+  .code-block {
+    background: #0a0907; color: #e8e1d2;
+    padding: 28px 32px;
+    font-family: var(--font-mono); font-size: 24px; line-height: 1.55;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    border-top: 1px solid var(--accent);
+    position: relative;
+  }
+  .code-block::before { content: ""; position: absolute; top: 0; left: 0; width: 28%; height: 3px; background: var(--accent); }
+  .code-block .filename {
+    color: rgba(232,225,210,.55); font-size: 24px; letter-spacing: 0.06em;
+    padding-bottom: 14px; margin-bottom: 14px;
+    border-bottom: 1px dashed rgba(232,225,210,.16);
+    display: flex; justify-content: space-between;
+  }
+  .code-block .line { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: baseline; }
+  .code-block .line.blank { min-height: 0.5em; }
+  .code-block .ln { color: rgba(232,225,210,.25); text-align: right; user-select: none; font-variant-numeric: tabular-nums; }
+  .code-block .kw  { color: #ff8e6e; font-weight: 500; }
+  .code-block .cm  { color: rgba(232,225,210,.45); font-style: italic; font-family: var(--font-serif); }
+  .code-block .fn  { color: #f3ede0; font-weight: 500; }
+  .code-block .str { color: #c2b896; }
+  .code-block .num { color: #efe8d6; }
+  .code-block .ind { display: inline-block; width: 1.5em; }
+
+  body.paper .code-block { background: #ece4d2; color: #1b1812; }
+  body.paper .code-block .filename { color: rgba(0,0,0,.5); border-bottom-color: rgba(0,0,0,.15); }
+  body.paper .code-block .ln  { color: rgba(0,0,0,.28); }
+  body.paper .code-block .kw  { color: var(--accent); }
+  body.paper .code-block .cm  { color: rgba(0,0,0,.45); }
+  body.paper .code-block .fn  { color: #5a3a1a; }
+  body.paper .code-block .str { color: #6a4a2a; }
+
+  .code-notes { display: flex; flex-direction: column; gap: 24px; }
+  .code-note { padding: 20px 22px; border-left: 2px solid var(--accent); background: var(--surface); }
+  .code-note h4 {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500; margin: 0 0 8px;
+  }
+  .code-note p { font-size: 24px; line-height: 1.4; color: var(--fg); margin: 0; }
+  .code-note em { font-family: var(--font-serif); font-style: italic; color: var(--accent); }
+
+  /* ═══ Big stat ═══════════════════════════════════════════════════ */
+  .stat-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 80px; flex: 1; align-items: center; }
+  .big-num {
+    font-family: var(--font-sans);
+    font-size: 420px; line-height: 0.85;
+    font-weight: 500; letter-spacing: -0.06em;
+    color: var(--fg); margin: 0;
+  }
+  .big-num .unit {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 160px; color: var(--accent); margin-left: 8px; font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .stat-side { display: flex; flex-direction: column; gap: 28px; }
+  .stat-label {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .stat-desc { font-size: 38px; line-height: 1.25; color: var(--fg); margin: 0; text-wrap: pretty; }
+  .stat-desc em { font-family: var(--font-serif); font-style: italic; color: var(--accent); }
+  .stat-foot {
+    font-size: var(--t-small); color: var(--muted);
+    font-family: var(--font-mono); letter-spacing: 0.04em;
+    border-top: 1px solid var(--hair); padding-top: 16px;
+  }
+
+  /* ═══ Bar chart ══════════════════════════════════════════════════ */
+  .chart-wrap { display: grid; grid-template-columns: 1.7fr 1fr; gap: 64px; flex: 1; min-height: 0; }
+  .bar-chart { display: flex; flex-direction: column; min-height: 0; padding-top: 50px; }
+  .bars-row {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 24px; flex: 1; align-items: end;
+    border-bottom: 2px solid var(--fg); padding: 0 8px;
+    min-height: 0;
+  }
+  .bar {
+    background: var(--surface);
+    display: flex; flex-direction: column; justify-content: flex-start;
+    align-items: center;
+    padding: 18px 8px 0;
+    position: relative;
+    min-height: 60px;
+  }
+  .bar.win { background: var(--accent); }
+  .bar.win .bar-val { color: #0f0e0c; }
+  .bar.win::after {
+    content: "★"; position: absolute; top: -56px; left: 50%;
+    transform: translateX(-50%);
+    color: var(--accent); font-family: var(--font-serif); font-style: italic;
+    font-size: 40px; font-weight: 400;
+  }
+  .bar-val { font-family: var(--font-mono); font-size: 26px; font-weight: 500;
+             color: var(--fg); text-align: center; }
+  .bar-labels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; padding: 16px 8px 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 24px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .chart-side { display: flex; flex-direction: column; gap: 24px; justify-content: center; padding-left: 32px; border-left: 1px solid var(--hair); }
+  .chart-callout-num { font-family: var(--font-sans); font-size: 140px; font-weight: 500;
+                       color: var(--accent); line-height: 0.85; letter-spacing: -0.04em; margin: 0; }
+  .chart-callout-num em { font-family: var(--font-serif); font-style: italic; font-size: 80px; color: var(--accent); font-weight: 400; }
+  .chart-callout-lbl { font-size: 28px; color: var(--fg); line-height: 1.3; margin: 0; font-weight: 500; }
+  .chart-side ul { list-style: none; margin: 8px 0 0; padding: 0; }
+  .chart-side ul li {
+    font-size: 24px; line-height: 1.4; color: var(--muted);
+    padding: 12px 0; border-top: 1px solid var(--hair);
+    display: grid; grid-template-columns: 24px 1fr; gap: 12px;
+  }
+  .chart-side ul li::before { content: "→"; color: var(--accent); font-family: var(--font-mono); }
+
+  /* ═══ Table ══════════════════════════════════════════════════════ */
+  table.data {
+    width: 100%; border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  table.data thead th {
+    text-align: left; padding: 18px 16px;
+    font-family: var(--font-mono); font-weight: 500; font-size: 24px;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    border-bottom: 1px solid var(--accent);
+  }
+  table.data thead th.num { text-align: right; }
+  table.data tbody td {
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--hair);
+    font-size: 28px;
+  }
+  table.data tbody td.num { text-align: right; font-family: var(--font-mono); }
+  table.data tbody tr.best td { background: var(--surface); }
+  table.data tbody tr.best td:first-child { color: var(--accent); font-family: var(--font-serif); font-style: italic; font-size: 32px; }
+  table.data tbody td.delta-pos { color: var(--accent); font-family: var(--font-mono); }
+  .table-cap {
+    font-family: var(--font-mono); font-size: 24px; color: var(--muted);
+    margin-top: 12px; letter-spacing: 0.04em;
+  }
+
+  /* ═══ Image-led ══════════════════════════════════════════════════ */
+  .image-led { display: grid; grid-template-columns: 1fr 1.25fr; gap: 80px; flex: 1; min-height: 0; }
+  .image-frame {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    overflow: hidden;
+    height: 100%; min-height: 0;
+  }
+  image-slot { width: 100%; height: 100%; display: block; }
+  .caption-row {
+    margin-top: 20px;
+    font-family: var(--font-mono); font-size: 24px; color: var(--muted);
+    display: flex; gap: 20px; flex-wrap: wrap;
+    border-top: 1px solid var(--hair); padding-top: 14px;
+    letter-spacing: 0.04em;
+  }
+  .caption-row .ref { color: var(--accent); }
+
+  /* ═══ Image grid ═════════════════════════════════════════════════ */
+  .img-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;
+              gap: 24px; flex: 1; min-height: 0; }
+  .img-tile { display: flex; flex-direction: column; background: var(--surface);
+              border: 1px solid var(--hair); min-height: 0; }
+  .img-tile-frame { flex: 1; min-height: 0; overflow: hidden; }
+  .img-tile-frame image-slot { width: 100%; height: 100%; display: block; }
+  .img-tile-cap {
+    padding: 14px 18px; font-family: var(--font-mono); font-size: 24px;
+    color: var(--muted); border-top: 1px solid var(--hair);
+    display: flex; justify-content: space-between; align-items: baseline;
+    letter-spacing: 0.04em;
+  }
+  .img-tile-cap .pos { color: var(--accent); font-family: var(--font-serif); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 26px; }
+
+  /* ═══ Contributions ══════════════════════════════════════════════ */
+  ol.claims { list-style: none; margin: 0; padding: 0;
+              display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+              flex: 1; }
+  ol.claims li {
+    background: var(--surface);
+    padding: 36px 32px 32px;
+    display: flex; flex-direction: column; gap: 16px;
+    position: relative;
+    border-top: 1px solid var(--accent);
+  }
+  ol.claims li::before {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 30%; height: 3px; background: var(--accent);
+  }
+  ol.claims .idx {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 120px; line-height: 0.85;
+    color: var(--accent); font-weight: 400; margin: 0;
+  }
+  ol.claims .claim-h { font-size: 36px; font-weight: 500; line-height: 1.15; letter-spacing: -0.01em;
+                       color: var(--fg); margin: 0; text-wrap: balance; }
+  ol.claims .claim-h em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  ol.claims .claim-d { font-size: 24px; line-height: 1.4; color: var(--muted); margin: 0; }
+  ol.claims .claim-tag {
+    font-family: var(--font-mono); font-size: 24px;
+    color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-top: auto;
+    padding-top: 16px; border-top: 1px dashed var(--hair);
+  }
+
+  /* ═══ Limitations ════════════════════════════════════════════════ */
+  ul.limits { list-style: none; margin: 0; padding: 0; }
+  ul.limits li {
+    display: grid; grid-template-columns: 80px 1fr 380px;
+    gap: 32px; align-items: center;
+    padding: 28px 0;
+    border-top: 1px solid var(--hair);
+  }
+  ul.limits li:last-child { border-bottom: 1px solid var(--hair); }
+  ul.limits .lim-sign {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 44px; color: var(--accent); font-weight: 400;
+  }
+  ul.limits .lim-h { font-size: 32px; font-weight: 500; margin: 0 0 6px 0;
+                     color: var(--fg); letter-spacing: -0.01em; }
+  ul.limits .lim-d { font-size: 24px; line-height: 1.4; color: var(--muted); margin: 0; }
+  ul.limits .lim-fix {
+    background: var(--surface); padding: 18px 22px; border-left: 2px solid var(--accent);
+    font-size: 24px; line-height: 1.35; color: var(--fg);
+  }
+  ul.limits .lim-fix b {
+    display: block; margin-bottom: 4px;
+    font-family: var(--font-mono); font-size: 24px;
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ═══ Timeline ═══════════════════════════════════════════════════ */
+  .timeline { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--accent); }
+  .tl-col {
+    padding: 30px 24px;
+    border-right: 1px solid var(--hair);
+    display: flex; flex-direction: column; gap: 16px;
+    min-height: 380px;
+  }
+  .tl-col:last-child { border-right: none; }
+  .tl-col.alt { background: var(--surface); }
+  .tl-month {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .tl-pill {
+    display: inline-block;
+    background: var(--fg); color: var(--bg);
+    font-size: 24px; font-weight: 500;
+    padding: 10px 14px;
+    align-self: flex-start;
+    font-family: var(--font-mono); letter-spacing: 0.04em;
+  }
+  .tl-pill.alt { background: var(--accent); color: #0f0e0c; }
+  .tl-note { font-size: 24px; line-height: 1.4; color: var(--fg); margin: 0; }
+  .tl-note em { font-family: var(--font-serif); font-style: italic; color: var(--accent); }
+
+  /* ═══ References ═════════════════════════════════════════════════ */
+  ol.refs { list-style: none; margin: 0; padding: 0;
+            column-count: 2; column-gap: 80px; }
+  ol.refs li {
+    break-inside: avoid;
+    display: grid; grid-template-columns: 50px 1fr;
+    gap: 14px; padding: 16px 0;
+    border-top: 1px solid var(--hair);
+    font-size: var(--t-small); line-height: 1.4;
+  }
+  ol.refs li .ref-idx {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--accent); font-size: 26px;
+  }
+  ol.refs li .ref-authors { font-weight: 500; color: var(--fg); }
+  ol.refs li .ref-venue   { color: var(--muted); font-family: var(--font-serif); font-style: italic; }
+  ol.refs li .ref-doi     { font-family: var(--font-mono); color: var(--muted); font-size: 24px; display: block; margin-top: 4px; letter-spacing: 0.04em; }
+
+  /* ═══ Q&A ════════════════════════════════════════════════════════ */
+  section.slide.qa {
+    background: var(--accent); color: #0f0e0c;
+    padding: 0;
+    display: grid; grid-template-rows: auto 1fr auto;
+  }
+  section.slide.qa .qa-top, section.slide.qa .qa-bot {
+    padding: 56px var(--pad-x);
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: rgba(15,14,12,.7); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  section.slide.qa .qa-top { border-bottom: 1px solid rgba(15,14,12,.2); }
+  section.slide.qa .qa-top .brand { color: #0f0e0c; }
+  section.slide.qa .qa-bot {
+    border-top: 1px solid rgba(15,14,12,.2);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px;
+  }
+  section.slide.qa .qa-bot dt { color: rgba(15,14,12,.65); margin-bottom: 4px; }
+  section.slide.qa .qa-bot dd { color: #0f0e0c; margin: 0; font-size: 26px; text-transform: none; letter-spacing: 0; font-family: var(--font-sans); font-weight: 500; }
+  .qa-mid {
+    padding: 60px var(--pad-x);
+    display: flex; flex-direction: column;
+    justify-content: center; gap: 36px; min-height: 0;
+  }
+  .qa-eye {
+    font-family: var(--font-mono); font-size: var(--t-mono);
+    color: rgba(15,14,12,.8); letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .qa-h {
+    font-family: var(--font-sans); font-size: 220px;
+    font-weight: 500; line-height: 1.0;
+    letter-spacing: -0.04em; margin: 0; color: #0f0e0c;
+    padding-bottom: 8px;
+  }
+  .qa-h em { font-family: var(--font-serif); font-style: italic; color: #0f0e0c; font-weight: 400; }
+  .qa-sub { font-size: 38px; line-height: 1.25; color: rgba(15,14,12,.78); max-width: 1300px; margin: 0; }
+
+</style>
+
+<!-- Speaker notes — fill in later -->
+<script type="application/json" id="speaker-notes">
+[
+  "Cover. Set the room, introduce yourself, name the talk.",
+  "Agenda. Promise the audience what they'll get and how long it will take.",
+  "Definition. Frame the central idea in one breath.",
+  "Section divider — Why now.",
+  "Three signals that calm software is overdue.",
+  "Motivation quote. Read slowly. Pause after.",
+  "Field photo. Drop a real photo here for emotional anchoring.",
+  "Section divider — Method.",
+  "Pipeline. Walk left to right, ~15 seconds per step.",
+  "Two-column comparison. Old way vs the proposal.",
+  "Three families. Where this sits in the landscape.",
+  "Equation. Read it left to right; then point at the aggregator.",
+  "Pseudocode. Three notes on the side, don't read the code.",
+  "Headline number. Read it, then say what it does not mean.",
+  "Bar chart. Pick one bar; tell its story.",
+  "Results table. Highlight one row, not all of them.",
+  "Architecture figure. Trace the flow.",
+  "Qualitative grid. Two failures keep this honest.",
+  "Contributions. Three claims, each tied to a section.",
+  "Limitations. Be honest. Show what you did about each one.",
+  "Timeline. Where we are and what's next.",
+  "References. Acknowledge — do not read aloud.",
+  "Q&A. Thank, invite questions, repeat your contact line."
+]
+</script>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- ═══ 01 · Cover ════════════════════════════════════════════════ -->
+  <section class="slide cover" data-label="01 Cover">
+    <div class="cover-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span></span>
+      <span>Talk 01 · 35 min</span>
+    </div>
+
+    <div class="cover-mid">
+      <span class="eyebrow cover-eyebrow">A field guide</span>
+      <h1 class="cover-title">A field guide to <span class="serif-em">calm</span> software.</h1>
+      <p class="cover-sub">Notes from three years of building tools that respect attention — what worked, what didn't, and what I'd undo if I could start over.</p>
+    </div>
+
+    <dl class="cover-bot">
+      <div>
+        <dt>Speaker</dt>
+        <dd>Your <em>Name</em></dd>
+      </div>
+      <div>
+        <dt>Venue</dt>
+        <dd>Studio Hall · Warszawa</dd>
+      </div>
+      <div>
+        <dt>Date</dt>
+        <dd>14 May 2026</dd>
+      </div>
+      <div>
+        <dt>Hashtag</dt>
+        <dd>#calmsoftware26</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ═══ 02 · Agenda ═══════════════════════════════════════════════ -->
+  <section class="slide" data-label="02 Agenda">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>02 / 23</span>
+    </div>
+
+    <div class="content" style="gap: 64px;">
+      <div class="stack-tight">
+        <span class="eyebrow">Outline</span>
+        <h2 class="title">Six <span class="serif-em">acts,</span> thirty&#8209;five minutes.</h2>
+      </div>
+
+      <ol class="agenda">
+        <li>
+          <span class="idx">i.</span>
+          <span class="label">Why <em>now</em></span>
+          <span class="dur">4 min</span>
+        </li>
+        <li>
+          <span class="idx">ii.</span>
+          <span class="label">A working <em>definition</em></span>
+          <span class="dur">3 min</span>
+        </li>
+        <li>
+          <span class="idx">iii.</span>
+          <span class="label">The <em>method</em></span>
+          <span class="dur">10 min</span>
+        </li>
+        <li>
+          <span class="idx">iv.</span>
+          <span class="label">What we <em>shipped</em></span>
+          <span class="dur">8 min</span>
+        </li>
+        <li>
+          <span class="idx">v.</span>
+          <span class="label">What I <em>got wrong</em></span>
+          <span class="dur">6 min</span>
+        </li>
+        <li>
+          <span class="idx">vi.</span>
+          <span class="label">What's <em>next</em></span>
+          <span class="dur">4 min</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>02 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 03 · Definition ═══════════════════════════════════════════ -->
+  <section class="slide" data-label="03 Definition">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>03 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">A working definition</span>
+        <h2 class="title">Calm software, <span class="serif-em">in one breath.</span></h2>
+      </div>
+
+      <div class="def-grid">
+        <div class="def-card">
+          <div class="def-tag">Definition</div>
+          <h3 class="def-term">Calm <em>software</em></h3>
+          <p class="def-notation">attention · ambient · invariant under interruption</p>
+          <p class="def-body">A system designed so that a user's attention is the scarce resource being optimised against — not engagement, not throughput, not retention. It gets out of the way, then earns the right to come back.</p>
+        </div>
+        <div class="def-side">
+          <div class="def-side-h">Three commitments</div>
+          <ul class="bullets" style="margin-top: 4px;">
+            <li>
+              <span class="b-num">i.</span>
+              <div>
+                <span class="b-title">Defaults <em>respect</em> the user.</span>
+                <span class="b-desc">Quiet on arrival. No setup ceremony, no first-run modals, no notification permission on day one.</span>
+              </div>
+            </li>
+            <li>
+              <span class="b-num">ii.</span>
+              <div>
+                <span class="b-title">The <em>periphery</em> does the work.</span>
+                <span class="b-desc">Most state lives in ambient surfaces — menu bars, widgets, glanceable views — not centre-stage windows.</span>
+              </div>
+            </li>
+            <li>
+              <span class="b-num">iii.</span>
+              <div>
+                <span class="b-title">Interruption is a <em>last resort.</em></span>
+                <span class="b-desc">A notification must clear a bar three times higher than the current default in your toolkit.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>03 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 04 · Section divider — Why now ═══════════════════════════ -->
+  <section class="slide divider" data-label="04 Section · Why now">
+    <div class="div-top">
+      <span>Act 01 of 06</span>
+      <span>~4 minutes</span>
+    </div>
+    <div class="div-mid">
+      <div class="div-num">i.</div>
+      <div class="div-block">
+        <div class="div-eye">First act</div>
+        <h2 class="div-title">Why <span class="serif-em">now.</span></h2>
+        <div class="div-rule"></div>
+        <p class="div-lede">Three signals that this is the right decade to take this seriously — and one reason it would have failed five years ago.</p>
+      </div>
+    </div>
+    <div class="div-bot">
+      <span>Why now</span>
+      <span>04 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 05 · Bullets ══════════════════════════════════════════════ -->
+  <section class="slide" data-label="05 Why now · Signals">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>05 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">01 — Why now</span>
+        <h2 class="title">Three signals it's <span class="serif-em">overdue.</span></h2>
+        <p class="subtitle">None of these are new on their own — the change is that they're now all true at the same time.</p>
+      </div>
+
+      <ul class="bullets">
+        <li>
+          <span class="b-num">i.</span>
+          <div>
+            <span class="b-title">The notification budget is <em>spent.</em></span>
+            <span class="b-desc">Median knowledge worker sees 217 push notifications per weekday across personal + work devices. Engagement on each has fallen 38% YoY since 2023.</span>
+          </div>
+        </li>
+        <li>
+          <span class="b-num">ii.</span>
+          <div>
+            <span class="b-title">Local inference is <em>finally cheap enough.</em></span>
+            <span class="b-desc">A 4B-parameter model fits on consumer silicon. The "infer locally, sync silently" pattern is no longer a research prototype.</span>
+          </div>
+        </li>
+        <li>
+          <span class="b-num">iii.</span>
+          <div>
+            <span class="b-title">Regulators are <em>writing it down.</em></span>
+            <span class="b-desc">The EU's Digital Fairness Act draft (Apr 2026) explicitly names "attention-extractive defaults" as enforceable. Compliance becomes a product surface, not a footer link.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>05 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 06 · Quote ════════════════════════════════════════════════ -->
+  <section class="slide" data-label="06 Why now · Quote">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>06 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="quote">
+        <div class="mark">“</div>
+        <div>
+          <p class="body-q">The most profound technologies are those that disappear. They weave themselves into the fabric of everyday life until they are indistinguishable from it.</p>
+          <div class="attr">
+            <span class="name">Mark Weiser</span>
+            <span>·</span>
+            <span class="ref">The Computer for the 21st Century</span>
+            <span>·</span>
+            <span>1991</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>06 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 07 · Full-bleed image ════════════════════════════════════ -->
+  <section class="slide bleed" data-label="07 Why now · Field photo">
+    <div class="bleed-img">
+      <image-slot id="bleed-fieldphoto" shape="rect" placeholder="Drop a field photo — workspace, café, evening, anything atmospheric"></image-slot>
+    </div>
+    <div class="bleed-shade"></div>
+
+    <div class="bleed-chrome">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>07 / 23</span>
+    </div>
+
+    <div class="bleed-content">
+      <span class="bleed-eye">Field note</span>
+      <h2 class="bleed-title">Where we work now — and where the <em>software</em> is sitting.</h2>
+      <p class="bleed-sub">Notifications follow us into the third place. The product question isn't "how do we engage here" — it's whether we should be here at all.</p>
+    </div>
+
+    <div class="bleed-cred">Photo · drop hero image</div>
+  </section>
+
+  <!-- ═══ 08 · Section divider — Method ════════════════════════════ -->
+  <section class="slide divider" data-label="08 Section · Method">
+    <div class="div-top">
+      <span>Act 03 of 06</span>
+      <span>~10 minutes</span>
+    </div>
+    <div class="div-mid">
+      <div class="div-num">iii.</div>
+      <div class="div-block">
+        <div class="div-eye">Third act</div>
+        <h2 class="div-title">The <span class="serif-em">method.</span></h2>
+        <div class="div-rule"></div>
+        <p class="div-lede">A five-step process — what we run before every feature ships, and what we kill if any step fails.</p>
+      </div>
+    </div>
+    <div class="div-bot">
+      <span>The method</span>
+      <span>08 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 09 · Pipeline ════════════════════════════════════════════ -->
+  <section class="slide" data-label="09 Method · Pipeline">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>09 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">03 — Method</span>
+        <h2 class="title">Five steps, <span class="serif-em">end to end.</span></h2>
+      </div>
+
+      <div class="pipeline">
+        <div class="step">
+          <div class="step-idx">i.</div>
+          <h3 class="step-h">Attention <em>budget</em></h3>
+          <p class="step-d">Estimate cost in user-seconds before any code is written. Numbers, not vibes.</p>
+          <div class="step-tag">spreadsheet · day 0</div>
+        </div>
+        <div class="step">
+          <div class="step-idx">ii.</div>
+          <h3 class="step-h">Ambient <em>first</em></h3>
+          <p class="step-d">Sketch the peripheral surface — widget, menubar, glance view — before a full window.</p>
+          <div class="step-tag">paper · day 1–2</div>
+        </div>
+        <div class="step">
+          <div class="step-idx">iii.</div>
+          <h3 class="step-h">Build <em>quiet</em></h3>
+          <p class="step-d">Default state: no badges, no sounds, no first-run modal. Earn each interruption.</p>
+          <div class="step-tag">code · week 1–3</div>
+        </div>
+        <div class="step">
+          <div class="step-idx">iv.</div>
+          <h3 class="step-h">Friction <em>audit</em></h3>
+          <p class="step-d">Measure the cost of dismissal. If a user can't ignore the feature, we cut it.</p>
+          <div class="step-tag">field · week 4</div>
+        </div>
+        <div class="step">
+          <div class="step-idx">v.</div>
+          <h3 class="step-h">Ship or <em>kill</em></h3>
+          <p class="step-d">A binary call. We do not park features. The graveyard is public and linked in the docs.</p>
+          <div class="step-tag">decision · week 5</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>09 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 10 · Two-column comparison ═══════════════════════════════ -->
+  <section class="slide" data-label="10 Method · Comparison">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>10 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">03 — Method</span>
+        <h2 class="title">Engagement design <span class="serif-em">vs.</span> attention design.</h2>
+      </div>
+
+      <div class="cols-2">
+        <div class="compare">
+          <div class="compare-tag">A · Conventional</div>
+          <h3 class="compare-h">Optimise for time spent in the app.</h3>
+          <p class="compare-body">Every screen is a destination. Every notification is a re-entry hook. Success metric is daily active use.</p>
+          <ul class="compare-list">
+            <li>Easy to A/B test against.</li>
+            <li>Aligned with ad-supported revenue.</li>
+            <li>Tends to degrade trust over 18+ months.</li>
+          </ul>
+        </div>
+        <div class="compare alt">
+          <div class="compare-tag">B · Calm</div>
+          <h3 class="compare-h">Optimise for <em>task completion per minute</em> of presence.</h3>
+          <p class="compare-body">The app is a tool, not a destination. Re-entry is initiated by the user, not the system. Metric is time-to-done.</p>
+          <ul class="compare-list">
+            <li>Harder to measure on quarterly cycles.</li>
+            <li>Compounds: retained users are the strongest signal.</li>
+            <li>Requires alignment from leadership, not just design.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>10 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 11 · Three-column families ═══════════════════════════════ -->
+  <section class="slide" data-label="11 Method · Three modes">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>11 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">03 — Method</span>
+        <h2 class="title">Three <span class="serif-em">attention modes,</span> three surface types.</h2>
+      </div>
+
+      <div class="cols-3">
+        <div class="compare">
+          <div class="compare-tag">A · Background</div>
+          <h3 class="compare-h">Information you don't read until you need it.</h3>
+          <p class="compare-body">Battery indicator. Sync status. Build state. The user notices only when something changes.</p>
+          <ul class="compare-list">
+            <li>Glanceable in under 200ms.</li>
+            <li>State changes must be ignorable.</li>
+            <li>No interruption budget.</li>
+          </ul>
+        </div>
+        <div class="compare alt">
+          <div class="compare-tag">B · Periphery</div>
+          <h3 class="compare-h">Information you check, but don't dwell on.</h3>
+          <p class="compare-body">A widget. A menubar dropdown. A glance view on the lock screen. The middle ground that most products skip.</p>
+          <ul class="compare-list">
+            <li>Sub-five-second sessions.</li>
+            <li>One primary action, no nesting.</li>
+            <li>Where most of our work lives.</li>
+          </ul>
+        </div>
+        <div class="compare">
+          <div class="compare-tag">C · Centre</div>
+          <h3 class="compare-h">Information you give your full attention.</h3>
+          <p class="compare-body">A document, a video call, an editor. Earned, never assumed. We design to leave it cleanly.</p>
+          <ul class="compare-list">
+            <li>Always has a single exit.</li>
+            <li>No re-entry hooks on close.</li>
+            <li>Hardest to design well.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>11 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 12 · Equation ════════════════════════════════════════════ -->
+  <section class="slide" data-label="12 Method · Cost model">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>12 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">03 — Method</span>
+        <h2 class="title">The <span class="serif-em">attention cost</span> of a feature.</h2>
+        <p class="subtitle">A back-of-envelope model we run during step one. It's deliberately crude — being approximately right beats being precisely wrong.</p>
+      </div>
+
+      <div class="eq-grid">
+        <div class="eq-display">
+          <p class="eq">
+            <span class="var">C</span><sub>f</sub>
+            <span class="op">=</span>
+            <span class="agg">Σ</span><sub>u</sub>
+            &nbsp;
+            <span class="fn">p</span><sub>u</sub>
+            <span class="op">·</span>
+            <span class="var">t</span><sub>u</sub>
+            <span class="op">·</span>
+            (1 <span class="op">−</span> <span class="var">d</span><sub>u</sub>)
+          </p>
+          <p class="eq-cap">total attention cost of feature <em>f</em>, summed over the user base</p>
+        </div>
+        <dl class="eq-vars">
+          <div>
+            <dt>C<sub>f</sub></dt>
+            <dd>Aggregate cost in user-seconds per week. Negative budgets kill the feature.</dd>
+          </div>
+          <div>
+            <dt>p<sub>u</sub></dt>
+            <dd>Probability the feature surfaces to user <em>u</em> in a given week.</dd>
+          </div>
+          <div>
+            <dt>t<sub>u</sub></dt>
+            <dd>Median time-to-dismiss when it does surface — measured in shipped prototypes.</dd>
+          </div>
+          <div>
+            <dt>d<sub>u</sub></dt>
+            <dd>Probability of <em>desired</em> engagement: user genuinely wanted this. From qualitative interviews, not telemetry.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>12 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 13 · Code ════════════════════════════════════════════════ -->
+  <section class="slide" data-label="13 Method · Pseudocode">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>13 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">03 — Method</span>
+        <h2 class="title">The <span class="serif-em">interruption gate,</span> in code.</h2>
+      </div>
+
+      <div class="code-grid">
+        <div class="code-block">
+          <div class="filename"><span>calm/gate.py</span><span>step 03 · build quiet</span></div>
+
+          <div class="line"><span class="ln">1</span><span><span class="cm"># Every notification flows through here.</span></span></div>
+          <div class="line"><span class="ln">2</span><span><span class="cm"># If it cannot defend itself, it does not fire.</span></span></div>
+          <div class="line blank"><span class="ln">3</span><span>&nbsp;</span></div>
+          <div class="line"><span class="ln">4</span><span><span class="kw">def</span> <span class="fn">should_interrupt</span>(event, user, ctx):</span></div>
+          <div class="line"><span class="ln">5</span><span><span class="ind"></span>cost = ctx.<span class="fn">estimate_cost</span>(event, user)</span></div>
+          <div class="line"><span class="ln">6</span><span><span class="ind"></span>value = event.<span class="fn">expected_value</span>(user)</span></div>
+          <div class="line blank"><span class="ln">7</span><span>&nbsp;</span></div>
+          <div class="line"><span class="ln">8</span><span><span class="ind"></span><span class="kw">if</span> user.<span class="fn">in_flow_state</span>():</span></div>
+          <div class="line"><span class="ln">9</span><span><span class="ind"></span><span class="ind"></span><span class="kw">return</span> value <span class="op">&gt;</span> cost <span class="op">*</span> <span class="num">3.0</span>   <span class="cm"># 3× bar</span></span></div>
+          <div class="line"><span class="ln">10</span><span><span class="ind"></span><span class="kw">if</span> ctx.<span class="fn">is_off_hours</span>(user):</span></div>
+          <div class="line"><span class="ln">11</span><span><span class="ind"></span><span class="ind"></span><span class="kw">return</span> value <span class="op">&gt;</span> cost <span class="op">*</span> <span class="num">5.0</span>   <span class="cm"># 5× bar</span></span></div>
+          <div class="line blank"><span class="ln">12</span><span>&nbsp;</span></div>
+          <div class="line"><span class="ln">13</span><span><span class="ind"></span><span class="kw">return</span> value <span class="op">&gt;</span> cost</span></div>
+        </div>
+
+        <div class="code-notes">
+          <div class="code-note">
+            <h4>The default</h4>
+            <p>If <em>value</em> doesn't beat <em>cost</em>, the event silently goes to the periphery instead. It is never lost — it's just not loud.</p>
+          </div>
+          <div class="code-note">
+            <h4>Flow state</h4>
+            <p>Detected from focus-app windows, calendar, and keyboard cadence. We over-index on false positives here on purpose.</p>
+          </div>
+          <div class="code-note">
+            <h4>Off hours</h4>
+            <p>Defined per user, not per timezone. The 5× bar is what kept this team off pager rotation through 2025.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>13 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 14 · Big stat ════════════════════════════════════════════ -->
+  <section class="slide" data-label="14 Results · Headline">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>14 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">04 — What we shipped</span>
+        <h2 class="title">One <span class="serif-em">number</span> from the last six quarters.</h2>
+      </div>
+
+      <div class="stat-row">
+        <p class="big-num">−71<span class="unit">%</span></p>
+        <div class="stat-side">
+          <span class="stat-label">Median weekday notifications</span>
+          <p class="stat-desc">Fewer system-initiated interruptions per user, per weekday — measured on the cohort that opted into the calm defaults at install.</p>
+          <p class="stat-foot">n = 41,208 · install cohort 2024 Q4 → 2026 Q1 · self-reported uninstalls down 22% over same window.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>14 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 15 · Bar chart ═══════════════════════════════════════════ -->
+  <section class="slide" data-label="15 Results · Chart">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>15 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">04 — What we shipped</span>
+        <h2 class="title">Where the <span class="serif-em">drop</span> came from.</h2>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="bar-chart">
+          <div class="bars-row">
+            <div class="bar" style="height: 22%;"><span class="bar-val">−18%</span></div>
+            <div class="bar" style="height: 32%;"><span class="bar-val">−27%</span></div>
+            <div class="bar" style="height: 48%;"><span class="bar-val">−41%</span></div>
+            <div class="bar win" style="height: 88%;"><span class="bar-val">−71%</span></div>
+            <div class="bar" style="height: 56%;"><span class="bar-val">−49%</span></div>
+            <div class="bar" style="height: 38%;"><span class="bar-val">−33%</span></div>
+          </div>
+          <div class="bar-labels">
+            <span class="bar-label">Email</span>
+            <span class="bar-label">Calendar</span>
+            <span class="bar-label">Chat</span>
+            <span class="bar-label">Social</span>
+            <span class="bar-label">News</span>
+            <span class="bar-label">Other</span>
+          </div>
+        </div>
+        <div class="chart-side">
+          <p class="chart-callout-num">−71<em>%</em></p>
+          <p class="chart-callout-lbl">The single biggest reduction came from social — but it's not where we expected to win.</p>
+          <ul>
+            <li>Chat was the hardest to move; defaults were already opt-out.</li>
+            <li>Calendar was the smallest win and the most controversial internally.</li>
+            <li>"Other" hides 26 long-tail integrations we don't break out.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>15 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 16 · Table ═══════════════════════════════════════════════ -->
+  <section class="slide" data-label="16 Results · Table">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>16 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">04 — What we shipped</span>
+        <h2 class="title">Full <span class="serif-em">scoreboard,</span> by surface.</h2>
+      </div>
+
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Surface</th>
+            <th class="num">Baseline / wk</th>
+            <th class="num">Calm / wk</th>
+            <th class="num">Δ</th>
+            <th class="num">Time-to-done</th>
+            <th class="num">Trust score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Email digest</td>
+            <td class="num">42</td>
+            <td class="num">34</td>
+            <td class="num delta-pos">−18%</td>
+            <td class="num">3.1 → 2.4 min</td>
+            <td class="num">+0.4</td>
+          </tr>
+          <tr>
+            <td>Calendar nudges</td>
+            <td class="num">28</td>
+            <td class="num">20</td>
+            <td class="num delta-pos">−27%</td>
+            <td class="num">2.0 → 1.6 min</td>
+            <td class="num">+0.6</td>
+          </tr>
+          <tr>
+            <td>Team chat</td>
+            <td class="num">61</td>
+            <td class="num">36</td>
+            <td class="num delta-pos">−41%</td>
+            <td class="num">4.4 → 3.0 min</td>
+            <td class="num">+0.7</td>
+          </tr>
+          <tr class="best">
+            <td>Social re-entry</td>
+            <td class="num">54</td>
+            <td class="num">16</td>
+            <td class="num delta-pos">−71%</td>
+            <td class="num">n/a</td>
+            <td class="num">+1.3</td>
+          </tr>
+          <tr>
+            <td>News &amp; feeds</td>
+            <td class="num">22</td>
+            <td class="num">11</td>
+            <td class="num delta-pos">−49%</td>
+            <td class="num">n/a</td>
+            <td class="num">+0.5</td>
+          </tr>
+          <tr>
+            <td>Long-tail (26)</td>
+            <td class="num">19</td>
+            <td class="num">13</td>
+            <td class="num delta-pos">−33%</td>
+            <td class="num">—</td>
+            <td class="num">+0.2</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="table-cap">Trust score: 7-point Likert, measured monthly. Best row highlighted. n = 41,208 per cohort.</p>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>16 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 17 · Image-led ═══════════════════════════════════════════ -->
+  <section class="slide" data-label="17 Results · Architecture">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>17 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="image-led">
+        <div>
+          <div class="stack-tight">
+            <span class="eyebrow">04 — What we shipped</span>
+            <h2 class="title">The <span class="serif-em">interruption gate,</span> live.</h2>
+          </div>
+          <p class="body" style="margin-top: 32px;">A single process arbitrates every notification on the device — email, chat, system, third-party. It writes to a public log the user can audit at any time, and to a private one used to tune the cost model nightly.</p>
+          <div class="caption-row">
+            <span class="ref">Figure 1</span>
+            <span>System architecture, v4.1</span>
+            <span>·</span>
+            <span>arbiter + audit log + nightly tuner</span>
+          </div>
+        </div>
+        <div class="image-frame">
+          <image-slot id="arch-figure" shape="rect" placeholder="Drop the architecture diagram here"></image-slot>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>17 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 18 · Image grid ══════════════════════════════════════════ -->
+  <section class="slide" data-label="18 Results · Qualitative">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>18 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">04 — What we shipped</span>
+        <h2 class="title">Six <span class="serif-em">screens,</span> in the wild.</h2>
+      </div>
+
+      <div class="img-grid">
+        <div class="img-tile">
+          <div class="img-tile-frame"><image-slot id="qg-1" shape="rect" placeholder="Screen 01 — default state, quiet"></image-slot></div>
+          <div class="img-tile-cap"><span>01</span><span class="pos">default · quiet</span></div>
+        </div>
+        <div class="img-tile">
+          <div class="img-tile-frame"><image-slot id="qg-2" shape="rect" placeholder="Screen 02 — menubar glance"></image-slot></div>
+          <div class="img-tile-cap"><span>02</span><span class="pos">periphery</span></div>
+        </div>
+        <div class="img-tile">
+          <div class="img-tile-frame"><image-slot id="qg-3" shape="rect" placeholder="Screen 03 — audit log"></image-slot></div>
+          <div class="img-tile-cap"><span>03</span><span class="pos">audit</span></div>
+        </div>
+        <div class="img-tile">
+          <div class="img-tile-frame"><image-slot id="qg-4" shape="rect" placeholder="Screen 04 — interruption (allowed)"></image-slot></div>
+          <div class="img-tile-cap"><span>04</span><span class="pos">earned</span></div>
+        </div>
+        <div class="img-tile">
+          <div class="img-tile-frame"><image-slot id="qg-5" shape="rect" placeholder="Screen 05 — failure case (false positive)"></image-slot></div>
+          <div class="img-tile-cap"><span>05</span><span>missed</span></div>
+        </div>
+        <div class="img-tile">
+          <div class="img-tile-frame"><image-slot id="qg-6" shape="rect" placeholder="Screen 06 — settings (deliberately sparse)"></image-slot></div>
+          <div class="img-tile-cap"><span>06</span><span>settings</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>18 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 19 · Contributions ═══════════════════════════════════════ -->
+  <section class="slide" data-label="19 Contributions">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>19 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">05 — Takeaways</span>
+        <h2 class="title">Three things to <span class="serif-em">take home.</span></h2>
+      </div>
+
+      <ol class="claims">
+        <li>
+          <p class="idx">i.</p>
+          <h3 class="claim-h">The <em>cost model</em> matters more than the policy.</h3>
+          <p class="claim-d">Once you can put a number on what an interruption costs, the policy is downstream. Most teams skip straight to policy and argue forever.</p>
+          <div class="claim-tag">Section 03</div>
+        </li>
+        <li>
+          <p class="idx">ii.</p>
+          <h3 class="claim-h">The <em>periphery</em> is underbuilt almost everywhere.</h3>
+          <p class="claim-d">Most product teams design centre-stage screens and lock screens; the middle layer is left to platform defaults. That's where the wins live.</p>
+          <div class="claim-tag">Section 03</div>
+        </li>
+        <li>
+          <p class="idx">iii.</p>
+          <h3 class="claim-h">A <em>public graveyard</em> beats a private backlog.</h3>
+          <p class="claim-d">Shipping a list of killed features changed how the team made calls upstream. Hard to measure, but everyone who has done this says the same thing.</p>
+          <div class="claim-tag">Section 04</div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>19 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 20 · Limitations ═════════════════════════════════════════ -->
+  <section class="slide" data-label="20 What I got wrong">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>20 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">05 — What I got wrong</span>
+        <h2 class="title">Three calls I'd <span class="serif-em">undo</span> if I could.</h2>
+        <p class="subtitle">Each one is a real bug in the model above — not nice-to-haves.</p>
+      </div>
+
+      <ul class="limits">
+        <li>
+          <span class="lim-sign">i.</span>
+          <div>
+            <p class="lim-h">We measured cost; we never measured <em>regret.</em></p>
+            <p class="lim-d">A missed notification has a cost too. Our model only captured one side of the ledger for the first 18 months.</p>
+          </div>
+          <div class="lim-fix"><b>Fix shipped</b>v4.1 adds a counterfactual "what if we had fired this" path.</div>
+        </li>
+        <li>
+          <span class="lim-sign">ii.</span>
+          <div>
+            <p class="lim-h">"Off hours" was tuned per <em>user,</em> not per <em>role.</em></p>
+            <p class="lim-d">On-call engineers wanted the loud defaults back at 3am. We learned this the hard way.</p>
+          </div>
+          <div class="lim-fix"><b>Fix in v5</b>Role-aware overrides land in Q3 2026; opt-in per team.</div>
+        </li>
+        <li>
+          <span class="lim-sign">iii.</span>
+          <div>
+            <p class="lim-h">We over-trusted <em>self-reported</em> trust scores.</p>
+            <p class="lim-d">Users who liked the defaults rated them high; users who quietly turned them off rated them low and then left. We didn't separate the cohorts for nine months.</p>
+          </div>
+          <div class="lim-fix"><b>Open</b>Currently rebuilding the survey from scratch with an external team.</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>20 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 21 · Timeline ════════════════════════════════════════════ -->
+  <section class="slide" data-label="21 What's next">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>21 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">06 — What's next</span>
+        <h2 class="title">The next <span class="serif-em">six</span> months.</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-col">
+          <span class="tl-month">May 2026</span>
+          <span class="tl-pill">Today</span>
+          <p class="tl-note">This talk. v4.1 is in production for ~80% of the cohort.</p>
+        </div>
+        <div class="tl-col alt">
+          <span class="tl-month">Jun</span>
+          <span class="tl-pill alt">In flight</span>
+          <p class="tl-note">Counterfactual <em>regret</em> path enters beta. Externally audited.</p>
+        </div>
+        <div class="tl-col">
+          <span class="tl-month">Jul</span>
+          <span class="tl-pill">Planned</span>
+          <p class="tl-note">Role-aware overrides — opt-in per team, not per device.</p>
+        </div>
+        <div class="tl-col alt">
+          <span class="tl-month">Sep</span>
+          <span class="tl-pill alt">v5</span>
+          <p class="tl-note">Full v5 release. New trust survey, written with external team.</p>
+        </div>
+        <div class="tl-col">
+          <span class="tl-month">Oct</span>
+          <span class="tl-pill">Open</span>
+          <p class="tl-note">Cost-model SDK released under permissive licence.</p>
+        </div>
+        <div class="tl-col alt">
+          <span class="tl-month">Dec</span>
+          <span class="tl-pill alt">If we're lucky</span>
+          <p class="tl-note">First external team ships a product on the SDK. We <em>celebrate.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>21 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 22 · References ═════════════════════════════════════════ -->
+  <section class="slide" data-label="22 References">
+    <div class="chrome-top">
+      <span class="brand"><span class="mark">K</span>KEYNOTE · SPRING 2026</span>
+      <span>22 / 23</span>
+    </div>
+
+    <div class="content">
+      <div class="stack-tight">
+        <span class="eyebrow">References</span>
+        <h2 class="title">Where this <span class="serif-em">comes from.</span></h2>
+      </div>
+
+      <ol class="refs">
+        <li>
+          <span class="ref-idx">i.</span>
+          <div>
+            <div class="ref-authors">Weiser, M.</div>
+            <div class="ref-venue">The Computer for the 21st Century</div>
+            <div class="ref-doi">Scientific American · 1991</div>
+          </div>
+        </li>
+        <li>
+          <span class="ref-idx">ii.</span>
+          <div>
+            <div class="ref-authors">Weiser, M. &amp; Brown, J. S.</div>
+            <div class="ref-venue">The Coming Age of Calm Technology</div>
+            <div class="ref-doi">Xerox PARC · 1995</div>
+          </div>
+        </li>
+        <li>
+          <span class="ref-idx">iii.</span>
+          <div>
+            <div class="ref-authors">Case, A.</div>
+            <div class="ref-venue">Calm Technology — principles and patterns</div>
+            <div class="ref-doi">O'Reilly · 2015</div>
+          </div>
+        </li>
+        <li>
+          <span class="ref-idx">iv.</span>
+          <div>
+            <div class="ref-authors">Mark, G., et al.</div>
+            <div class="ref-venue">The cost of interrupted work</div>
+            <div class="ref-doi">CHI · 2008</div>
+          </div>
+        </li>
+        <li>
+          <span class="ref-idx">v.</span>
+          <div>
+            <div class="ref-authors">European Commission</div>
+            <div class="ref-venue">Digital Fairness Act — draft</div>
+            <div class="ref-doi">COM(2026) 119 · April 2026</div>
+          </div>
+        </li>
+        <li>
+          <span class="ref-idx">vi.</span>
+          <div>
+            <div class="ref-authors">Internal team</div>
+            <div class="ref-venue">Cost-model technical report, v4.1</div>
+            <div class="ref-doi">internal · 2026</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="chrome-bot">
+      <span>Your Name</span>
+      <span>22 / 23</span>
+    </div>
+  </section>
+
+  <!-- ═══ 23 · Q&A ════════════════════════════════════════════════ -->
+  <section class="slide qa" data-label="23 Q&amp;A">
+    <div class="qa-top">
+      <span class="brand">KEYNOTE · SPRING 2026</span>
+      <span>23 / 23</span>
+    </div>
+
+    <div class="qa-mid">
+      <span class="qa-eye">Thank you</span>
+      <h2 class="qa-h">Questions <span class="serif-em">&amp; arguments.</span></h2>
+      <p class="qa-sub">Reach out — I'd rather lose an argument by email this week than win one on stage in three minutes.</p>
+    </div>
+
+    <dl class="qa-bot">
+      <div>
+        <dt>Email</dt>
+        <dd><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b42544e7b5e435a564b575e15585456">[email&#160;protected]</a></dd>
+      </div>
+      <div>
+        <dt>Slides</dt>
+        <dd>example.com/calm26</dd>
+      </div>
+      <div>
+        <dt>Hashtag</dt>
+        <dd>#calmsoftware26</dd>
+      </div>
+    </dl>
+  </section>
+
+</deck-stage>
+
+<!-- Scripts -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="deck-stage.js"></script>
+<script src="image-slot.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<div id="tweaks-mount"></div>
+
+<script type="text/babel">
+  const KEYNOTE_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "#ff5836",
+    "paper": false,
+    "density": "regular",
+    "footer": true,
+    "italics": true
+  }/*EDITMODE-END*/;
+
+  function KeynoteTweaksApp() {
+    const [t, setTweak] = useTweaks(KEYNOTE_TWEAK_DEFAULTS);
+
+    React.useEffect(() => {
+      const r = document.documentElement.style;
+      r.setProperty('--accent', t.accent);
+      // Derive a slightly deeper variant
+      const hex = t.accent.replace('#','');
+      const num = parseInt(hex, 16);
+      const dr = Math.max(0, ((num >> 16) & 255) * 0.78) | 0;
+      const dg = Math.max(0, ((num >> 8) & 255) * 0.78) | 0;
+      const db = Math.max(0, (num & 255) * 0.78) | 0;
+      r.setProperty('--accent-d', '#' + ((1 << 24) | (dr << 16) | (dg << 8) | db).toString(16).slice(1));
+
+      const cls = document.body.classList;
+      cls.toggle('paper', !!t.paper);
+      cls.remove('compact', 'spacious');
+      if (t.density === 'compact')  cls.add('compact');
+      if (t.density === 'spacious') cls.add('spacious');
+      cls.toggle('no-footer', !t.footer);
+      cls.toggle('no-italics', !t.italics);
+    }, [t]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Brand" />
+        <TweakColor
+          label="Accent"
+          value={t.accent}
+          options={['#ff5836', '#e4a51a', '#3fa978', '#5a7cff', '#c33fb2']}
+          onChange={(v) => setTweak('accent', v)}
+        />
+        <TweakToggle
+          label="Paper mode"
+          value={t.paper}
+          onChange={(v) => setTweak('paper', v)}
+        />
+
+        <TweakSection label="Layout" />
+        <TweakRadio
+          label="Density"
+          value={t.density}
+          options={[
+            { value: 'compact',  label: 'Compact' },
+            { value: 'regular',  label: 'Regular' },
+            { value: 'spacious', label: 'Spacious' },
+          ]}
+          onChange={(v) => setTweak('density', v)}
+        />
+        <TweakToggle
+          label="Show footer"
+          value={t.footer}
+          onChange={(v) => setTweak('footer', v)}
+        />
+
+        <TweakSection label="Detail" />
+        <TweakToggle
+          label="Italic emphasis"
+          value={t.italics}
+          onChange={(v) => setTweak('italics', v)}
+        />
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-mount')).render(<KeynoteTweaksApp />);
+</script>
+
+</body>
+</html>

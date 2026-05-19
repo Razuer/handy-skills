@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Package manager logs and caches
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+.pnpm-store/
+.yarn/
+
+# Environment and local editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+*.swp
+*.swo
+
+# Test and browser artifacts
+coverage/
+test-results/
+playwright-report/
+blob-report/
+
+# Presentation-builder generated deck output
+prezentacja/
+deck.normalized.json
+slide-shots/
+overflow-shots/
+contact-sheet.png

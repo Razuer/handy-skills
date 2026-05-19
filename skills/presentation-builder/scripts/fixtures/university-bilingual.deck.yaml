@@ -1,0 +1,76 @@
+schemaVersion: 1
+template: university
+metadata:
+  title:
+    en: "Bilingual University Deck"
+    pl: "Dwujęzyczna prezentacja uczelniana"
+  speaker:
+    en: "Dr Ada Presenter"
+    pl: "Dr Ada Presenter"
+  date:
+    en: "19 May 2026"
+    pl: "19 maja 2026"
+  unit:
+    en: "Wrocław University of Science and Technology"
+    pl: "Politechnika Wrocławska"
+  language:
+    default: en
+    available: [en, pl]
+theme:
+  partners: false
+  density: normal
+slides:
+  - id: cover
+    pattern: cover
+    title:
+      en: "Bilingual University Deck"
+      pl: "Dwujęzyczna prezentacja uczelniana"
+    subtitle:
+      en: "Generator fixture"
+      pl: "Przykład generatora"
+    fields:
+      Speaker:
+        en: "Dr Ada Presenter"
+        pl: "Dr Ada Presenter"
+      Date:
+        en: "19 May 2026"
+        pl: "19 maja 2026"
+    notes: "Open in English and mention language toggle."
+    script:
+      cue: "[confirm language]"
+      text:
+        en: "Welcome to this bilingual university deck fixture."
+        pl: "Witam w dwujęzycznej prezentacji uczelnianej."
+      transition:
+        en: "We will move to the agenda."
+        pl: "Przejdziemy teraz do planu."
+  - id: agenda
+    pattern: agenda
+    title:
+      en: "Agenda"
+      pl: "Plan"
+    items:
+      - en: "Context"
+        pl: "Kontekst"
+      - en: "Method"
+        pl: "Metoda"
+      - en: "Discussion"
+        pl: "Dyskusja"
+    notes: "Keep this slide brief."
+    script:
+      text:
+        en: "The agenda has three parts: context, method, and discussion."
+        pl: "Plan ma trzy części: kontekst, metodę i dyskusję."
+      transition:
+        en: "First, context."
+        pl: "Najpierw kontekst."
+  - id: qa
+    pattern: qa
+    title:
+      en: "Questions"
+      pl: "Pytania"
+    notes: "Invite bilingual questions."
+    script:
+      text:
+        en: "Thank you. Questions are welcome in English or Polish."
+        pl: "Dziękuję. Zapraszam do pytań po angielsku lub po polsku."

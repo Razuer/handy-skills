@@ -1,0 +1,530 @@
+schemaVersion: 1
+template: seminar
+metadata:
+  title: "Graph Neural Networks for Molecular Property Prediction"
+  subtitle: "A survey of message-passing architectures and their performance on the MoleculeNet benchmark suite."
+  speaker: "Your Name"
+  date: "17 May 2026"
+  footer: "Your Name · WS 2026/27"
+  language:
+    default: en
+    available: [en]
+theme:
+  density: compact
+  titleStyle: action
+  accent: "#3756f5"
+  footer: true
+slides:
+  - id: cover
+    pattern: cover
+    label: "SEMINAR · WS 2026/27"
+    context: "CS 7340 · Machine Learning Reading Group"
+    eyebrow: "Student Seminar"
+    title: "Graph Neural Networks for Molecular Property Prediction"
+    subtitle: "A survey of message-passing architectures and their performance on the MoleculeNet benchmark suite."
+    fields:
+      Speaker: "Your Name"
+      Date: "17 May 2026"
+      Advisor: "Prof. A. Example"
+      Duration: "30 min · 5 min Q&A"
+    notes: "Cover. Introduce yourself, topic, course."
+    script:
+      cue: "[settle, then begin]"
+      text: "Today I will show how graph neural networks turn molecular structure into useful property predictions."
+      transition: "First, here is the map of the talk."
+  - id: agenda
+    pattern: agenda
+    eyebrow: "Outline"
+    title: "Agenda"
+    actionTitle: "Six sections, thirty minutes"
+    items:
+      - title: "Background"
+        meta: "5 min"
+      - title: "Method"
+        meta: "10 min"
+      - title: "Results"
+        meta: "7 min"
+      - title: "Discussion"
+        meta: "5 min"
+      - title: "Backup"
+        meta: "as needed"
+    notes: "Agenda. Walk through the sections and time budget."
+    script:
+      text: "The talk moves from motivation, to message passing, to results and limitations."
+      transition: "We need one shared definition before the details."
+  - id: definition
+    pattern: definition
+    eyebrow: "Background"
+    title: "What is a graph neural network?"
+    actionTitle: "GNNs update nodes by exchanging messages"
+    tag: "Definition"
+    term: "Graph Neural Network"
+    notation: "G = (V, E), &nbsp; h<sub>v</sub><sup>(k)</sup>"
+    body: "A GNN computes representations for nodes, edges, or whole graphs by repeatedly aggregating information over graph neighborhoods."
+    sideTitle: "For molecules"
+    items:
+      - title: "Atoms"
+        body: "nodes with typed features"
+      - title: "Bonds"
+        body: "edges with chemistry labels"
+      - title: "Readout"
+        body: "graph vector for a property"
+    notes: "Definition. Frame what a GNN is in one breath before any math."
+    script:
+      text: "In this deck, a molecule is a graph: atoms are nodes and bonds are edges. The network updates atom states by passing messages along bonds."
+      transition: "That framing matters because tabular models lose structure."
+  - id: section-background
+    pattern: section-divider
+    number: "01"
+    title: "Background"
+    subtitle: "Why molecular structure is awkward for fixed-length tabular models."
+    meta: "Section 01 of 25"
+    duration: "5 min"
+    notes: "Section divider — Background."
+    script:
+      cue: "[short pause]"
+      text: "The first section explains why molecular graphs are worth the trouble."
+      transition: "Here is the modeling problem."
+  - id: background-problem
+    pattern: bullets
+    eyebrow: "Background · Problem"
+    title: "Molecules are small, irregular graphs"
+    actionTitle: "The data shape breaks simple feature tables"
+    items:
+      - title: "Variable topology"
+        body: "Different atom counts and bond patterns per molecule."
+      - title: "Permutation symmetry"
+        body: "Renumbering atoms must not change the prediction."
+      - title: "Local chemistry"
+        body: "Functional groups depend on neighborhood context."
+      - title: "Sparse labels"
+        body: "Assays are expensive and noisy."
+    notes: "Background. Three structural reasons standard models fail on molecules."
+    script:
+      text: "The core issue is not only nonlinearity. The input itself is irregular, symmetric, and structured around local chemistry."
+      transition: "This motivation is often summarized by a simple quote."
+  - id: motivation-quote
+    pattern: quote
+    quote: "The graph is the molecule; the descriptor is only a lossy summary."
+    author: "Seminar framing"
+    source: "adapted from molecular ML practice"
+    year: "2026"
+    notes: "Motivation quote. Read slowly and connect it to the contribution."
+    script:
+      cue: "[read slowly]"
+      text: "If the graph is the molecule, then our model should respect graph structure instead of compressing everything into a hand-built descriptor first."
+      transition: "The domain context keeps the computation manageable."
+  - id: domain-context
+    pattern: full-bleed
+    eyebrow: "Background · Domain context"
+    title: "Drug-like molecules live in a regime where GNNs are tractable."
+    subtitle: "Most benchmark molecules have tens of atoms, not millions of nodes."
+    image:
+      slotId: "bleed-context"
+      placeholder: "Drop a domain photo here (lab, molecules, scaling)"
+    credit: "Image slot: domain context"
+    notes: "Domain context. Where this work sits — drug-like molecules up to about 50 atoms."
+    script:
+      text: "Unlike web-scale graphs, molecular graphs are small. That makes message passing practical and lets us focus on chemistry rather than distributed graph systems."
+      transition: "Now we can move from background to method."
+  - id: section-method
+    pattern: section-divider
+    number: "02"
+    title: "Method"
+    subtitle: "Represent molecules as graphs, pass messages, pool, and predict."
+    meta: "Section 02 of 25"
+    duration: "10 min"
+    notes: "Section divider — Method."
+    script:
+      cue: "[advance deliberately]"
+      text: "The method section walks through the mechanics of a typical molecular GNN."
+      transition: "Start with the end-to-end pipeline."
+  - id: method-pipeline
+    pattern: pipeline
+    eyebrow: "Method · Pipeline"
+    title: "The molecular GNN workflow has five stages"
+    actionTitle: "Convert chemistry into messages, then into a property"
+    steps:
+      - title: "Parse"
+        body: "SMILES to atom-bond graph."
+        tag: "RDKit"
+      - title: "Featurize"
+        body: "Atom and bond attributes."
+        tag: "x, e"
+      - title: "Message pass"
+        body: "Update local states."
+        tag: "K layers"
+      - title: "Readout"
+        body: "Pool to graph vector."
+        tag: "sum/mean"
+      - title: "Predict"
+        body: "Property head and loss."
+        tag: "ROC-AUC"
+    notes: "Pipeline. Walk left to right, about 15 seconds per step."
+    script:
+      text: "The pipeline is simple at a high level: parse, featurize, exchange messages, pool node states, and predict the molecular property."
+      transition: "The difference from fingerprints is where structure enters."
+  - id: method-comparison
+    pattern: comparison
+    eyebrow: "Method · Comparison"
+    title: "Fingerprint baselines are strong but fixed"
+    actionTitle: "Fingerprints encode structure; GNNs learn it"
+    items:
+      - tag: "A · Morgan fingerprint"
+        title: "Hand-coded neighborhoods"
+        body: "Hashes local substructures into a fixed vector."
+        points:
+          - "fast and robust"
+          - "limited task adaptation"
+      - tag: "B · Graph neural network"
+        title: "Learned message passing"
+        body: "Learns the neighborhood function from labels."
+        points:
+          - "task-specific features"
+          - "needs regularization"
+    notes: "Two-column comparison. Lead with the structural difference that matters."
+    script:
+      text: "Fingerprints are excellent baselines, but they decide the representation before seeing the task. GNNs learn the representation jointly with the objective."
+      transition: "Within GNNs, there are several model families."
+  - id: method-families
+    pattern: comparison-3col
+    eyebrow: "Method · Three families"
+    title: "Most molecular GNNs fall into three families"
+    actionTitle: "Spatial message passing is the default molecular choice"
+    items:
+      - tag: "Spectral"
+        title: "Graph convolutions"
+        body: "Filters defined through graph operators."
+        points: ["elegant theory", "less common in molecules"]
+      - tag: "Spatial"
+        title: "MPNN / GINE"
+        body: "Local aggregation over bonds."
+        points: ["chemistry-aligned", "strong baseline"]
+      - tag: "Attention"
+        title: "GAT / transformers"
+        body: "Weights neighbors or global tokens."
+        points: ["flexible", "more expensive"]
+    notes: "Three families. Spectral, spatial, attention — the deck lives in spatial."
+    script:
+      text: "For molecular property prediction, spatial message passing is usually the practical center of gravity."
+      transition: "The update rule makes that concrete."
+  - id: update-rule
+    pattern: equation
+    eyebrow: "Method · Update rule"
+    title: "Message passing is a repeated local update"
+    actionTitle: "Aggregation must be permutation invariant"
+    fitFooter: true
+    equation: "h<sub>v</sub><sup>(k+1)</sup> = \u03C6\u00A0(h<sub>v</sub><sup>(k)</sup>,\u00A0\u25A1<sub>u\u2208N(v)</sub>\u00A0\u03C8(h<sub>v</sub><sup>(k)</sup>, h<sub>u</sub><sup>(k)</sup>, e<sub>uv</sub>))"
+    caption: "□ is typically sum, mean, or attention-weighted aggregation."
+    variables:
+      - symbol: "h_v"
+        desc: "node state for atom v"
+      - symbol: "e_uv"
+        desc: "bond features between atoms"
+      - symbol: "φ, ψ"
+        desc: "learned neural updates"
+    notes: "Equation. Read it left-to-right and point at the invariant aggregation."
+    script:
+      text: "Each layer updates an atom by combining its current state with messages from neighboring atoms. The aggregation operator is the symmetry-preserving part."
+      transition: "In code, this is only a small loop."
+  - id: pseudocode
+    pattern: code
+    eyebrow: "Method · Pseudocode"
+    title: "A minimal training step fits on one slide"
+    actionTitle: "The model interface is graph in, property out"
+    filename: "train_step.py"
+    language: "python"
+    code: |
+      for batch in loader:
+          graph, y = batch.graph, batch.y
+          pred = model(graph.x, graph.edge_index, graph.edge_attr)
+          loss = criterion(pred, y)
+          loss.backward()
+          optimizer.step()
+          optimizer.zero_grad()
+    items:
+      - title: "Batch object"
+        body: "packs many small molecules"
+      - title: "Edge index"
+        body: "stores sparse graph connectivity"
+      - title: "Readout head"
+        body: "returns one prediction per graph"
+    notes: "Pseudocode. Do not read line by line; point at the three notes."
+    script:
+      text: "Most frameworks hide graph batching. The important point is that the forward pass receives node features, edges, and bond features together."
+      transition: "Now we can summarize the headline result."
+  - id: headline-stat
+    pattern: big-number
+    eyebrow: "Results · Headline"
+    title: "GNNs improve the average score"
+    actionTitle: "The average gain is meaningful but uneven"
+    value: "+4.2"
+    unit: "pp"
+    label: "Mean ROC-AUC improvement"
+    body: "Average improvement of the best GNN variant over the fingerprint baseline across the MoleculeNet classification suite."
+    footnote: "Illustrative fixture numbers mirror the original template scale."
+    notes: "Headline stat. Say what it means and what it does not mean."
+    script:
+      text: "The headline is a roughly four point average improvement, but the average hides large dataset-to-dataset variation."
+      transition: "The chart shows where the gains concentrate."
+  - id: per-dataset-chart
+    pattern: bar-chart
+    eyebrow: "Results · Per-dataset chart"
+    title: "The largest gains appear on toxicity tasks"
+    actionTitle: "ClinTox improves most; SIDER remains hard"
+    fitFooter: true
+    bars:
+      - label: "BBBP"
+        value: "+3.1"
+        height: 54
+      - label: "Tox21"
+        value: "+4.7"
+        height: 66
+      - label: "ClinTox"
+        value: "+8.4"
+        height: 88
+        win: true
+      - label: "BACE"
+        value: "+2.8"
+        height: 48
+      - label: "SIDER"
+        value: "-0.9"
+        height: 28
+    calloutValue: "+8.4 pp"
+    callout: "largest fixture gain"
+    chartNotes:
+      - "Bars show best GNN minus fingerprint baseline."
+      - "Negative values flag datasets needing error analysis."
+    notes: "Chart. ClinTox is the biggest win; SIDER is the stubborn loss."
+    script:
+      text: "ClinTox is the strongest win in this fixture, while SIDER reminds us that graph structure is not magic."
+      transition: "The table gives a more complete view."
+  - id: results-table
+    pattern: table
+    eyebrow: "Results · Table"
+    title: "Full results table keeps the comparison honest"
+    actionTitle: "Highlight the best row, not every number"
+    columns:
+      - id: "model"
+        label: "Model"
+      - id: "bbbp"
+        label: "BBBP"
+        numeric: true
+        align: right
+      - id: "tox21"
+        label: "Tox21"
+        numeric: true
+        align: right
+      - id: "clintox"
+        label: "ClinTox"
+        numeric: true
+        align: right
+      - id: "bace"
+        label: "BACE"
+        numeric: true
+        align: right
+      - id: "mean"
+        label: "Mean"
+        numeric: true
+        align: right
+    rows:
+      - {model: "Morgan + RF", bbbp: 70.1, tox21: 74.0, clintox: 81.2, bace: 78.8, mean: 76.0}
+      - {model: "GCN", bbbp: 71.8, tox21: 76.3, clintox: 84.6, bace: 80.0, mean: 78.2}
+      - {model: "GINE", bbbp: 73.2, tox21: 78.7, clintox: 89.6, bace: 81.6, mean: 80.8, best: true}
+      - {model: "GraphGPS", bbbp: 72.5, tox21: 78.1, clintox: 87.3, bace: 82.0, mean: 80.0}
+    caption: "Fixture values are compact but include numeric columns and row.best highlighting."
+    notes: "Full results table. Point at one row, not all of them. Highlighted equals best."
+    script:
+      text: "This table is mainly here to exercise alignment and highlighting. In a real talk I would point to the best row and one exception."
+      transition: "An architecture diagram helps explain the best row."
+  - id: architecture
+    pattern: image-led
+    eyebrow: "Results · Architecture"
+    title: "The architecture is intentionally small"
+    actionTitle: "Most capacity sits in message-passing blocks"
+    fitFooter: true
+    items:
+      - title: "Atom encoder"
+        body: "maps categorical features"
+      - title: "GINE blocks"
+        body: "combine bond-aware messages"
+      - title: "Global pooling"
+        body: "produces graph embedding"
+    image:
+      slotId: "fig-architecture"
+      placeholder: "Drop your architecture diagram here"
+    caption: "Architecture image slot with supporting bullets."
+    notes: "Architecture figure. Walk through data flow."
+    script:
+      text: "The image slot is for the architecture diagram. The core flow is atom encoding, bond-aware message passing, pooling, and a small prediction head."
+      transition: "Qualitative examples keep the numbers grounded."
+  - id: qualitative-grid
+    pattern: image-grid
+    eyebrow: "Results · Qualitative"
+    title: "Qualitative samples expose success and failure modes"
+    actionTitle: "Six molecule slots support side-by-side inspection"
+    fitFooter: true
+    images:
+      - slotId: "qual-1"
+        placeholder: "Sample 1"
+        caption: "Aspirin"
+        meta: "TP"
+      - slotId: "qual-2"
+        placeholder: "Sample 2"
+        caption: "Caffeine"
+        meta: "TP"
+      - slotId: "qual-3"
+        placeholder: "Sample 3"
+        caption: "Sucrose"
+        meta: "FN"
+      - slotId: "qual-4"
+        placeholder: "Sample 4"
+        caption: "Ibuprofen"
+        meta: "TP"
+      - slotId: "qual-5"
+        placeholder: "Sample 5"
+        caption: "Insulin fragment"
+        meta: "FP"
+      - slotId: "qual-6"
+        placeholder: "Sample 6"
+        caption: "Benzene"
+        meta: "TN"
+    notes: "Qualitative samples. Two failures keep this honest."
+    script:
+      text: "The six image slots mirror the original template and show how qualitative inspection can surface systematic false positives and false negatives."
+      transition: "From here, we can state the contributions."
+  - id: contributions
+    pattern: contributions
+    eyebrow: "Discussion · Contributions"
+    title: "The study contributes three practical claims"
+    actionTitle: "The claims are empirical, not theoretical"
+    fitFooter: true
+    items:
+      - title: "Representation"
+        body: "Graph structure improves several molecular tasks over fixed fingerprints."
+        tag: "Claim 1"
+      - title: "Ablation"
+        body: "Bond features and pooling choice explain much of the gap."
+        tag: "Claim 2"
+      - title: "Protocol"
+        body: "Small, repeated splits are required for stable conclusions."
+        tag: "Claim 3"
+    notes: "Contributions. Three claims, each tied to an ablation section."
+    script:
+      text: "The contribution is best framed as three practical claims about representation, ablation, and evaluation protocol."
+      transition: "The limitations are just as important."
+  - id: limitations
+    pattern: limitations
+    eyebrow: "Discussion · Limitations"
+    title: "Limitations shape how to read the results"
+    actionTitle: "The model helps, but the benchmark remains narrow"
+    items:
+      - title: "Small labels"
+        body: "Some assays contain only hundreds of positives."
+        fix: "Report variance and use repeated splits."
+      - title: "Scaffold shift"
+        body: "Random splits overstate chemical generalization."
+        fix: "Add scaffold splits."
+      - title: "Interpretability"
+        body: "Attention weights are not explanations."
+        fix: "Validate with perturbation tests."
+    notes: "Limitations. Be honest and show mitigation for each one."
+    script:
+      text: "These limitations are not footnotes. They directly affect how much confidence we should place in a reported benchmark win."
+      transition: "The timeline turns this into a project plan."
+  - id: timeline
+    pattern: timeline
+    eyebrow: "Plan · Timeline"
+    title: "The project plan has four milestones"
+    actionTitle: "Reproduce first, extend second"
+    items:
+      - date: "Week 1"
+        title: "Reproduce"
+        body: "Run RF and GNN baselines on MoleculeNet."
+      - date: "Week 2"
+        title: "Ablate"
+        body: "Test bonds, pooling, depth, and splits."
+      - date: "Week 3"
+        title: "Analyze"
+        body: "Inspect failures and scaffold shifts."
+      - date: "Week 4"
+        title: "Write"
+        body: "Prepare report, appendix, and code release."
+    notes: "Schedule. Where we are now and what comes next."
+    script:
+      text: "The safe project plan is reproduction first, then ablation, then error analysis, and only then a polished report."
+      transition: "Before closing, acknowledge the support."
+  - id: acknowledgements
+    pattern: acknowledgements
+    eyebrow: "Acknowledgements"
+    title: "This work relies on people and infrastructure"
+    actionTitle: "Acknowledge names, not every detail"
+    groups:
+      - title: "Advising"
+        items:
+          - name: "Prof. A. Example"
+            role: "seminar advisor"
+          - name: "Dr. B. Reviewer"
+            role: "feedback"
+      - title: "Community"
+        items:
+          - name: "GNN Reading Group"
+            role: "discussion"
+          - name: "Open-source maintainers"
+            role: "PyG, RDKit"
+      - title: "Support"
+        items:
+          - name: "Compute cluster"
+            grant: "GPU hours"
+    notes: "Acknowledgements. Read the names; do not read grant numbers."
+    script:
+      text: "The main acknowledgements are the advisor, reviewers, reading group, and the open-source tools behind the experiments."
+      transition: "The references anchor the claims."
+  - id: references
+    pattern: references
+    eyebrow: "References"
+    title: "References"
+    actionTitle: "Keep the source trail visible"
+    items:
+      - authors: "Gilmer et al."
+        venue: "Neural message passing for quantum chemistry. ICML, 2017."
+      - authors: "Wu et al."
+        venue: "MoleculeNet: a benchmark for molecular machine learning. Chem. Sci., 2018."
+      - authors: "Xu et al."
+        venue: "How powerful are graph neural networks? ICLR, 2019."
+      - authors: "Hu et al."
+        venue: "Strategies for pre-training graph neural networks. ICLR, 2020."
+      - authors: "Veličković et al."
+        venue: "Graph attention networks. ICLR, 2018."
+      - authors: "Dwivedi et al."
+        venue: "Benchmarking graph neural networks. JMLR, 2023."
+    notes: "References. Acknowledge; do not read aloud."
+    script:
+      text: "These are the main references behind the benchmark, message passing formulation, and model families."
+      transition: "That brings us to questions."
+  - id: qa
+    pattern: qa
+    eyebrow: "Thank you"
+    title: "Q&A"
+    subtitle: "What would you test next?"
+    context: "End of talk"
+    fields:
+      Contact: "your.name@example.edu"
+      Slides: "github.com/example/gnn-seminar"
+      Code: "reproducible fixture"
+    notes: "Q&A. Thank the audience, repeat the contact line, invite questions."
+    script:
+      cue: "[smile]"
+      text: "Thank you for listening. I am happy to take questions about the methods, the results, or the generator fixture itself."
+      transition: "If needed, the next slide opens the appendix."
+  - id: appendix
+    pattern: appendix-divider
+    number: "A"
+    title: "Appendix"
+    subtitle: "Detailed hyperparameters and extra figures live in backup."
+    meta: "Backup"
+    duration: "25 / 25"
+    notes: "Appendix divider. Only navigate here if asked."
+    script:
+      text: "The appendix is available for backup questions about hyperparameters, extra tables, and additional examples."
+      transition: "End of fixture."

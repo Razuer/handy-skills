@@ -1,0 +1,44 @@
+schemaVersion: 1
+template: seminar
+metadata:
+  title: "Minimal Seminar Deck"
+  speaker: "Ada Presenter"
+  date: "19 May 2026"
+  footer: "Ada Presenter · 19 May 2026"
+  language:
+    default: en
+    available: [en]
+theme:
+  density: normal
+  footer: true
+slides:
+  - id: cover
+    pattern: cover
+    title: "Minimal Seminar Deck"
+    subtitle: "Generator smoke fixture"
+    fields:
+      Speaker: "Ada Presenter"
+      Date: "19 May 2026"
+    notes: "Introduce the topic and expected flow."
+    script:
+      cue: "[smile]"
+      text: "Welcome to this short generated deck."
+      transition: "Next, we check a content slide."
+  - id: key-points
+    pattern: bullets
+    title: "Key points"
+    items:
+      - title: "Source of truth"
+        body: "The YAML file drives rendered outputs."
+      - title: "Validation first"
+        body: "Structure errors fail before rendering."
+    notes: "Explain that deck.yaml owns repeated metadata."
+    script:
+      text: "The important point is that generated artifacts stay synchronized from one source file."
+      transition: "That concludes the minimal fixture."
+  - id: qa
+    pattern: qa
+    title: "Questions"
+    notes: "Invite questions."
+    script:
+      text: "Thank you. I am happy to take questions."

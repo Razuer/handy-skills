@@ -5,16 +5,21 @@
       "id": 0,
       "name": "outline-seminar",
       "prompt": "I need to prepare a 20-minute seminar for my CS reading group next week on retrieval-augmented generation (RAG). I have a rough outline:\n\n- What RAG is and why it exists (LLM knowledge cutoffs, hallucination)\n- Architecture: retriever + reader, embeddings, vector DBs\n- Three main flavors: naive RAG, advanced RAG (re-ranking, query rewriting), agentic RAG\n- Limitations: retrieval failures, context-window bloat, evaluation is hard\n- Where it's going next\n\nMy name is Adam Mikol. Audience is mixed grad students. Light theme, default colors are fine. Make me both the slide deck and a script I can actually read off when I'm presenting.",
-      "expected_output": "An HTML deck (~12-14 slides) following the narrative arc, a script.md with teleprompter-style spoken text and transitions, a README explaining what was made, and the supporting JS/JSX files. Customizations should match defaults (light, default accent).",
+      "expected_output": "A deck.yaml source artifact plus generated deck.html (~12-14 slides), script.md with teleprompter-style spoken text and transitions, README explaining what was made/generated, and supporting JS/JSX files. Customizations should match defaults (light, default accent).",
       "assertions": [
-        {"id": "deck-exists", "description": "An HTML deck file is produced in the output folder"},
-        {"id": "script-exists", "description": "A script.md file is produced alongside the HTML"},
-        {"id": "supporting-files", "description": "deck-stage.js, image-slot.js, and tweaks-panel.jsx are copied alongside the HTML"},
+        {"id": "deck-yaml-exists", "description": "deck.yaml is produced as the source-of-truth artifact"},
+        {"id": "generated-deck-exists", "description": "A generated deck.html file is produced in the output folder"},
+        {"id": "script-exists", "description": "A generated script.md file is produced alongside the HTML"},
+        {"id": "readme-exists", "description": "README.md records template, customization choices, generation command, and viewing instructions"},
+        {"id": "supporting-files", "description": "deck-stage.js, image-slot.js, and tweaks-panel.jsx are copied/generated alongside the HTML"},
         {"id": "slide-count-fits-duration", "description": "Slide count is between 11 and 16 (appropriate for 20 min)"},
         {"id": "covers-rag-content", "description": "Deck content actually covers RAG, retrievers, vector DBs, and the three flavors mentioned"},
         {"id": "speaker-name-correct", "description": "Cover slide and footers show 'Adam Mikol', not 'Your Name' placeholder"},
-        {"id": "page-numbers-consistent", "description": "Every slide's NN/NN page number matches its position and the total count"},
-        {"id": "script-teleprompter-style", "description": "Script uses short sentences, contractions, transitions between slides — not just bullet-style summaries"},
+        {"id": "page-numbers-consistent", "description": "Generated page numbers/data labels match slide position and total count throughout deck.html"},
+        {"id": "check-overflow-clean", "description": "check_overflow.js passes on generated deck.html including clipped-content and overlaps-chrome checks"},
+        {"id": "contact-sheet-reviewed", "description": "A render_slides.js contact sheet is produced/reviewed before declaring completion"},
+        {"id": "script-teleprompter-style", "description": "Script uses short sentences, contractions, transitions between slides — not bullet-style summaries"},
+        {"id": "script-not-bullet-copy", "description": "script.md does not merely copy slide bullets; it expands them into spoken narration"},
         {"id": "script-word-count-roughly-2800", "description": "Script length is within 20% of 2800 words (20 min at ~140 wpm)"},
         {"id": "narrative-arc", "description": "Deck follows situation → complication → resolution structure, not paper-style sections"}
       ],
@@ -24,10 +29,12 @@
       "id": 1,
       "name": "paper-condense",
       "prompt": "I have to give a 15-minute talk at my journal club next Thursday about this short paper:\n\n---\nTitle: \"Attention Is Not All You Need: Pure MLP Models Match Transformers on Vision Tasks\"\n(hypothetical paper for the test)\n\nKey claims:\n- Transformer attention isn't necessary for strong image classification — a carefully designed MLP-only architecture (MLP-Mixer) reaches ViT-Base accuracy on ImageNet (76.4% vs 77.9%)\n- Uses two MLP types: token-mixing MLPs (across spatial locations) and channel-mixing MLPs\n- Trains 2.5x faster than ViT-Base at equivalent accuracy\n- But: needs JFT-300M pretraining to close the gap; on ImageNet-only training, ViT still wins by ~3 points\n- Authors argue this is evidence that the inductive bias of attention is less important than commonly believed\n\nMy take: I think the result is real but oversold — they need 300M pretraining images to match a model trained on 14M. That's not 'attention is not needed', that's 'attention is data-efficient'.\n\nI'm Marie Chen. The journal club is small (8 people), informal but technical. Make it serious-looking. Dark mode please, accent should be something that feels modern — maybe an electric blue or coral. Compact density since we're going to argue over every slide.",
-      "expected_output": "An HTML deck targeted for 15 min (~10-12 slides), dark mode body class, compact density, an electric blue or coral accent override, content that reflects both the paper's claims AND the speaker's contrarian take (this isn't a neutral summary). Script.md in teleprompter style that voices the speaker's argument.",
+      "expected_output": "A deck.yaml source plus generated HTML deck targeted for 15 min (~10-12 slides), dark mode body class, compact density, an electric blue or coral accent override, content that reflects both the paper's claims AND the speaker's contrarian take (this isn't a neutral summary). Generated script.md in teleprompter style that voices the speaker's argument.",
       "assertions": [
-        {"id": "deck-exists", "description": "An HTML deck file is produced"},
-        {"id": "script-exists", "description": "A script.md is produced"},
+        {"id": "deck-yaml-exists", "description": "deck.yaml is produced as the source-of-truth artifact"},
+        {"id": "generated-deck-exists", "description": "A generated deck.html file is produced"},
+        {"id": "script-exists", "description": "A generated script.md is produced"},
+        {"id": "supporting-files", "description": "Generated deck package includes README.md and required JS/JSX support files"},
         {"id": "dark-mode-applied", "description": "body element has class 'dark'"},
         {"id": "compact-applied", "description": "body element has class 'compact'"},
         {"id": "accent-overridden", "description": "--accent CSS variable changed from default #2a5d8a to electric blue or coral hex"},
@@ -35,7 +42,10 @@
         {"id": "speaker-take-voiced", "description": "The speaker's contrarian take (attention is data-efficient, not unnecessary) appears in the deck OR script, not just the paper's claims"},
         {"id": "speaker-name-correct", "description": "Cover shows 'Marie Chen'"},
         {"id": "script-script-style", "description": "Script reads as spoken text with transitions, not as paragraph summary"},
-        {"id": "page-numbers-consistent", "description": "Page numbers are correctly renumbered to match total"}
+        {"id": "script-not-bullet-copy", "description": "script.md is not a direct copy of slide bullet text"},
+        {"id": "page-numbers-consistent", "description": "Generated page numbers are consistent with total slide count"},
+        {"id": "check-overflow-clean", "description": "check_overflow.js passes on generated deck.html, including overlaps-chrome detection"},
+        {"id": "contact-sheet-reviewed", "description": "A contact-sheet render is produced/reviewed for visual quality"}
       ],
       "files": []
     },
@@ -43,9 +53,11 @@
       "id": 2,
       "name": "lightning-talk",
       "prompt": "5 min lightning talk for a Friday demo at work. Topic: my weekend hack — a CLI tool that watches a directory for new screenshots and auto-OCRs them into a markdown notebook. I want it punchy and visually striking. Spacious density, light mode, accent in warm coral. Use Space Grotesk for the display font. Speaker: Jamie. No script needed for this one, just the deck — I'll wing the talking.",
-      "expected_output": "A short HTML deck (~5-6 slides) with spacious density, light mode, --accent set to a coral hex, --font-display swapped to Space Grotesk, no section dividers, lean structure. Should respect the user's 'no script' request — produce the deck only, with maybe a note acknowledging the choice.",
+      "expected_output": "A deck.yaml source plus short generated HTML deck (~5-6 slides) with spacious density, light mode, --accent set to a coral hex, --font-display swapped to Space Grotesk, no section dividers, lean structure. Should respect the user's 'no script' request — no script.md or an explicit note acknowledging the choice.",
       "assertions": [
-        {"id": "deck-exists", "description": "An HTML deck file is produced"},
+        {"id": "deck-yaml-exists", "description": "deck.yaml is produced as the source-of-truth artifact"},
+        {"id": "generated-deck-exists", "description": "A generated deck.html file is produced"},
+        {"id": "supporting-files", "description": "Generated deck package includes README.md and required JS/JSX support files"},
         {"id": "spacious-applied", "description": "body has class 'spacious'"},
         {"id": "light-mode", "description": "body does NOT have class 'dark'"},
         {"id": "coral-accent", "description": "--accent CSS variable changed to a coral hex (warm orange-red range)"},
@@ -53,7 +65,10 @@
         {"id": "slide-count-short", "description": "Total slide count is between 4 and 7"},
         {"id": "no-section-dividers", "description": "Deck does not include section-divider slides (inappropriate for 5-min talk)"},
         {"id": "script-respected", "description": "Either no script.md was created, or the assistant explicitly noted skipping it per the user's request"},
-        {"id": "speaker-name-correct", "description": "Cover shows 'Jamie' as the speaker"}
+        {"id": "speaker-name-correct", "description": "Cover shows 'Jamie' as the speaker"},
+        {"id": "page-numbers-consistent", "description": "Generated page numbers are consistent with total slide count"},
+        {"id": "check-overflow-clean", "description": "check_overflow.js passes on generated deck.html, including overlaps-chrome detection"},
+        {"id": "contact-sheet-reviewed", "description": "A contact-sheet render is produced/reviewed for visual quality"}
       ],
       "files": []
     }

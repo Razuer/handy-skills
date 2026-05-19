@@ -1,0 +1,152 @@
+schemaVersion: 1
+template: keynote
+metadata:
+  title: "A Field Guide to Calm Software"
+  subtitle: "A minimal generator fixture for the editorial keynote template."
+  speaker: "Your Name"
+  date: "14 May 2026"
+  venue: "Studio Hall"
+  brand: "KEYNOTE · SPRING 2026"
+  footer: "Your Name"
+  hashtag: "#calmsoftware26"
+theme:
+  accent: "#ff5836"
+  paper: false
+  density: regular
+  footer: true
+  italics: true
+slides:
+  - id: cover
+    pattern: cover
+    eyebrow: "A field guide"
+    title: "A field guide to *calm* software."
+    subtitle: "Notes on building tools that respect attention."
+    context: "Talk 01 · 35 min"
+    fields:
+      Speaker: "Your *Name*"
+      Venue: "Studio Hall"
+      Date: "14 May 2026"
+      Hashtag: "#calmsoftware26"
+    notes: "Cover. Set the room and name the talk."
+    script:
+      text: "Today I will frame calm software as a product discipline."
+      transition: "Start with the map."
+  - id: agenda
+    pattern: agenda
+    eyebrow: "Outline"
+    title: "Six *acts,* thirty-five minutes."
+    items:
+      - title: "Why *now*"
+        meta: "4 min"
+      - title: "A working *definition*"
+        meta: "3 min"
+      - title: "The *method*"
+        meta: "10 min"
+      - title: "What we *shipped*"
+        meta: "8 min"
+    notes: "Agenda. Promise the audience what they get."
+    script:
+      text: "The talk moves from why this matters to how we shipped it."
+      transition: "First, define the term."
+  - id: definition
+    pattern: definition
+    eyebrow: "A working definition"
+    title: "Calm software, *in one breath.*"
+    tag: "Definition"
+    term: "Calm *software*"
+    notation: "attention · ambient · interruption"
+    body: "A system designed so the user's attention is the scarce resource being optimized against."
+    sideTitle: "Three commitments"
+    items:
+      - title: "Defaults *respect* the user."
+        body: "Quiet on arrival."
+      - title: "The *periphery* does the work."
+        body: "Glanceable before center stage."
+      - title: "Interruption is a *last resort.*"
+        body: "Every notification must earn its place."
+    notes: "Definition. Frame the central idea."
+    script:
+      text: "Calm software optimizes for attention rather than engagement."
+      transition: "Now turn that into a process."
+  - id: method
+    pattern: section-divider
+    number: "iii."
+    eyebrow: "Third act"
+    title: "The *method.*"
+    subtitle: "A five-step process before any loud feature ships."
+    meta: "Act 03 of 06"
+    duration: "~10 minutes"
+    notes: "Section divider."
+    script:
+      text: "The method is deliberately small and repeatable."
+      transition: "Walk through the steps."
+  - id: pipeline
+    pattern: pipeline
+    eyebrow: "03 — Method"
+    title: "Five steps, *end to end.*"
+    steps:
+      - title: "Attention *budget*"
+        body: "Estimate cost before code."
+        tag: "day 0"
+      - title: "Ambient *first*"
+        body: "Sketch the peripheral surface."
+        tag: "day 1"
+      - title: "Build *quiet*"
+        body: "No badges by default."
+        tag: "week 1"
+      - title: "Friction *audit*"
+        body: "Measure dismissal cost."
+        tag: "field"
+      - title: "Ship or *kill*"
+        body: "Make the binary call."
+        tag: "decision"
+    notes: "Pipeline. Walk left to right."
+    script:
+      text: "The process starts with attention budgeting and ends with a ship-or-kill call."
+      transition: "The headline result is simple."
+  - id: result
+    pattern: big-number
+    eyebrow: "04 — What we shipped"
+    title: "One *number* from the last six quarters."
+    value: "−71"
+    unit: "%"
+    label: "Median weekday notifications"
+    body: "Fewer system-initiated interruptions per user, per weekday."
+    footnote: "Fixture data, not a benchmark."
+    notes: "Big number."
+    script:
+      text: "The headline number is a reduction in interruptions, not a claim that every user was happier."
+      transition: "The schedule shows what comes next."
+  - id: timeline
+    pattern: timeline
+    eyebrow: "06 — What's next"
+    title: "The next *six* months."
+    items:
+      - date: "May"
+        title: "Today"
+        body: "Talk and v4.1 rollout."
+      - date: "Jun"
+        title: "Beta"
+        body: "Regret path enters beta."
+      - date: "Sep"
+        title: "v5"
+        body: "Role-aware overrides ship."
+      - date: "Dec"
+        title: "SDK"
+        body: "Cost-model SDK release."
+    notes: "Timeline."
+    script:
+      text: "The next six months move from rollout to beta to SDK."
+      transition: "Close with questions."
+  - id: qa
+    pattern: qa
+    eyebrow: "Thank you"
+    title: "Questions *& arguments.*"
+    subtitle: "Reach out after the talk."
+    fields:
+      Email: "you@example.com"
+      Slides: "example.com/calm26"
+      Hashtag: "#calmsoftware26"
+    notes: "Q&A."
+    script:
+      text: "Thank you. I am happy to take questions now."

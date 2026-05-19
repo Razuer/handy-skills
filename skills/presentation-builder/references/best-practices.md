@@ -65,3 +65,32 @@ Action titles are stronger for persuasive talks (defences, theses, conference). 
 - **Decorative imagery.** If a figure doesn't argue something, cut it. Use the image-led layout only when the figure earns the column.
 - **Apologetic slides** ("sorry, this is a bit dense"). Either fix the density or own it; don't apologize.
 - **Final slide that says "Thanks / Questions?" and nothing else.** Use the Q&A slide to leave your contact info, the one-sentence takeaway, and one teaser for what's next. It's the slide that stays on screen longest — make it earn it.
+
+## Verifying layout fits — non-negotiable
+
+Each slide is a fixed `1920×1080` canvas with `overflow: hidden`. Text that doesn't fit isn't shrunk — it's silently clipped. After authoring `deck.yaml`, generate the deck and validate the generated HTML:
+
+```bash
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/generate_deck.js deck.yaml --out ./prezentacja --check
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/generate_deck.js deck.yaml --out ./prezentacja
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/check_overflow.js ./prezentacja/deck.html
+```
+
+`generate_deck.js --check` is structural/source validation. `check_overflow.js` is browser layout validation and reports both clipped content and chrome overlaps. It returns exit `0` on a clean deck, `1` with a per-slide report otherwise.
+
+Then render a contact sheet and inspect it:
+
+```bash
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/render_slides.js ./prezentacja/deck.html --contact-sheet --width=960
+```
+
+Visual inspection catches readability issues that structural and overflow checks cannot: awkward wraps, dense tables, poor balance, and color clashes.
+
+## Sizing content for non-English languages
+
+Polish, Czech, Hungarian, Finnish and other diacritic-heavy or agglutinative languages run roughly 10–15% wider/taller than English at the same content. Two consequences:
+
+- **Start with `body.compact`** instead of the regular density. The +80px of vertical room per slide is what most overflows need.
+- **Plan for one fewer bullet** than you would in English. A 6-bullet slide in English may need to be 5 in Polish to stay within bounds without compromising font size.
+
+When in doubt: write the deck, run the overflow check, then split or shrink only the slides that actually fail. Don't reflexively cut content just because it looks dense in draft.

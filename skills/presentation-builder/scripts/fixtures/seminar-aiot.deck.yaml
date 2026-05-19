@@ -1,0 +1,80 @@
+schemaVersion: 1
+template: seminar
+metadata:
+  title: "AIoT Development Directions"
+  subtitle: "Layered systems and edge intelligence"
+  speaker: "Adam Mikołajczyk"
+  date: "28 maja 2026"
+  footer: "Adam Mikołajczyk · 28 maja 2026"
+  language:
+    default: pl
+    available: [pl]
+theme:
+  density: compact
+  accent: "#8a2a3a"
+  footer: true
+slides:
+  - id: cover
+    pattern: cover
+    title: "Kierunki rozwoju systemów AIoT"
+    subtitle: "Od sensorów do modeli brzegowych"
+    fields:
+      Prelegent: "Adam Mikołajczyk"
+      Data: "28 maja 2026"
+    notes: "Ustaw kontekst seminarium i tezę wystąpienia."
+    script:
+      cue: "[wziąć oddech]"
+      text: "Dzień dobry. Dzisiaj pokażę, jak AIoT przesuwa inteligencję bliżej danych i urządzeń."
+      transition: "Zacznijmy od planu prezentacji."
+  - id: agenda
+    pattern: agenda
+    title: "Plan"
+    items:
+      - "Dlaczego AIoT przyspiesza"
+      - "Architektura edge-cloud"
+      - "Ryzyka wdrożeniowe"
+      - "Pytania do dyskusji"
+    notes: "Przejdź przez strukturę bez zagłębiania się w szczegóły."
+    script:
+      text: "Najpierw omówię motywację, potem architekturę, a na końcu ograniczenia i pytania."
+      transition: "Pierwsza część to definicja problemu."
+  - id: definition
+    pattern: definition
+    title: "AIoT jako pętla decyzyjna"
+    body: "AIoT łączy pomiar, lokalną inferencję, komunikację i adaptację procesu w jednej pętli operacyjnej."
+    notes: "Podkreśl praktyczny charakter definicji."
+    script:
+      text: "W tej prezentacji traktuję AIoT jako pętlę decyzyjną, a nie tylko zestaw czujników połączonych z chmurą."
+      transition: "Taka pętla wymaga świadomego podziału warstw."
+  - id: comparison
+    pattern: table
+    title: "Edge i cloud"
+    columns:
+      - id: layer
+        label: "Warstwa"
+      - id: latency
+        label: "Latencja ms"
+        numeric: true
+        align: right
+      - id: role
+        label: "Rola"
+    rows:
+      - ["Edge", 10, "Szybka reakcja"]
+      - ["Cloud", 250, "Uczenie i agregacja"]
+    notes: "Zwróć uwagę na spójne wyrównanie kolumn liczbowych."
+    script:
+      text: "Edge skraca czas reakcji, a cloud pozostaje naturalnym miejscem dla agregacji i treningu."
+      transition: "Na końcu zostają pytania do rozmowy."
+  - id: discussion
+    pattern: contributions
+    title: "Pytania do dyskusji"
+    fitFooter: true
+    items:
+      - title: "Gdzie trenować modele?"
+        body: "Na brzegu, w chmurze, czy hybrydowo?"
+      - title: "Jak mierzyć wartość?"
+        body: "Latencją, energią, bezpieczeństwem czy niezawodnością?"
+    notes: "Zaproś do dyskusji zamiast zamykać temat."
+    script:
+      text: "Te pytania pokazują, że wybory techniczne są jednocześnie wyborami organizacyjnymi."
+      transition: "Dziękuję za uwagę."
