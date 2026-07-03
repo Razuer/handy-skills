@@ -160,9 +160,44 @@ Prefer structural fixes in YAML over CSS hacks:
 
 1. Start dense or non-English decks with `theme.density: compact`.
 2. Split long lists/tables/references into additional slides.
-3. Shorten labels and table headers before reducing font size.
-4. Use `fitFooter` for footer-specific fitting issues and `allowOverflowRisk` only to acknowledge intentional capacity risk.
-5. Manual CSS/HTML overrides are last-resort escape hatches for unsupported patterns and must be documented in `README.md`.
+3. Use `pattern: custom` for a one-off arrangement that still needs template style, instead of patching generated HTML. Prefer `layout.mode: elm`/`row`/`column` for stacked cards, diagrams, and captions; reserve `freeform` for intentional absolute positioning.
+4. Apply small YAML-level sizing controls before raw CSS: `contentScale: 0.92`, `titleSize: 54`, `bodySize: 24`, or block-level `scale`, `titleSize`, `bodySize`, `padding`, `gap` on `custom` blocks.
+5. Shorten labels and table headers before aggressive font reduction.
+6. Use `fitFooter` for footer-specific fitting issues and `allowOverflowRisk` only to acknowledge intentional capacity risk.
+7. Manual CSS/HTML overrides are last-resort escape hatches for renderer bugs or layouts that `custom` cannot express, and must be documented in `README.md`.
+
+## Per-slide sizing controls
+
+Use these sparingly, usually in response to a failed overflow check or poor contact-sheet review:
+
+```yaml
+- id: dense-results
+  pattern: table
+  title: "Results need one notch less type"
+  contentScale: 0.94
+  titleSize: 54
+  bodySize: 24
+  smallSize: 21
+```
+
+`contentScale` scales only the body area and leaves slide chrome readable. `titleSize`, `subtitleSize`, `bodySize`, `smallSize`, `monoSize`, `captionSize`, `coverTitleSize`, and `dividerTitleSize` accept numbers as pixels or explicit CSS lengths like `3.1rem`.
+
+For `custom` blocks, tune individual widgets:
+
+```yaml
+blocks:
+  - type: metric
+    value: "12×"
+    label: "speedup"
+    valueSize: 120
+  - type: card
+    title: "Compact explanation"
+    body: "Still editable in YAML."
+    padding: 20
+    gap: 10
+    titleSize: 32
+    bodySize: 22
+```
 
 Rules of thumb:
 - bullets: 3–6 items;

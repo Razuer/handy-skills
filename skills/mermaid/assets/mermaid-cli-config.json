@@ -1,0 +1,60 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "background": "#ffffff",
+    "mainBkg": "#ffffff",
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+    "fontSize": "16px",
+    "primaryColor": "#eef6ff",
+    "primaryTextColor": "#0f172a",
+    "primaryBorderColor": "#2563eb",
+    "secondaryColor": "#f8fafc",
+    "secondaryTextColor": "#0f172a",
+    "secondaryBorderColor": "#64748b",
+    "tertiaryColor": "#ecfdf5",
+    "tertiaryTextColor": "#064e3b",
+    "tertiaryBorderColor": "#10b981",
+    "lineColor": "#475569",
+    "textColor": "#0f172a",
+    "noteBkgColor": "#fff7ed",
+    "noteTextColor": "#7c2d12",
+    "noteBorderColor": "#fdba74",
+    "clusterBkg": "#f8fafc",
+    "clusterBorder": "#cbd5e1",
+    "edgeLabelBackground": "#ffffff",
+    "actorBkg": "#eef6ff",
+    "actorTextColor": "#0f172a",
+    "actorBorder": "#2563eb",
+    "actorLineColor": "#94a3b8",
+    "signalColor": "#334155",
+    "signalTextColor": "#0f172a"
+  },
+  "flowchart": {
+    "htmlLabels": true,
+    "curve": "basis",
+    "nodeSpacing": 60,
+    "rankSpacing": 70,
+    "padding": 18
+  },
+  "sequence": {
+    "mirrorActors": false,
+    "showSequenceNumbers": false,
+    "messageAlign": "center",
+    "actorMargin": 80,
+    "boxMargin": 12,
+    "boxTextMargin": 6,
+    "noteMargin": 12
+  },
+  "gantt": {
+    "fontSize": 14,
+    "barHeight": 22,
+    "barGap": 6,
+    "topPadding": 40,
+    "leftPadding": 90
+  },
+  "mindmap": {
+    "padding": 16
+  },
+  "securityLevel": "loose",
+  "maxTextSize": 90000
+}

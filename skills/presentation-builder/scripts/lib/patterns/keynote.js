@@ -1,5 +1,6 @@
 const seminar = require('./seminar');
-const { escapeHtml, text, ordinal, RAW_HTML_WARNING } = seminar;
+const { escapeHtml, text, ordinal, RAW_HTML_WARNING, imageObject, renderImageSlot } = seminar;
+const { renderCustomLayout, slideStyle } = require('./custom');
 
 const ROMAN = ['i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.', 'vii.', 'viii.', 'ix.', 'x.'];
 
@@ -13,8 +14,9 @@ function rich(value, html) {
 
 function attrs(slide, extra = []) {
   const classes = ['slide', ...extra, ...(slide.classes || [])].filter(Boolean).join(' ');
-  const style = slide.style ? ` style="${escapeHtml(slide.style)}"` : '';
-  return `class="${escapeHtml(classes)}" data-label="${escapeHtml(slide.ordinalLabel)}"${style}`;
+  const style = slideStyle(slide);
+  const styleAttr = style ? ` style="${escapeHtml(style)}"` : '';
+  return `class="${escapeHtml(classes)}" data-label="${escapeHtml(slide.ordinalLabel)}"${styleAttr}`;
 }
 
 function mark(deck) { return escapeHtml(text(deck.metadata?.mark ?? deck.theme?.mark ?? 'K')); }
@@ -72,10 +74,9 @@ function renderQuote(slide, deck) {
   return regular(slide, deck, `<div class="quote"><div class="mark">“</div><div><p class="body-q">${rich(slide.quote ?? slide.body ?? slide.title, slide.quoteHtml ?? slide.bodyHtml)}</p><div class="attr"><span class="name">${rich(slide.author ?? '', slide.authorHtml)}</span>${slide.source ? `<span>·</span><span class="ref">${rich(slide.source, slide.sourceHtml)}</span>` : ''}${slide.year ? `<span>·</span><span>${escapeHtml(text(slide.year))}</span>` : ''}</div></div></div>`);
 }
 
-function slotId(slide, item, i) { return item?.id || item?.slotId || `${slide.id || `slide-${slide.ordinal}`}-${i + 1}`; }
 function renderFullBleed(slide, deck) {
-  const image = slide.image || {};
-  return `<section ${attrs(slide, ['bleed'])}><div class="bleed-img"><image-slot id="${escapeHtml(slotId(slide, image, 0))}" shape="rect" placeholder="${escapeHtml(text(image.placeholder ?? slide.placeholder ?? 'Drop image here'))}"></image-slot></div><div class="bleed-shade"></div><div class="bleed-chrome">${brand(deck)}<span>${counter(slide)}</span></div><div class="bleed-content">${slide.eyebrow ? `<span class="bleed-eye">${rich(slide.eyebrow, slide.eyebrowHtml)}</span>` : ''}<h2 class="bleed-title">${rich(slide.title, slide.titleHtml)}</h2>${slide.subtitle ? `<p class="bleed-sub">${rich(slide.subtitle, slide.subtitleHtml)}</p>` : ''}</div>${slide.credit || image.credit ? `<div class="bleed-cred">${rich(slide.credit ?? image.credit)}</div>` : ''}</section>`;
+  const image = imageObject(slide.image);
+  return `<section ${attrs(slide, ['bleed'])}><div class="bleed-img">${renderImageSlot(slide, image, 0)}</div><div class="bleed-shade"></div><div class="bleed-chrome">${brand(deck)}<span>${counter(slide)}</span></div><div class="bleed-content">${slide.eyebrow ? `<span class="bleed-eye">${rich(slide.eyebrow, slide.eyebrowHtml)}</span>` : ''}<h2 class="bleed-title">${rich(slide.title, slide.titleHtml)}</h2>${slide.subtitle ? `<p class="bleed-sub">${rich(slide.subtitle, slide.subtitleHtml)}</p>` : ''}</div>${slide.credit || image.credit ? `<div class="bleed-cred">${rich(slide.credit ?? image.credit)}</div>` : ''}</section>`;
 }
 
 function renderPipeline(slide, deck) {
@@ -128,14 +129,14 @@ function renderTable(slide, deck) {
 }
 
 function renderImageLed(slide, deck) {
-  const image = slide.image || {};
+  const image = imageObject(slide.image);
   const caption = slide.captionRow || slide.caption;
   const left = `<div><div class="stack-tight">${slide.eyebrow ? `<span class="eyebrow">${rich(slide.eyebrow, slide.eyebrowHtml)}</span>` : ''}<h2 class="title">${rich(slide.title, slide.titleHtml)}</h2>${slide.subtitle ? `<p class="subtitle">${rich(slide.subtitle, slide.subtitleHtml)}</p>` : ''}</div>${slide.body ? `<p class="body" style="margin-top: 32px;">${rich(slide.body, slide.bodyHtml)}</p>` : ''}${caption ? `<div class="caption-row">${Array.isArray(caption) ? caption.map((c) => `<span>${rich(c)}</span>`).join('') : `<span>${rich(caption)}</span>`}</div>` : ''}${slide.items ? itemList(slide.items) : ''}</div>`;
-  return regular(slide, deck, `<div class="image-led">${left}<div class="image-frame"><image-slot id="${escapeHtml(slotId(slide, image, 0))}" shape="rect" placeholder="${escapeHtml(text(image.placeholder ?? slide.placeholder ?? 'Drop image here'))}"></image-slot></div></div>`);
+  return regular(slide, deck, `<div class="image-led">${left}<div class="image-frame">${renderImageSlot(slide, image, 0)}</div></div>`);
 }
 
 function renderImageGrid(slide, deck) {
-  return regular(slide, deck, `${titleBlock(slide)}<div class="img-grid">${(slide.images || slide.items || []).map((img, i) => `<div class="img-tile"><div class="img-tile-frame"><image-slot id="${escapeHtml(slotId(slide, img, i))}" shape="rect" placeholder="${escapeHtml(text(img.placeholder ?? `Image ${i + 1}`))}"></image-slot></div><div class="img-tile-cap"><span>${rich(img.caption ?? img.title ?? idx(i), img.captionHtml ?? img.titleHtml)}</span>${img.meta ? `<span class="${escapeHtml(img.metaClass ?? 'pos')}">${rich(img.meta, img.metaHtml)}</span>` : ''}</div></div>`).join('')}</div>`);
+  return regular(slide, deck, `${titleBlock(slide)}<div class="img-grid">${(slide.images || slide.items || []).map((img, i) => `<div class="img-tile"><div class="img-tile-frame">${renderImageSlot(slide, img, i, { placeholder: `Image ${i + 1}` })}</div><div class="img-tile-cap"><span>${rich(img.caption ?? img.title ?? idx(i), img.captionHtml ?? img.titleHtml)}</span>${img.meta ? `<span class="${escapeHtml(img.metaClass ?? 'pos')}">${rich(img.meta, img.metaHtml)}</span>` : ''}</div></div>`).join('')}</div>`);
 }
 
 function renderContributions(slide, deck) { return regular(slide, deck, `${titleBlock(slide)}<ol class="claims">${(slide.items || []).map((it, i) => `<li><p class="idx">${escapeHtml(it.idx ?? idx(i))}</p><h3 class="claim-h">${rich(it.title ?? it.label, it.titleHtml)}</h3><p class="claim-d">${rich(it.body ?? it.desc ?? '', it.bodyHtml)}</p>${it.tag ? `<div class="claim-tag">${rich(it.tag, it.tagHtml)}</div>` : ''}</li>`).join('')}</ol>`); }
@@ -144,12 +145,21 @@ function renderTimeline(slide, deck) { const items = slide.items || []; const st
 function renderReferences(slide, deck) { return regular(slide, deck, `${titleBlock(slide)}<ol class="refs">${(slide.items || slide.references || []).map((r, i) => { const obj = r && typeof r === 'object' && !Array.isArray(r); return `<li><span class="ref-idx">${escapeHtml(r.idx ?? idx(i))}</span><div><div class="ref-authors">${rich(obj ? (r.authors ?? r.title) : r)}</div>${obj && r.title && r.authors ? `<div class="ref-title">${rich(r.title, r.titleHtml)}</div>` : ''}${obj && r.venue ? `<div class="ref-venue">${rich(r.venue, r.venueHtml)}</div>` : ''}${obj && r.doi ? `<div class="ref-doi">${rich(r.doi, r.doiHtml)}</div>` : ''}</div></li>`; }).join('')}</ol>`); }
 function renderAcknowledgements(slide, deck) { return regular(slide, deck, `${titleBlock(slide)}<div class="cols-3">${(slide.groups || slide.items || []).slice(0, 3).map((g, i) => compareCol({ tag: g.title ?? g.label, title: g.heading ?? g.title ?? g.label, body: g.body, points: (g.items || []).map((it) => it.name ? `${text(it.name)}${it.role ? ` — ${text(it.role)}` : ''}${it.grant ? ` — ${text(it.grant)}` : ''}` : it) }, i === 1)).join('')}</div>`); }
 
+function renderCustom(slide, deck) {
+  return regular(slide, deck, renderCustomLayout(slide, deck, {
+    escapeHtml,
+    format: (value, html) => rich(value, html),
+    titleBlock: () => titleBlock(slide),
+    renderImage: (owner, image, index) => renderImageSlot(owner, image, index, { placeholder: `Image ${index + 1}` }),
+  }), { contentClasses: ['custom-content'] });
+}
+
 function renderQa(slide, deck) {
   const fields = slide.fields || { Email: slide.email ?? slide.contact, Slides: slide.slides, Hashtag: slide.hashtag ?? deck.metadata?.hashtag };
   return `<section ${attrs(slide, ['qa'])}><div class="qa-top">${brand(deck)}<span>${counter(slide)}</span></div><div class="qa-mid"><span class="qa-eye">${rich(slide.eyebrow ?? 'Thank you', slide.eyebrowHtml)}</span><h2 class="qa-h">${rich(slide.title ?? 'Questions?', slide.titleHtml)}</h2>${slide.subtitle ? `<p class="qa-sub">${rich(slide.subtitle, slide.subtitleHtml)}</p>` : ''}</div><dl class="qa-bot">${Object.entries(fields).filter(([, v]) => v).slice(0, 3).map(([k, v]) => `<div><dt>${escapeHtml(text(k))}</dt><dd>${rich(v)}</dd></div>`).join('')}</dl></section>`;
 }
 
-const renderers = { cover: renderCover, agenda: renderAgenda, 'section-divider': renderDivider, definition: renderDefinition, bullets: renderBullets, table: renderTable, comparison: renderComparison, 'comparison-3col': renderComparison3, contributions: renderContributions, limitations: renderLimitations, references: renderReferences, qa: renderQa, quote: renderQuote, 'full-bleed': renderFullBleed, pipeline: renderPipeline, equation: renderEquation, code: renderCode, 'big-number': renderBigNumber, 'bar-chart': renderBarChart, 'image-led': renderImageLed, 'image-grid': renderImageGrid, timeline: renderTimeline, acknowledgements: renderAcknowledgements, 'appendix-divider': renderDivider };
+const renderers = { cover: renderCover, agenda: renderAgenda, 'section-divider': renderDivider, definition: renderDefinition, bullets: renderBullets, table: renderTable, comparison: renderComparison, 'comparison-3col': renderComparison3, contributions: renderContributions, limitations: renderLimitations, references: renderReferences, qa: renderQa, quote: renderQuote, 'full-bleed': renderFullBleed, pipeline: renderPipeline, equation: renderEquation, code: renderCode, 'big-number': renderBigNumber, 'bar-chart': renderBarChart, 'image-led': renderImageLed, 'image-grid': renderImageGrid, custom: renderCustom, timeline: renderTimeline, acknowledgements: renderAcknowledgements, 'appendix-divider': renderDivider };
 
 function renderSlide(slide, deck) { return (renderers[slide.pattern] || renderBullets)(slide, deck); }
 

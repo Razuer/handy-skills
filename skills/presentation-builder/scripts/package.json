@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "export:pptx": "node export_pptx.js",
     "test": "node test_structure.js",
     "test:structure": "node test_structure.js"
   },

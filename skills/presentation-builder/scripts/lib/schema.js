@@ -18,6 +18,7 @@ const KNOWN_PATTERNS = new Set([
   "table",
   "image-led",
   "image-grid",
+  "custom",
   "contributions",
   "limitations",
   "timeline",
@@ -38,6 +39,7 @@ const CAPACITY_HINTS = {
   "comparison-3col": { columns: 3, items: 3 },
   table: { rows: 8, columns: 6 },
   "image-grid": { images: 6 },
+  custom: { blocks: 10, images: 8 },
 };
 
 const PATTERN_REQUIREMENTS = {
@@ -131,11 +133,17 @@ function validateTheme(errors, sourcePath, deck) {
 }
 
 const LOCALIZATION_EXEMPT_KEYS = new Set([
-  "id", "pattern", "ordinal", "total", "slotId", "src", "shape", "classes",
-  "style", "contentStyle", "tableStyle", "align", "key", "numeric", "num",
+  "id", "pattern", "ordinal", "total", "slotId", "src", "shape", "fit",
+  "position", "radius", "mask", "classes",
+  "style", "contentStyle", "tableStyle", "galleryStyle", "align", "key", "numeric", "num",
   "best", "win", "allowOverflowRisk", "skipNotes", "skipScript", "fitFooter",
   "notes", "script", "code", "equation", "notation", "language", "class",
   "classes", "metaClass", "alt", "noTitle", "titleBlock", "value",
+  "layout", "type", "kind", "variant", "tone", "area", "areas", "mode",
+  "x", "y", "w", "h", "width", "height", "left", "right", "top", "bottom",
+  "scale", "contentScale", "contentOrigin", "fontScale", "fontSize", "titleSize", "headingSize", "subtitleSize", "bodySize", "textSize", "smallSize", "monoSize", "captionSize", "coverTitleSize", "dividerTitleSize", "labelSize", "valueSize", "kickerSize", "itemSize",
+  "gap", "spacing", "rowGap", "columnGap", "cols", "span", "column", "row", "gridColumn", "gridRow", "padding", "pad", "padX", "padY", "paddingX", "paddingY",
+  "alignItems", "justifyItems", "alignContent", "justifyContent", "justify", "align", "mainAlign", "crossAlign", "direction", "flow", "wrap", "fill", "fillPortion", "grow", "basis", "minWidth", "maxWidth", "minHeight", "maxHeight", "allowOverlap", "overlap", "overlapOk", "z", "zIndex",
 ]);
 
 function shouldRequireLocalized(pathName, value, requireLocalized) {
@@ -236,8 +244,10 @@ function normalizeDeck(input, options = {}) {
       }
 
       if (normalized.pattern === "table") validateTable(errors, sourcePath, normalized);
+      if (normalized.pattern === "full-bleed") validateImage(errors, sourcePath, normalized, normalized.image, 0);
       if (normalized.pattern === "image-led") validateImage(errors, sourcePath, normalized, normalized.image, 0);
       if (normalized.pattern === "image-grid" && Array.isArray(normalized.images)) normalized.images.forEach((img, i) => validateImage(errors, sourcePath, normalized, img, i));
+      if (normalized.pattern === "custom") validateCustom(errors, sourcePath, normalized);
       return normalized;
     });
   }
@@ -283,8 +293,61 @@ function validateTableCell(errors, sourcePath, slide, cell, rowIndex, cellIndex)
 }
 
 function validateImage(errors, sourcePath, slide, image, index) {
+  if (typeof image === "string") return;
   if (!isObject(image)) return;
   if (!present(image.slotId)) image.slotId = `${slide.id}-image-${index + 1}`;
+  if (present(image.src) && typeof image.src !== "string") addError(errors, sourcePath, slide, `image ${index + 1} src must be a string path or URL.`);
+  if (present(image.fit) && !["cover", "contain", "fill"].includes(image.fit)) addError(errors, sourcePath, slide, `image ${index + 1} fit must be cover, contain, or fill.`);
+  if (present(image.shape) && !["rect", "rounded", "circle", "pill"].includes(image.shape)) addError(errors, sourcePath, slide, `image ${index + 1} shape must be rect, rounded, circle, or pill.`);
+}
+
+const CUSTOM_BLOCK_TYPES = new Set(["text", "card", "metric", "quote", "image", "gallery", "list", "group", "row", "column", "stack", "rule", "spacer", "stat", "number", "photo", "figure", "picture", "images", "image-grid", "miniGrid", "mini-grid", "panel", "callout"]);
+const CUSTOM_LAYOUT_MODES = new Set(["grid", "flex", "freeform", "elm", "row", "column", "stack", "wrapped-row", "wrappedRow"]);
+
+function validateCustom(errors, sourcePath, slide) {
+  const layout = slide.layout || {};
+  const mode = layout.mode || layout.type;
+  if (present(mode) && !CUSTOM_LAYOUT_MODES.has(mode)) addError(errors, sourcePath, slide, `custom layout.mode must be grid, flex, freeform, elm, row, column, stack, or wrapped-row (got '${mode}').`);
+
+  const blocks = Array.isArray(slide.blocks) ? slide.blocks : (Array.isArray(slide.items) ? slide.items : null);
+  if (!blocks && !Array.isArray(slide.images) && !slide.html) {
+    addError(errors, sourcePath, slide, "custom requires blocks[], items[], images[], or an explicit html escape hatch.");
+    return;
+  }
+  if (slide.blocks && !Array.isArray(slide.blocks)) addError(errors, sourcePath, slide, "custom.blocks must be an array.");
+  if (slide.items && !Array.isArray(slide.items)) addError(errors, sourcePath, slide, "custom.items must be an array when used as block aliases.");
+  if (blocks) {
+    validateCapacity(errors, sourcePath, slide, "blocks", blocks.length, CAPACITY_HINTS.custom.blocks);
+    blocks.forEach((block, index) => validateCustomBlock(errors, sourcePath, slide, block, index));
+  }
+  if (Array.isArray(slide.images)) {
+    validateCapacity(errors, sourcePath, slide, "images", slide.images.length, CAPACITY_HINTS.custom.images);
+    slide.images.forEach((image, index) => validateImage(errors, sourcePath, slide, image, index));
+  }
+}
+
+function validateCustomBlock(errors, sourcePath, slide, block, index) {
+  if (typeof block === "string" || typeof block === "number") return;
+  if (!isObject(block)) {
+    addError(errors, sourcePath, slide, `custom block ${index + 1} must be a string or object.`);
+    return;
+  }
+  const type = block.type || block.kind || "text";
+  if (!CUSTOM_BLOCK_TYPES.has(type)) addError(errors, sourcePath, slide, `custom block ${index + 1} has unsupported type '${type}'.`);
+
+  const imageLike = ["image", "photo", "figure", "picture"].includes(type);
+  if (imageLike) validateImage(errors, sourcePath, slide, block.image || block, index);
+  if (block.image) validateImage(errors, sourcePath, slide, block.image, index);
+  if (Array.isArray(block.images)) {
+    validateCapacity(errors, sourcePath, slide, `block ${index + 1} images`, block.images.length, CAPACITY_HINTS.custom.images);
+    block.images.forEach((image, imageIndex) => validateImage(errors, sourcePath, slide, image, imageIndex));
+  }
+  const groupLike = ["group", "row", "column", "stack"].includes(type);
+  const nested = Array.isArray(block.blocks) ? block.blocks : (Array.isArray(block.items) && groupLike ? block.items : null);
+  if (nested) {
+    validateCapacity(errors, sourcePath, slide, `block ${index + 1} nested blocks`, nested.length, CAPACITY_HINTS.custom.blocks);
+    nested.forEach((child, childIndex) => validateCustomBlock(errors, sourcePath, slide, child, childIndex));
+  }
 }
 
 module.exports = {

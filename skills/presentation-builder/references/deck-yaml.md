@@ -139,6 +139,128 @@ Every slide must include `pattern`. Prefer adding a stable `id`; image slot ids 
 | `script` | String or object with `cue`, `text`, `transition`. |
 | `fitFooter` | Escape hatch when generated footer spacing needs special handling. |
 | `allowOverflowRisk` | Escape hatch to acknowledge intentional/known capacity risk. |
+| `contentScale` | Scale the rendered body area without changing slide chrome. Useful values: `0.88`–`1.05`. |
+| `titleSize`, `subtitleSize`, `bodySize` | Per-slide type overrides in pixels or CSS lengths. Also available: `smallSize`, `monoSize`, `captionSize`, `coverTitleSize`, `dividerTitleSize`. |
+
+## Images and diagrams
+
+Use `image.src` or `images[].src` when the deck should ship with a specific visual. Paths are resolved relative to `deck.yaml`; local files are copied into the generated output folder. Remote URLs and data URIs are passed through unchanged. If `src` is omitted, the renderer leaves a fillable slot that can be populated later in the browser.
+
+For diagrams, prefer `fit: contain` so labels are not cropped. For photos, keep the default `cover` or set `fit: cover`.
+
+```yaml
+- id: architecture-visual
+  pattern: image-led
+  title: "The architecture is easier to explain as a figure"
+  items:
+    - title: "Inputs"
+      body: "Raw data enters on the left."
+    - title: "Processing"
+      body: "The middle blocks transform and score it."
+    - title: "Decision"
+      body: "The right edge is the user-visible output."
+  image:
+    src: assets/architecture.png
+    fit: contain
+    alt: "Architecture diagram"
+    placeholder: "Drop or replace the architecture diagram"
+  caption: "Local image copied from assets/architecture.png during generation."
+  notes: "Flexible visual slide. Replace src, bullets, caption, or fit per deck."
+  script:
+    text: "I will walk through this from left to right: input, processing, and decision."
+```
+
+Supported image slot fields: `src`, `slotId`, `placeholder`, `fit` (`cover`, `contain`, `fill`), `position`, `shape` (`rect`, `rounded`, `circle`, `pill`), `radius`, `mask`, and `alt`.
+
+## Custom layouts
+
+Use `pattern: custom` when the slide needs a layout that is not covered by the fixed patterns, but should still be generated from `deck.yaml` and inherit the selected template style.
+
+```yaml
+- id: photo-evidence
+  pattern: custom
+  title: "The evidence is visual, but asymmetric"
+  layout:
+    columns: "1.3fr 0.8fr"
+    areas:
+      - "gallery metric"
+      - "gallery note"
+    gap: 28px
+  blocks:
+    - type: gallery
+      area: gallery
+      cols: 2
+      images:
+        - src: assets/a.png
+          caption: "Example A"
+          fit: cover
+        - src: assets/b.png
+          caption: "Example B"
+          fit: cover
+    - type: metric
+      area: metric
+      value: "4×"
+      label: "more examples than image-led"
+      valueSize: 132
+    - type: card
+      area: note
+      padding: 22
+      titleSize: 34
+      bodySize: 24
+      kicker: "Takeaway"
+      title: "The layout is custom; the deck is still generated"
+      body: "Speaker notes, media copying, template chrome, and overflow checks still work."
+  script:
+    text: "This custom slide keeps the template while arranging the evidence differently."
+```
+
+Supported block types: `text`, `card`, `metric`, `quote`, `image`, `gallery`, `list`, `group`, `row`, `column`, `stack`, `rule`, and `spacer`. Prefer `layout.mode: grid` with named `areas` or `layout.mode: elm`/`row`/`column` for diagram-and-card compositions; use `freeform` only for precise one-off placement. For bilingual `university` decks, localize visible block text exactly as in other patterns.
+
+Elm-like layout example:
+
+```yaml
+- id: diagram-with-cards
+  pattern: custom
+  title: "Diagram stays below the cards"
+  layout:
+    mode: elm
+    direction: column
+    spacing: 28
+  blocks:
+    - type: row
+      spacing: 22
+      height: shrink
+      blocks:
+        - type: card
+          width: fill
+          title: "Input"
+          body: "Short explanation."
+        - type: card
+          width: fill
+          title: "Process"
+          body: "Short explanation."
+        - type: card
+          width: fill
+          title: "Output"
+          body: "Short explanation."
+    - type: image
+      height: fill
+      src: assets/diagram.png
+      fit: contain
+```
+
+Use block-level tuning when a custom slide needs small visual fixes:
+
+```yaml
+- type: card
+  title: "Dense but controlled"
+  body: "Reduce the card instead of hacking generated HTML."
+  scale: 0.92
+  titleSize: 32
+  bodySize: 22
+  padding: 20
+  gap: 10
+```
 
 ## Script mapping
 
@@ -218,3 +340,12 @@ Then validate generated layout:
 node /home/razuer/.config/opencode/skills/presentation-builder/scripts/check_overflow.js ./prezentacja/deck.html
 node /home/razuer/.config/opencode/skills/presentation-builder/scripts/render_slides.js ./prezentacja/deck.html --contact-sheet --width=960
 ```
+
+Optional PowerPoint handoff:
+
+```bash
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/export_pptx.js ./prezentacja/deck.html --out ./prezentacja/deck.pptx
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/export_pptx.js ./prezentacja/deck.html --out ./prezentacja/deck-raster.pptx --mode=raster
+```
+
+The default PPTX export is an editable approximation: text, simple rectangles, and images become native PPTX objects. Use raster mode for visual fidelity when element-level editing is not needed.

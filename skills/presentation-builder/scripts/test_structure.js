@@ -81,7 +81,7 @@ function dataLabelOrdinals(html) {
 }
 
 function assertAllPatternDeckShape(fixtureName, deck) {
-  assert.strictEqual(deck.slideCount, 25, `${fixtureName} should have exactly 25 slides`);
+  assert.strictEqual(deck.slideCount, 26, `${fixtureName} should have exactly 26 slides`);
   assert.strictEqual(deck.slides.filter((slide) => slide.notes).length, deck.slideCount, `${fixtureName} should have one notes block per slide`);
   assert.strictEqual(deck.slides.filter((slide) => slide.script).length, deck.slideCount, `${fixtureName} should have one script block per slide`);
 
@@ -257,6 +257,201 @@ function runTableObjectRowTest() {
   assert(/<th class="num">Latency<\/th>/.test(html) && /<td class="num">10<\/td>/.test(html), "numeric class should appear on matching table header/body cells");
 }
 
+function runImageSourceTest() {
+  const { dir, filePath } = writeTempDeck("image-src", [
+    "schemaVersion: 1",
+    "template: seminar",
+    "metadata:",
+    "  title: \"Image source\"",
+    "  speaker: \"Ada\"",
+    "  date: \"Today\"",
+    "slides:",
+    "  - id: visual",
+    "    pattern: image-led",
+    "    title: \"Diagram from source\"",
+    "    items:",
+    "      - title: \"One flow\"",
+    "        body: \"Use the figure as the argument.\"",
+    "    image:",
+    "      src: assets/architecture.png",
+    "      fit: contain",
+    "      alt: \"Architecture diagram\"",
+    "      placeholder: \"Fallback diagram slot\"",
+    "    notes: \"Notes\"",
+    "    script:",
+    "      text: \"Talk through the diagram.\"",
+  ].join("\n"));
+  fs.mkdirSync(path.join(dir, "assets"), { recursive: true });
+  fs.writeFileSync(path.join(dir, "assets", "architecture.png"), "fake image bytes", "utf8");
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "pb-image-src-out-"));
+  const result = runGenerator([filePath, "--out", outDir, "--normalized"]);
+  assert.strictEqual(result.status, 0, `image source generation failed: ${result.stderr || result.stdout}`);
+  assert(fs.existsSync(path.join(outDir, "assets", "architecture.png")), "local image src should be copied into the output folder");
+  const html = read(path.join(outDir, "deck.html"));
+  assert(/<image-slot\b[^>]*\bsrc="assets\/architecture\.png"/.test(html), "image src should render onto image-slot");
+  assert(/<image-slot\b[^>]*\bfit="contain"/.test(html), "image fit should render onto image-slot");
+  assert(/<image-slot\b[^>]*\baria-label="Architecture diagram"/.test(html), "image alt should render as an aria label");
+}
+
+function runPptxExportTest() {
+  const { filePath } = writeTempDeck("pptx-export", [
+    "schemaVersion: 1",
+    "template: seminar",
+    "metadata:",
+    "  title: \"Editable PPTX\"",
+    "  speaker: \"Ada\"",
+    "  date: \"Today\"",
+    "slides:",
+    "  - id: cover",
+    "    pattern: cover",
+    "    title: \"Editable PPTX\"",
+    "    subtitle: \"Text should become a selectable PowerPoint box\"",
+    "    notes: \"Notes\"",
+    "    script:",
+    "      text: \"Intro\"",
+    "  - id: custom",
+    "    pattern: custom",
+    "    title: \"Custom blocks export\"",
+    "    layout:",
+    "      columns: \"1fr 1fr\"",
+    "    blocks:",
+    "      - type: metric",
+    "        value: \"2×\"",
+    "        label: \"native objects\"",
+    "      - type: card",
+    "        title: \"Editable handoff\"",
+    "        body: \"Approximate, not pixel-perfect.\"",
+    "    notes: \"Notes\"",
+    "    script:",
+    "      text: \"Custom export\"",
+  ].join("\n"));
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "pb-pptx-export-out-"));
+  const build = runGenerator([filePath, "--out", outDir]);
+  assert.strictEqual(build.status, 0, `pptx fixture generation failed: ${build.stderr || build.stdout}`);
+
+  const editablePath = path.join(outDir, "editable.pptx");
+  const rasterPath = path.join(outDir, "raster.pptx");
+  const editable = spawnSync(process.execPath, [path.join(scriptsDir, "export_pptx.js"), path.join(outDir, "deck.html"), "--out", editablePath, "--mode=editable", "--quiet"], { encoding: "utf8" });
+  assert.strictEqual(editable.status, 0, `editable pptx export failed: ${editable.stderr || editable.stdout}`);
+  const raster = spawnSync(process.execPath, [path.join(scriptsDir, "export_pptx.js"), path.join(outDir, "deck.html"), "--out", rasterPath, "--mode=raster", "--slides=1", "--quiet"], { encoding: "utf8" });
+  assert.strictEqual(raster.status, 0, `raster pptx export failed: ${raster.stderr || raster.stdout}`);
+
+  const editableBytes = fs.readFileSync(editablePath);
+  const rasterBytes = fs.readFileSync(rasterPath);
+  assert.strictEqual(editableBytes.slice(0, 2).toString("utf8"), "PK", "editable PPTX should be a ZIP package");
+  assert.strictEqual(rasterBytes.slice(0, 2).toString("utf8"), "PK", "raster PPTX should be a ZIP package");
+  const editableText = editableBytes.toString("latin1");
+  const rasterText = rasterBytes.toString("latin1");
+  assert(editableText.includes("ppt/slides/slide1.xml") && editableText.includes("Editable PPTX"), "editable PPTX should contain slide XML and visible text");
+  assert(rasterText.includes("ppt/media/image1.png"), "raster PPTX should contain a screenshot image");
+}
+
+function runSizingControlsTest() {
+  const { filePath } = writeTempDeck("sizing-controls", [
+    "schemaVersion: 1",
+    "template: seminar",
+    "metadata:",
+    "  title: \"Sizing controls\"",
+    "  speaker: \"Ada\"",
+    "  date: \"Today\"",
+    "slides:",
+    "  - id: tuned-bullets",
+    "    pattern: bullets",
+    "    title: \"This slide uses YAML sizing controls\"",
+    "    contentScale: 0.92",
+    "    titleSize: 50",
+    "    bodySize: 23",
+    "    items:",
+    "      - title: \"Scale body\"",
+    "        body: \"Keep chrome steady while the content contracts.\"",
+    "    notes: \"Notes\"",
+    "    script:",
+    "      text: \"Sizing controls.\"",
+    "  - id: tuned-custom",
+    "    pattern: custom",
+    "    title: \"Block sizing controls\"",
+    "    layout:",
+    "      columns: \"1fr 1fr\"",
+    "    blocks:",
+    "      - type: metric",
+    "        value: \"2×\"",
+    "        valueSize: 118",
+    "        labelSize: 20",
+    "        label: \"larger number\"",
+    "      - type: card",
+    "        title: \"Compact card\"",
+    "        body: \"Tuned by YAML.\"",
+    "        scale: 0.9",
+    "        padding: 18",
+    "        gap: 8",
+    "        titleSize: 30",
+    "        bodySize: 21",
+    "    notes: \"Notes\"",
+    "    script:",
+    "      text: \"Custom sizing.\"",
+  ].join("\n"));
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "pb-sizing-out-"));
+  const result = runGenerator([filePath, "--out", outDir]);
+  assert.strictEqual(result.status, 0, `sizing controls generation failed: ${result.stderr || result.stdout}`);
+  const html = read(path.join(outDir, "deck.html"));
+  assert(html.includes("--pb-content-transform: scale(0.92)"), "contentScale should render as a slide CSS variable");
+  assert(html.includes("--pb-title-size: 50px") && html.includes("--pb-body-size: 23px"), "slide type sizes should render as CSS variables");
+  assert(html.includes("--custom-value-size: 118px") && html.includes("--custom-padding: 18px"), "custom block sizing should render as CSS variables");
+  assert(html.includes("section.slide[style*=\"--pb-title-size\"]"), "generated CSS should include title sizing selector");
+}
+
+function runElmLayoutTest() {
+  const { filePath } = writeTempDeck("elm-layout", [
+    "schemaVersion: 1",
+    "template: seminar",
+    "metadata:",
+    "  title: \"Elm layout\"",
+    "  speaker: \"Ada\"",
+    "  date: \"Today\"",
+    "slides:",
+    "  - id: diagram-flow",
+    "    pattern: custom",
+    "    title: \"Diagram and cards share space\"",
+    "    layout:",
+    "      mode: elm",
+    "      direction: column",
+    "      spacing: 24",
+    "      padding: [4, 0]",
+    "    blocks:",
+    "      - type: row",
+    "        spacing: 18",
+    "        height: shrink",
+    "        blocks:",
+    "          - type: card",
+    "            width: fill",
+    "            title: \"A\"",
+    "            body: \"First card\"",
+    "          - type: card",
+    "            width: fill:2",
+    "            title: \"B\"",
+    "            body: \"Second card\"",
+    "      - type: image",
+    "        name: diagram",
+    "        height: fill",
+    "        src: assets/diagram.png",
+    "        fit: contain",
+    "        alt: \"Diagram\"",
+    "    notes: \"Notes\"",
+    "    script:",
+    "      text: \"Elm layout.\"",
+  ].join("\n"));
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "pb-elm-layout-out-"));
+  fs.mkdirSync(path.join(path.dirname(filePath), "assets"), { recursive: true });
+  fs.writeFileSync(path.join(path.dirname(filePath), "assets", "diagram.png"), "fake image bytes", "utf8");
+  const result = runGenerator([filePath, "--out", outDir]);
+  assert.strictEqual(result.status, 0, `elm layout generation failed: ${result.stderr || result.stdout}`);
+  const html = read(path.join(outDir, "deck.html"));
+  assert(html.includes("layout-elm") && html.includes("layout-row"), "elm and row layout classes should render");
+  assert(html.includes("flex-direction: column") && html.includes("flex-direction: row"), "elm layout should render flex directions");
+  assert(html.includes("flex: 1 1 0") && html.includes("flex: 2 1 0"), "fill and fill:2 should render as flex portions");
+  assert(html.includes("data-block-id=\"diagram\""), "custom block name should render as diagnostic data-block-id");
+}
+
 function runFixture(fixtureName, rendererAvailable) {
   const fixturePath = path.join(fixturesDir, fixtureName);
   const deck = loadDeck(fixturePath);
@@ -308,6 +503,10 @@ function main() {
   for (const fixture of fixtures) runFixture(fixture, rendererAvailable);
   runNegativeValidationTests();
   if (rendererAvailable) runTableObjectRowTest();
+  if (rendererAvailable) runImageSourceTest();
+  if (rendererAvailable) runPptxExportTest();
+  if (rendererAvailable) runSizingControlsTest();
+  if (rendererAvailable) runElmLayoutTest();
   if (!rendererAvailable) console.warn("HTML renderer not found; full generation assertions skipped until scripts/lib/render-html.js exports renderHtml(deck, options).");
   console.log(`✓ Structure tests passed for ${fixtures.length} fixtures${rendererAvailable ? "" : " (renderer-dependent assertions skipped)"}.`);
 }

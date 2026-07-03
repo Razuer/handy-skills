@@ -15,13 +15,15 @@ slides:
     variant: tight
     fitFooter: false         # escape hatch for footer fitting
     allowOverflowRisk: false # explicit capacity-risk acknowledgement
+    contentScale: 0.94       # optional: scale the body layout only
+    titleSize: 56            # optional px size; also subtitleSize/bodySize/smallSize/monoSize
     script:                  # string or object
       cue: "pause"
       text: "Spoken text"
       transition: "Bridge"
 ```
 
-Image slots may specify `slotId`; if omitted, renderers derive a stable slot id from `slide.id`.
+Image slots may specify `slotId`; if omitted, renderers derive a stable slot id from `slide.id`. To bake an image/diagram into the generated deck, set `image.src` (or `images[].src`) to a local path relative to `deck.yaml`, a remote URL, or a data URI. Local files are copied into the output folder and the generated `deck.html` points at the copied path.
 
 ## Per-pattern fields and capacity
 
@@ -50,7 +52,7 @@ Image slots may specify `slotId`; if omitted, renderers derive a stable slot id 
 - Capacity: 35–55 quoted words.
 
 ### `full-bleed`
-- Fields: `image` (optional `slotId`/`placeholder`/`credit`) or `slotId`, `alt`, `title`, `caption`, `credit`, `overlay`.
+- Fields: `image` (optional `src`/`slotId`/`placeholder`/`fit`/`position`/`shape`/`radius`/`mask`/`alt`/`credit`) or `slotId`, `alt`, `title`, `caption`, `credit`, `overlay`.
 - Capacity: one image, one headline, one caption.
 
 ### `pipeline`
@@ -88,12 +90,21 @@ Image slots may specify `slotId`; if omitted, renderers derive a stable slot id 
 - Capacity: 4–7 columns, 4–8 rows.
 
 ### `image-led`
-- Fields: `image` object with optional `slotId`/`placeholder`, `caption` or `captionRow[]`, `title`, `items[]` with `title` and `body`/`desc`.
+- Fields: `image` object with optional `src`/`slotId`/`placeholder`/`fit`/`position`/`shape`/`radius`/`mask`/`alt`, `caption` or `captionRow[]`, `title`, `items[]` with `title` and `body`/`desc`.
 - Capacity: one figure plus 3–4 bullets/callouts.
 
 ### `image-grid`
-- Fields: `images[]` with optional `slotId`/`id`, `placeholder`, `caption`, `title`, `meta`, `metaClass` (`pos`/`neg`).
+- Fields: `images[]` with optional `src`/`slotId`/`id`, `placeholder`, `fit`, `position`, `shape`, `radius`, `mask`, `alt`, `caption`, `title`, `meta`, `metaClass` (`pos`/`neg`).
 - Capacity: up to 6 tiles.
+
+### `custom`
+- Fields: optional `title`/`subtitle`; `layout` object; `blocks[]` typed block array. `items[]` may be used as a block alias. `images[]` at slide level renders as a gallery shorthand.
+- Layout modes: `grid` (default), `elm`, `row`, `column`, `stack`, `wrapped-row`, `flex`, or `freeform`. Prefer `elm`/`row`/`column` for diagrams plus cards because blocks participate in layout and cannot silently overlap. Grid accepts `columns`/`cols`, `rows`, `areas[]`, `gap`, `rowGap`, `columnGap`, `alignItems`, `justifyItems`, `alignContent`, and `justifyContent`. Elm-like layouts accept `direction`, `spacing`/`gap`, `padding`/`padX`/`padY`, `mainAlign`, `crossAlign`, and block sizes such as `width: fill`, `height: fill`, `width: shrink`, `fillPortion`, `basis`, `minWidth`, `maxWidth`, `minHeight`, `maxHeight`. Freeform blocks may use `x`, `y`, `w`, `h` as percentages or CSS strings.
+- Block fields: `type`/`kind`, `area`, `class`/`classes`, `style`, `title`, `kicker`/`eyebrow`, `body`, `items[]`, `chips[]`, plus type-specific fields. `type: row`, `type: column`, and `type: stack` are group shorthands with nested `blocks[]`/`items[]`.
+- Sizing fields: slide-level `contentScale`, `titleSize`, `subtitleSize`, `bodySize`, `smallSize`, `monoSize`, `captionSize`, `coverTitleSize`, `dividerTitleSize`; block-level `scale`, `fontSize`, `titleSize`, `bodySize`, `valueSize`, `labelSize`, `captionSize`, `kickerSize`, `itemSize`, `padding`, `gap`.
+- Block types: `text`, `card`, `metric`, `quote`, `image`, `gallery`, `list`, `group`, `rule`, `spacer`. Aliases include `photo`/`figure` for `image`, `stat`/`number` for `metric`, `panel`/`callout` for `card`, and `image-grid`/`mini-grid` for `gallery`.
+- Image blocks: use `image.src` or direct `src`, with the standard image slot fields (`slotId`, `placeholder`, `fit`, `position`, `shape`, `radius`, `mask`, `alt`, `caption`, `meta`). Gallery blocks use `images[]` and optional `cols`.
+- Capacity: about 3–8 blocks or up to 8 gallery images. Prefer named grid areas or Elm-like rows/columns over raw HTML. Use `allowOverlap: true` only for intentional decorative overlap; otherwise `check_overflow.js` reports sibling block collisions. Set `titleBlock: false` or `noTitle: true` for a full-body custom composition.
 
 ### `contributions`
 - Fields: `items[]` with `idx`, `title`, `body` or `desc`.

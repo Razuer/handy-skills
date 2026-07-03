@@ -7,6 +7,7 @@ function renderReadme(deck, options = {}) {
   const wordCount = options.wordCount || 0;
   const buildSummary = options.buildSummary || "Structural validation passed; HTML generated.";
   const generatedAt = options.generatedAt || new Date().toISOString();
+  const mediaAssets = options.mediaAssets || [];
   const outputs = ["deck.html", "script.md", "README.md", "deck.yaml", "deck.normalized.json", "deck-stage.js", "image-slot.js", "tweaks-panel.jsx"];
   if (deck.template === "university") outputs.push("assets/uni/");
 
@@ -35,6 +36,12 @@ function renderReadme(deck, options = {}) {
     "",
     ...outputs.map((file) => `- ${file}`),
     "",
+    ...(mediaAssets.length ? [
+      "## Media Assets",
+      "",
+      ...mediaAssets.map((asset) => `- ${asset.to}`),
+      "",
+    ] : []),
     "## Open",
     "",
     "```bash",
@@ -48,6 +55,15 @@ function renderReadme(deck, options = {}) {
     `node ${scriptsDir}/check_overflow.js deck.html`,
     `node ${scriptsDir}/render_slides.js deck.html --contact-sheet --width=960`,
     "```",
+    "",
+    "## Optional PowerPoint Export",
+    "",
+    "```bash",
+    `node ${scriptsDir}/export_pptx.js deck.html --out deck.pptx`,
+    `node ${scriptsDir}/export_pptx.js deck.html --out deck-raster.pptx --mode=raster`,
+    "```",
+    "",
+    "The default export is an editable approximation. Raster mode is visually faithful but not element-editable.",
     "",
   ].join("\n");
 }

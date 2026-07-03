@@ -14,7 +14,7 @@ node /home/razuer/.config/opencode/skills/presentation-builder/scripts/generate_
 node /home/razuer/.config/opencode/skills/presentation-builder/scripts/generate_deck.js deck.yaml --out ./prezentacja
 ```
 
-Generated outputs include `deck.html`, `script.md`, `README.md`, copied runtime assets, template assets such as `assets/uni/*.png`, and the source `deck.yaml`. Structural validation checks required metadata, duplicate slide IDs, known patterns, notes/script coverage, capacity hints, table alignment metadata, image slot IDs, theme values, and university language metadata. Full layout validation still belongs to `check_overflow.js` and `render_slides.js` after generation.
+Generated outputs include `deck.html`, `script.md`, `README.md`, copied runtime assets, template assets such as `assets/uni/*.png`, and the source `deck.yaml`. Structural validation checks required metadata, duplicate slide IDs, known patterns, notes/script coverage, capacity hints, table alignment metadata, custom layout block shape, image slot IDs, theme values, and university language metadata. Full layout validation still belongs to `check_overflow.js` and `render_slides.js` after generation.
 
 ## `test_structure.js` — deterministic regression
 
@@ -121,6 +121,24 @@ Output filenames include the index and a sanitized version of the slide's `data-
 
 Pair it with `Read` of the resulting PNGs to actually see the output. Don't run it speculatively across the whole deck on every micro-edit — it's ~0.5s per slide.
 
+## `export_pptx.js` — PowerPoint handoff
+
+Exports a generated `deck.html` to `.pptx` for users who need to continue work in PowerPoint, Keynote, LibreOffice, or Google Slides.
+
+```bash
+# Approximate editable export: native text boxes, rectangles, and images
+node export_pptx.js path/to/deck.html --out path/to/deck.pptx
+
+# Faithful fallback: one rendered PNG per slide, not element-editable
+node export_pptx.js path/to/deck.html --out path/to/deck-raster.pptx --mode=raster
+
+# Export a subset
+node export_pptx.js path/to/deck.html --out path/to/selected.pptx --slides=1,3,8
+node export_pptx.js path/to/deck.html --out path/to/section.pptx --range=4-9
+```
+
+Use `--mode=editable` by default. It reads the rendered DOM with Playwright and maps visible text, simple background/border boxes, `<img>`, and `<image-slot src="...">` elements into native PPTX objects. This is a handoff format, not a pixel-perfect renderer: CSS grid/flex, web fonts, shadows, clipping, masks, and complex browser layout can differ. If visual fidelity matters more than editability, use `--mode=raster`.
+
 ## Setup
 
 Playwright is bundled in `scripts/node_modules/` (run `npm install` here if missing). The script auto-detects a usable Chromium binary in this order:
@@ -138,9 +156,10 @@ For a generated deck package:
 node /home/razuer/.config/opencode/skills/presentation-builder/scripts/generate_deck.js deck.yaml --out ./prezentacja --check
 node /home/razuer/.config/opencode/skills/presentation-builder/scripts/check_overflow.js ./prezentacja/deck.html
 node /home/razuer/.config/opencode/skills/presentation-builder/scripts/render_slides.js ./prezentacja/deck.html --contact-sheet --width=960
+node /home/razuer/.config/opencode/skills/presentation-builder/scripts/export_pptx.js ./prezentacja/deck.html --out ./prezentacja/deck.pptx
 ```
 
-Use the first command for structural source validation, the second for Playwright/Chromium layout and chrome-overlap validation, and the third for human/model visual review of rendered slides.
+Use the first command for structural source validation, the second for Playwright/Chromium layout and chrome-overlap validation, the third for human/model visual review of rendered slides, and the fourth only when the user wants a PowerPoint handoff.
 
 ## Adding new scripts
 

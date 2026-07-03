@@ -174,6 +174,18 @@ async function main() {
       };
     }
 
+    function allowsContentOverlap(el) {
+      return !!(el && el.closest('[data-allow-overlap="true"], .allow-overlap, .overlap-ok'));
+    }
+
+    function blockLabel(el) {
+      const explicit = el.getAttribute('data-block-id');
+      if (explicit) return explicit;
+      const heading = el.querySelector('.custom-heading, .custom-kicker, .custom-label');
+      const text = (heading ? heading.textContent : el.textContent || '').replace(/\s+/g, ' ').trim();
+      return text.slice(0, 60) || (el.getAttribute('class') || el.tagName.toLowerCase()).slice(0, 60);
+    }
+
     const slides = Array.from(document.querySelectorAll('section.slide'));
     const out = [];
     slides.forEach((slide, idx) => {
@@ -200,6 +212,8 @@ async function main() {
       const all = slide.querySelectorAll('*');
       const overflowing = new Set();     // out of slide bounds
       const overlapping = new Map();     // el → array of {chromeSel, chromeRect}
+      const dividerGapIssues = [];       // section divider title too close to meta rule
+      const contentOverlapIssues = [];   // sibling custom blocks that visually collide
 
       all.forEach((el) => {
         if (!isVisible(el)) return;
@@ -250,6 +264,50 @@ async function main() {
           }
         }
       });
+
+      // 3) Sibling content overlap inside generated custom layouts. This
+      // catches the common failure mode where a freeform diagram/image frame
+      // sits on top of cards or text but still remains within slide bounds.
+      slide.querySelectorAll('.custom-layout').forEach((layout) => {
+        if (!isVisible(layout) || allowsContentOverlap(layout)) return;
+        const children = Array.from(layout.children).filter((child) => {
+          if (!child.classList || !child.classList.contains('custom-block')) return false;
+          if (!isVisible(child) || allowsContentOverlap(child)) return false;
+          const r = child.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        });
+        for (let i = 0; i < children.length; i++) {
+          for (let j = i + 1; j < children.length; j++) {
+            const a = children[i];
+            const b = children[j];
+            const ar = a.getBoundingClientRect();
+            const br = b.getBoundingClientRect();
+            const ovl = overlapRect(ar, br);
+            if (!ovl) continue;
+            if (ovl.width < 6 || ovl.height < 6 || ovl.width * ovl.height < 144) continue;
+            contentOverlapIssues.push({ a, b, overlapW: +ovl.width.toFixed(1), overlapH: +ovl.height.toFixed(1) });
+          }
+        }
+      });
+
+      // 4) Section divider title vs meta rule. The title can visually sit
+      //    on top of the divider-meta border line without clipping or
+      //    colliding with global slide chrome, so catch this pattern
+      //    explicitly. We require a small air gap between the title glyph
+      //    box and the line above the meta text.
+      if (slide.classList.contains('divider')) {
+        const title = slide.querySelector('.divider-title');
+        const meta = slide.querySelector('.divider-meta');
+        if (title && meta && isVisible(title) && isVisible(meta)) {
+          const tr = title.getBoundingClientRect();
+          const mr = meta.getBoundingClientRect();
+          const gap = mr.top - tr.bottom;
+          const MIN_DIVIDER_TITLE_META_GAP = 18;
+          if (gap < MIN_DIVIDER_TITLE_META_GAP) {
+            dividerGapIssues.push({ title, meta, gap: +gap.toFixed(1), required: MIN_DIVIDER_TITLE_META_GAP });
+          }
+        }
+      }
 
       // Dedupe overflowing: only outermost element.
       const overflowingTop = [];
@@ -309,6 +367,33 @@ async function main() {
           ...ri,
         });
       });
+      dividerGapIssues.forEach((issue) => {
+        const r = issue.title.getBoundingClientRect();
+        const ri = rectInfo(r, sr);
+        overflows.push({
+          kind: 'divider-title-meta-gap',
+          tag: issue.title.tagName.toLowerCase(),
+          cls: (issue.title.getAttribute('class') || '').slice(0, 80),
+          text: (issue.title.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100),
+          gap: issue.gap,
+          requiredGap: issue.required,
+          ...ri,
+        });
+      });
+      contentOverlapIssues.forEach((issue) => {
+        const ar = issue.a.getBoundingClientRect();
+        const br = issue.b.getBoundingClientRect();
+        overflows.push({
+          kind: 'overlaps-content',
+          tag: issue.a.tagName.toLowerCase(),
+          cls: (issue.a.getAttribute('class') || '').slice(0, 80),
+          text: `${blockLabel(issue.a)} ↔ ${blockLabel(issue.b)}`.slice(0, 140),
+          overlapH: issue.overlapH,
+          overlapW: issue.overlapW,
+          a: rectInfo(ar, sr),
+          b: rectInfo(br, sr),
+        });
+      });
 
       if (overflows.length) {
         out.push({
@@ -351,7 +436,9 @@ async function main() {
 
   const clippedCount = report.reduce((n, it) => n + it.overflows.filter((o) => o.kind === 'clipped').length, 0);
   const overlapCount = report.reduce((n, it) => n + it.overflows.filter((o) => o.kind === 'overlaps-chrome').length, 0);
-  console.log(`✗ Overflow check FAILED — ${report.length} slide(s) with issues (${clippedCount} clipped past slide bounds, ${overlapCount} overlapping chrome).\n`);
+  const dividerGapCount = report.reduce((n, it) => n + it.overflows.filter((o) => o.kind === 'divider-title-meta-gap').length, 0);
+  const contentOverlapCount = report.reduce((n, it) => n + it.overflows.filter((o) => o.kind === 'overlaps-content').length, 0);
+  console.log(`✗ Overflow check FAILED — ${report.length} slide(s) with issues (${clippedCount} clipped past slide bounds, ${overlapCount} overlapping chrome, ${contentOverlapCount} content overlaps, ${dividerGapCount} divider title/meta gaps).\n`);
   for (const item of report) {
     console.log(`──  Slide ${item.index}: ${item.label}  ` + '─'.repeat(Math.max(0, 60 - String(item.label).length)));
     for (const o of item.overflows) {
@@ -363,9 +450,15 @@ async function main() {
         if (o.overTop    > 1.5) dirs.push(`top +${o.overTop}px`);
         console.log(`    [CLIPPED] <${o.tag}${o.cls ? ' class="' + o.cls + '"' : ''}>`);
         console.log(`      past slide bounds: ${dirs.join(', ')}`);
-      } else {
+      } else if (o.kind === 'overlaps-chrome') {
         console.log(`    [OVERLAPS CHROME ${o.chromeHits.join(', ')}] <${o.tag}${o.cls ? ' class="' + o.cls + '"' : ''}>`);
         console.log(`      collision: ${o.overlapH}px of vertical overlap (rect top=${o.top}, bottom=${o.bottom})`);
+      } else if (o.kind === 'divider-title-meta-gap') {
+        console.log(`    [DIVIDER TITLE/META GAP] <${o.tag}${o.cls ? ' class="' + o.cls + '"' : ''}>`);
+        console.log(`      gap to divider meta rule: ${o.gap}px; required at least ${o.requiredGap}px (rect bottom=${o.bottom})`);
+      } else if (o.kind === 'overlaps-content') {
+        console.log(`    [OVERLAPS CONTENT] <${o.tag}${o.cls ? ' class="' + o.cls + '"' : ''}>`);
+        console.log(`      sibling collision: ${o.overlapW}px × ${o.overlapH}px (a bottom=${o.a.bottom}, b top=${o.b.top})`);
       }
       if (o.text) console.log(`      "${o.text}${o.text.length === 100 ? '…' : ''}"`);
     }

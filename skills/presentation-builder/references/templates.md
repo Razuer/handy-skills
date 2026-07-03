@@ -16,10 +16,10 @@ When adding a new template:
 - **ID:** `seminar`
 - **Folder:** `assets/templates/seminar/`
 - **Renderer/shell:** seminar HTML shell rendered from `deck.yaml`; not the default file to edit by hand.
-- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`
+- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`; optional `deck.pptx` via `scripts/export_pptx.js`
 - **Asset dependencies:** none — fully self-contained, only Google Fonts over the network.
 - **Aspect / resolution:** 1920 × 1080 (16:9)
-- **Default deck length:** 25 slides
+- **Default deck length:** 25+ slides, depending on whether a custom evidence/layout slide is useful.
 - **Default fonts:** IBM Plex Sans (display + body), IBM Plex Mono (chrome/labels). Plex Serif available for italic math variables.
 - **Default palette:** off-white background `#fafaf7`, near-black foreground `#1a1a1a`, slate-blue accent `#2a5d8a`. Dark mode swaps to `#111111` / `#f3f1eb`.
 
@@ -31,7 +31,7 @@ When adding a new template:
 
 **Strengths**
 - Serious editorial typography; reads like a research paper, not a sales pitch.
-- Rich primitives for the slide types academics actually need: definition card, numbered/bulleted lists, pull-quote, full-bleed photo intro, pipeline/process diagram, 2- and 3-column comparison, equation showcase, syntax-highlighted code, big-number stat, bar chart, data table with delta highlighting, image-led layout, 6-tile image grid, numbered contributions cards, paired limitation-with-mitigation list, timeline, two-column references list, acknowledgements, formal Q&A closer, dark appendix divider.
+- Rich primitives for the slide types academics actually need: definition card, numbered/bulleted lists, pull-quote, full-bleed photo intro, pipeline/process diagram, 2- and 3-column comparison, equation showcase, syntax-highlighted code, big-number stat, bar chart, data table with delta highlighting, image-led layout, 6-tile image grid, custom layout grid/gallery/card/metric blocks, numbered contributions cards, paired limitation-with-mitigation list, timeline, two-column references list, acknowledgements, formal Q&A closer, dark appendix divider.
 - Built-in v1 theme tokens: `dark`, three density variants (`compact`/regular/`spacious`), action-style vs topic-style titles, footer toggle, light vs dark code blocks, customizable accent color, and implemented font pairs.
 
 **Weaknesses / when not to pick**
@@ -41,7 +41,7 @@ When adding a new template:
 - No institutional branding — pick `university` if the user needs PWR (Wrocław Tech) chrome.
 
 **Available slide patterns** (see `slide-patterns.md` for intent and `pattern-schema.md` for fields)
-`cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
+`cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `custom`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
 
 **Built-in customization knobs** (set in `deck.yaml`, rendered as body classes/CSS variables; see `customization.md`)
 - `theme.dark: true|false`
@@ -58,14 +58,14 @@ When adding a new template:
 - **ID:** `university`
 - **Folder:** `assets/templates/university/`
 - **Renderer/shell:** university HTML shell rendered from `deck.yaml`; not the default file to edit by hand.
-- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`, `assets/uni/*.png`
+- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`, `assets/uni/*.png`; optional `deck.pptx` via `scripts/export_pptx.js`
 - **Asset dependencies:** `assets/uni/*.png` — official PWR (Politechnika Wrocławska / Wrocław University of Science and Technology) logos and partner marks. **These must be copied alongside the HTML** for the deck to render correctly. Filenames the HTML expects:
   - `pwr-en-horiz.png`, `pwr-pl-horiz.png` — horizontal lockups (cover, English/Polish)
   - `pwr-en-horiz-white.png`, `pwr-pl-horiz-white.png` — horizontal lockups on red rail (white versions, all non-cover slides)
   - `pwr-en-vert.png`, `pwr-pl-vert.png`, `pwr-en-vert-white.png`, `pwr-pl-vert-white.png` — vertical eagle marks for cover panel
   - `hr-excellence.png`, `unite.png`, `iep-evaluated.png` — partner badges on cover footer strip
 - **Aspect / resolution:** 1920 × 1080 (16:9)
-- **Default deck length:** 25 slides (mirrors seminar)
+- **Default deck length:** 25+ slides (mirrors seminar, with optional custom layout slides)
 - **Default fonts:** Trebuchet MS (official PWR font) with Source Sans 3 web fallback; JetBrains Mono for code/chrome; Source Serif 4 for italic math.
 - **Default palette:** PWR red `#9A342D` (Pantone 484) on cream `#F1D1A2` (Pantone 156) — these are **brand-mandated** and should not be overridden. Black ink on white. Dark mode inverts to deep brown background with cream ink.
 
@@ -76,7 +76,7 @@ When adding a new template:
 
 **Strengths**
 - Locked, audit-able brand. Top red rail with white horizontal lockup, footer with partner logos (HR Excellence, Unite!, IEP), red-paneled cover with vertical eagle.
-- Same 25-slide pattern catalog as seminar, with PWR-styled chrome on every slide.
+- Same pattern catalog as seminar, with PWR-styled chrome on every slide, including custom layout bodies.
 - First-class i18n: write content twice (EN + PL) under localized objects; the default locale is selected by `metadata.language.default` and rendered as `body.lang-en` / `body.lang-pl`.
 
 **Weaknesses / when not to pick**
@@ -85,7 +85,7 @@ When adding a new template:
 - The cover slide layout is hard-coded around the eagle logo and red panel; can't be substantially restructured without breaking the brand.
 
 **Available slide patterns** (see `slide-patterns.md` for intent and `pattern-schema.md` for fields)
-Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
+Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `custom`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
 
 **Built-in customization knobs** (set in `deck.yaml`, rendered as body classes/CSS variables; see `customization.md`)
 - `metadata.language.default: en|pl`, `metadata.language.available: [en, pl]`, and localized objects for translatable text
@@ -103,7 +103,7 @@ Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divide
 - **ID:** `keynote`
 - **Folder:** `assets/templates/keynote/`
 - **Renderer/shell:** generated from the preserved source file `keynote-template.html`; generator materializes the shell at build time.
-- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`
+- **Generated/support files:** `deck.html`, `script.md`, `README.md`, `deck-stage.js`, `image-slot.js`, `tweaks-panel.jsx`; optional `deck.pptx` via `scripts/export_pptx.js`
 - **Asset dependencies:** none in the current HTML; if future images/fonts are added, keep relative paths under `assets/templates/keynote/assets/`.
 - **Aspect / resolution:** 1920 × 1080 (16:9)
 - **Default deck length:** 23 slides in the original source template.
@@ -117,7 +117,7 @@ Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divide
 **Strengths**
 - Strong keynote-style visual identity with large editorial typography.
 - Built-in dark and paper modes, accent color presets, density variants, footer toggle, and italic emphasis toggle.
-- Supports the shared generator catalog: cover, agenda, dividers, definition, bullets, quote, full-bleed image, pipeline, comparison, equation, code, headline stat, chart, table, image layouts, claims, limitations, timeline, references, Q&A.
+- Supports the shared generator catalog: cover, agenda, dividers, definition, bullets, quote, full-bleed image, pipeline, comparison, equation, code, headline stat, chart, table, image layouts, custom layouts, claims, limitations, timeline, references, Q&A.
 
 **Weaknesses / when not to pick**
 - Less conservative than `seminar`; not ideal for dense academic material or formal institutional decks.
@@ -125,7 +125,7 @@ Same catalog as seminar, but with PWR chrome: `cover`, `agenda`, `section-divide
 - No institutional branding; choose `university` for PWR-branded decks.
 
 **Available slide patterns**
-`cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
+`cover`, `agenda`, `section-divider`, `definition`, `bullets`, `quote`, `full-bleed`, `pipeline`, `comparison`, `comparison-3col`, `equation`, `code`, `big-number`, `bar-chart`, `table`, `image-led`, `image-grid`, `custom`, `contributions`, `limitations`, `timeline`, `acknowledgements`, `references`, `qa`, `appendix-divider`.
 
 **Built-in customization knobs**
 - `theme.accent`

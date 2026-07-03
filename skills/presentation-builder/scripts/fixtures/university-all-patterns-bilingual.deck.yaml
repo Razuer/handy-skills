@@ -187,8 +187,8 @@ slides:
       en: "Why molecular structure is awkward for fixed tables."
       pl: "Dlaczego struktura molekuł nie pasuje do stałych tabel."
     meta:
-      en: "Section 01 of 25"
-      pl: "Sekcja 01 z 25"
+      en: "Section 01 of 26"
+      pl: "Sekcja 01 z 26"
     duration:
       en: "5 min"
       pl: "5 min"
@@ -311,8 +311,8 @@ slides:
       en: "Parse, featurize, pass messages, pool, predict."
       pl: "Parsuj, twórz cechy, propaguj komunikaty, agreguj, predykuj."
     meta:
-      en: "Section 02 of 25"
-      pl: "Sekcja 02 z 25"
+      en: "Section 02 of 26"
+      pl: "Sekcja 02 z 26"
     duration:
       en: "10 min"
       pl: "10 min"
@@ -765,6 +765,8 @@ slides:
           pl: "jeden wektor grafu"
     image:
       slotId: "fig-architecture"
+      fit: contain
+      alt: "Architecture diagram"
       placeholder:
         en: "Drop your architecture diagram here"
         pl: "Upuść tutaj diagram architektury"
@@ -853,6 +855,113 @@ slides:
       text:
         en: "The six slots exercise the full image grid and the qualitative caption style."
         pl: "Sześć miejsc sprawdza pełną siatkę obrazów i styl podpisów jakościowych."
+      transition:
+        en: "A custom layout can combine those examples with interpretation."
+        pl: "Układ niestandardowy może połączyć te przykłady z interpretacją."
+  - id: custom-evidence-wall
+    pattern: custom
+    eyebrow:
+      en: "Results · Custom layout"
+      pl: "Wyniki · Układ niestandardowy"
+    title:
+      en: "Custom layouts keep the PWR chrome and free the slide body"
+      pl: "Układy niestandardowe zachowują oprawę PWr i uwalniają treść slajdu"
+    fitFooter: true
+    layout:
+      columns: "1.25fr 0.9fr"
+      rows: "1fr 1fr"
+      areas:
+        - "gallery metric"
+        - "gallery note"
+      gap: 24px
+    blocks:
+      - type: gallery
+        area: gallery
+        title:
+          en: "Photo group"
+          pl: "Grupa zdjęć"
+        cols: 2
+        images:
+          - slotId: "custom-photo-1"
+            placeholder:
+              en: "Photo A"
+              pl: "Zdjęcie A"
+            caption:
+              en: "Binding motif"
+              pl: "Motyw wiązania"
+            meta:
+              en: "TP"
+              pl: "TP"
+          - slotId: "custom-photo-2"
+            placeholder:
+              en: "Photo B"
+              pl: "Zdjęcie B"
+            caption:
+              en: "Scaffold shift"
+              pl: "Zmiana scaffolda"
+            meta:
+              en: "FN"
+              pl: "FN"
+          - slotId: "custom-photo-3"
+            placeholder:
+              en: "Photo C"
+              pl: "Zdjęcie C"
+            caption:
+              en: "Noisy label"
+              pl: "Zaszumiona etykieta"
+            meta:
+              en: "FP"
+              pl: "FP"
+          - slotId: "custom-photo-4"
+            placeholder:
+              en: "Photo D"
+              pl: "Zdjęcie D"
+            caption:
+              en: "Clean negative"
+              pl: "Czysty negatyw"
+            meta:
+              en: "TN"
+              pl: "TN"
+      - type: metric
+        area: metric
+        value:
+          en: "4×"
+          pl: "4×"
+        label:
+          en: "more visual context than image-led"
+          pl: "więcej kontekstu wizualnego niż image-led"
+        body:
+          en: "The slide keeps the institutional rail, footer, and language toggle."
+          pl: "Slajd zachowuje uczelniany pasek, stopkę i przełącznik języka."
+      - type: card
+        area: note
+        kicker:
+          en: "Use case"
+          pl: "Zastosowanie"
+        title:
+          en: "When fixed patterns are too rigid"
+          pl: "Gdy stałe wzorce są zbyt sztywne"
+        body:
+          en: "Use custom for photo groups, mixed media, asymmetric evidence boards, and one-off diagrams."
+          pl: "Użyj custom do grup zdjęć, mediów mieszanych, asymetrycznych plansz dowodów i jednorazowych diagramów."
+        items:
+          - title:
+              en: "Stay structured"
+              pl: "Zachowaj strukturę"
+            body:
+              en: "Prefer grid areas and typed blocks."
+              pl: "Preferuj obszary siatki i typowane bloki."
+          - title:
+              en: "Verify visually"
+              pl: "Sprawdź wizualnie"
+            body:
+              en: "Run overflow and contact-sheet checks."
+              pl: "Uruchom kontrolę przepełnień i contact sheet."
+    notes: "Custom layout. Demonstrates bilingual gallery, metric, and card blocks."
+    script:
+      text:
+        en: "This slide shows the controlled escape valve: named grid areas, typed blocks, and generated PWR chrome instead of raw patched HTML."
+        pl: "Ten slajd pokazuje kontrolowany zawór bezpieczeństwa: nazwane obszary siatki, typowane bloki i generowaną oprawę PWr zamiast ręcznie łatanego HTML."
       transition:
         en: "Now move to the discussion claims."
         pl: "Teraz przechodzimy do tez dyskusji."

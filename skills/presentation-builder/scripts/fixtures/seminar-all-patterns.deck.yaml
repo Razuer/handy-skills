@@ -78,7 +78,7 @@ slides:
     number: "01"
     title: "Background"
     subtitle: "Why molecular structure is awkward for fixed-length tabular models."
-    meta: "Section 01 of 25"
+    meta: "Section 01 of 26"
     duration: "5 min"
     notes: "Section divider — Background."
     script:
@@ -132,7 +132,7 @@ slides:
     number: "02"
     title: "Method"
     subtitle: "Represent molecules as graphs, pass messages, pool, and predict."
-    meta: "Section 02 of 25"
+    meta: "Section 02 of 26"
     duration: "10 min"
     notes: "Section divider — Method."
     script:
@@ -352,6 +352,8 @@ slides:
         body: "produces graph embedding"
     image:
       slotId: "fig-architecture"
+      fit: contain
+      alt: "Architecture diagram"
       placeholder: "Drop your architecture diagram here"
     caption: "Architecture image slot with supporting bullets."
     notes: "Architecture figure. Walk through data flow."
@@ -392,6 +394,55 @@ slides:
     notes: "Qualitative samples. Two failures keep this honest."
     script:
       text: "The six image slots mirror the original template and show how qualitative inspection can surface systematic false positives and false negatives."
+      transition: "A custom layout can combine this visual evidence with a focused takeaway."
+  - id: custom-evidence-wall
+    pattern: custom
+    eyebrow: "Results · Custom layout"
+    title: "A custom evidence wall combines visuals, metrics, and interpretation"
+    actionTitle: "Use custom when the catalog is close, but not quite right"
+    fitFooter: true
+    layout:
+      columns: "1.35fr 0.85fr"
+      rows: "1fr 1fr"
+      areas:
+        - "gallery metric"
+        - "gallery note"
+      gap: 28px
+    blocks:
+      - type: gallery
+        area: gallery
+        title: "Photo group"
+        cols: 2
+        images:
+          - slotId: "custom-photo-1"
+            placeholder: "Photo A"
+            caption: "Binding motif"
+            meta: "TP"
+          - slotId: "custom-photo-2"
+            placeholder: "Photo B"
+            caption: "Scaffold shift"
+            meta: "FN"
+          - slotId: "custom-photo-3"
+            placeholder: "Photo C"
+            caption: "Noisy label"
+            meta: "FP"
+          - slotId: "custom-photo-4"
+            placeholder: "Photo D"
+            caption: "Clean negative"
+            meta: "TN"
+      - type: metric
+        area: metric
+        value: "4×"
+        label: "more visual context than image-led"
+        body: "Template chrome plus multiple media slots and one headline number."
+      - type: card
+        area: note
+        kicker: "Use case"
+        title: "When fixed patterns are too rigid"
+        body: "Use custom for photo groups, evidence boards, mixed media, or one-off diagrams."
+    notes: "Custom layout. Demonstrates gallery, metric, card, and named grid areas."
+    script:
+      text: "This slide is the escape valve. It keeps the generator and template chrome, but the body is a named grid with a gallery, a metric, and an explanatory card."
       transition: "From here, we can state the contributions."
   - id: contributions
     pattern: contributions
@@ -523,7 +574,7 @@ slides:
     title: "Appendix"
     subtitle: "Detailed hyperparameters and extra figures live in backup."
     meta: "Backup"
-    duration: "25 / 25"
+    duration: "26 / 26"
     notes: "Appendix divider. Only navigate here if asked."
     script:
       text: "The appendix is available for backup questions about hyperparameters, extra tables, and additional examples."

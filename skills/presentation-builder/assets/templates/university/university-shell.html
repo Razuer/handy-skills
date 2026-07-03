@@ -503,6 +503,8 @@
   }
   .compare-list li::before { content: "→"; color: var(--pwr-muted); font-family: var(--font-mono); }
   .compare.alt .compare-list li::before { color: var(--pwr-red); }
+  .compare-list .b-title { font-weight: 700; display: block; }
+  .compare-list .b-desc { color: var(--pwr-muted); display: block; margin-top: 6px; font-size: 22px; line-height: 1.4; }
 
   /* ─── Big stat ───────────────────────────────────────────────────── */
   .stat-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 80px; flex: 1; align-items: center; }
@@ -643,7 +645,7 @@
   ol.refs li .ref-idx { font-family: var(--font-mono); color: var(--pwr-red); font-size: 24px; font-weight: 500; }
   ol.refs li .ref-body .ref-authors { font-weight: 700; }
   ol.refs li .ref-body .ref-venue  { color: var(--pwr-muted); font-style: italic; }
-  ol.refs li .ref-body .ref-doi    { font-family: var(--font-mono); color: var(--pwr-muted); font-size: 24px; display: block; margin-top: 4px; }
+  ol.refs li .ref-body .ref-doi    { font-family: var(--font-mono); color: var(--pwr-muted); font-size: var(--t-mono); line-height: 1.2; display: block; margin-top: 2px; overflow-wrap: anywhere; word-break: break-word; }
 
   /* ─── Closing / Q&A ──────────────────────────────────────────────── */
   section.slide.qa {
