@@ -1,79 +1,55 @@
 # handy-opencode
 
-Repository of [OpenCode](https://opencode.ai) skills and agents for a plan-first, execution-oriented workflow.
+[OpenCode](https://opencode.ai) skills and agents. Not affiliated with OpenCode.
 
-## Workflow
+## Agents
 
-This setup separates planning from implementation so repository analysis, code changes, and review can happen with clear boundaries. It also includes repository-mapping agents and a command for generating sparse `AGENTS.md` guidance networks.
+Pick one pack. Install only what you use.
 
-### Planning
+### Skein
 
-`athena` is the planning agent. It inspects the repository, resolves ambiguity, and produces a concrete implementation plan instead of making code changes directly.
+Minimal end-to-end workflow. Newest default.
 
-For larger or cross-cutting requests, Athena delegates repository discovery to `athena-explore`. That subagent stays read-only and returns the exact files, symbols, implementation order, risks, and verification signals needed to write a plan that is specific enough for implementation without guesswork.
+1. **Plan** (when asked): parallel explorers gather facts → sidekick review challenges edges/complexity → Skein synthesizes one plan.
+2. **Build**: independent slices via `skein-build`; coupled work stays with Skein.
+3. **Verify + review**: Skein integrates, runs real checks, then one fresh `skein-review`.
+4. **Fix**: owned fixes go back through the same builder `task_id`; Skein handles cross-cutting work.
+5. **Ship**: short human summary; checkpoint commits only for complex milestones (Skein only).
 
-The output of this phase is a repository-grounded markdown plan that can be handed off to implementation.
+Style: understand first, then YAGNI / reuse / stdlib / native / deps / one-line / minimum. Important tests only. No ceremony.
 
-### Execution
+### Athena
 
-`hermes` is the implementation orchestrator. It takes an approved plan, breaks the work into dependency-ordered workstreams, and runs independent work in parallel where the repository allows it.
+Planning only. Explores the repo (via `athena-explore` when needed) and writes a concrete implementation plan. Does not implement.
 
-Hermes uses three specialized subagents:
+### Hermes
 
-- `hermes-explore` for read-only implementation scouting, dependency mapping, and verification signals before code changes begin
-- `hermes-build` for focused, scoped implementation workstreams
-- `hermes-review` for independent review of completed or integrated work, with emphasis on correctness, regression risk, and missing verification
+Execution. Takes a plan, splits it into dependency-ordered workstreams, runs independent slices in parallel (`hermes-build`), scouts with `hermes-explore`, reviews with `hermes-review`, then integrates and verifies.
 
-Hermes remains responsible for integrating results, sending follow-up fixes back through the same workstream when needed, and running the final verification needed to finish the change cleanly.
+### Atlas
 
-### End-To-End Flow
+Maps a repository into a sparse root + nested `AGENTS.md` network. Uses `cartographer` for subtree discovery. Start with the `agents-network` command.
 
-1. `athena` creates the implementation plan.
-2. `athena-explore` supports planning with read-only repository analysis.
-3. `hermes` turns the plan into parallelizable workstreams.
-4. `hermes-build` implements those workstreams, with `hermes-explore` filling context gaps where needed.
-5. `hermes-review` performs independent review on risky or integrated changes.
-6. `hermes` resolves remaining issues, verifies the result, and closes the work.
-
-### Repository Guidance Mapping
-
-`atlas` is the primary agent for creating or refining a sparse network of root and nested `AGENTS.md` files. It delegates subtree discovery to the recursive `cartographer` subagent and writes the root guide last after the project shape is understood.
-
-Use the `agents-network` command to start that workflow for the current project or a target path.
-
-## Installation
-
-Use the installer to choose what to add to your OpenCode config:
+## Install
 
 ```bash
 ./install.sh
 ```
 
-The installer runs interactively by default and lets you install:
+Interactive by default. Choose skills, agents, and/or commands. If you pick agents, you choose which packs.
 
-- skills only
-- agents only
-- commands only
-- skills, agents, and commands
-
-It creates symlinks inside `~/.config/opencode/` so updates in this repository are reflected immediately.
-
-For non-interactive usage:
+Symlinks into `~/.config/opencode/` so repo updates apply immediately.
 
 ```bash
 ./install.sh --skills
-./install.sh --agents
+./install.sh --agents              # all packs
+./install.sh --agent skein
+./install.sh --agent skein --agent atlas
 ./install.sh --commands
 ./install.sh --all
 ./install.sh --all --force
 ```
 
-You can override the target config directory with `OPENCODE_DIR` if needed:
-
 ```bash
-OPENCODE_DIR=/path/to/opencode ./install.sh --all
+OPENCODE_DIR=/path/to/opencode ./install.sh --agent skein
 ```
-
-## Notice
-
-This project is not built by the OpenCode team and is not affiliated with OpenCode in any way.
