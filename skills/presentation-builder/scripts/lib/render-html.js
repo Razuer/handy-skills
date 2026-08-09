@@ -35,7 +35,7 @@ function normalize(deck) {
       return {
         ...slide,
         ordinal,
-        total,
+        total: slide.total ?? total,
         id: slide.id || `slide-${ordinal}`,
         pattern: slide.pattern || 'bullets',
         ordinalLabel: slide.ordinalLabel || slide.dataLabel || `${String(ordinal).padStart(2, '0')} ${short}`,

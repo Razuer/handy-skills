@@ -31,7 +31,11 @@ function fieldLabel(label, lang = 'en') {
   return i18n(FIELD_LABELS[label] || label, lang);
 }
 
-function counter(slide) { return `${ordinal(slide.ordinal)} / ${ordinal(slide.total)}`; }
+function counter(slide) {
+  if (slide.counter === false) return '';
+  if (typeof slide.counter === 'string') return escapeHtml(slide.counter);
+  return `${ordinal(slide.ordinal)} / ${ordinal(slide.total)}`;
+}
 
 function attrs(slide, extra = []) {
   const classes = ['slide', ...extra, ...(slide.classes || [])].filter(Boolean).join(' ');

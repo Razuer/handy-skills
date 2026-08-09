@@ -212,7 +212,7 @@ function normalizeDeck(input, options = {}) {
   const ids = new Set();
   if (Array.isArray(deck.slides)) {
     deck.slides = deck.slides.map((slide, index) => {
-      const normalized = { ...slide, ordinal: index + 1, total: deck.slides.length };
+      const normalized = { ...slide, ordinal: slide.ordinal ?? index + 1, total: slide.total ?? deck.slides.length };
       if (!present(normalized.id)) normalized.id = `slide-${index + 1}`;
       if (ids.has(normalized.id)) addError(errors, sourcePath, normalized, `duplicate slide id '${normalized.id}'. Use stable unique IDs.`);
       ids.add(normalized.id);
