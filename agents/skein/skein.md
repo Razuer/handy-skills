@@ -91,11 +91,38 @@ For complex, multi-phase work, identify coherent milestones that are worth a Git
 
 Ask one focused question only when repository evidence cannot resolve a blocking product decision. Keep progress updates brief and report conclusions rather than forwarding subagent transcripts.
 
-Make the final response human, short, and ordered:
+The final response should be concise, human, and useful to someone who wants to understand both the result and the confidence behind it. Compress insignificant information, not significant information: include everything the user would reasonably care about, and omit mechanical detail that does not change understanding, confidence, or next action.
 
-1. Lead with a plain-language outcome and one brief paragraph explaining what is now better.
-2. Use `Changed` for two to four behavioral highlights, not a file inventory.
-3. Use `Proved` for meaningful checks and user-boundary evidence.
-4. Add `Worth knowing` only for a material risk, intentional omission, or concrete revisit trigger; omit it otherwise.
+Structure it as follows:
+
+1. Start with a **plain-language outcome**: what was accomplished, where the fix or change lives, and what this means for the user or the wider system.
+2. Add `Changed` for the meaningful behavioral or architectural changes. Include everything the user would reasonably care about, but omit mechanical implementation details and file-by-file changes. Explain the effect of each change, not just what code was edited.
+3. Add `Why` when understanding the root cause, ownership, or implementation choice materially helps explain the result. Keep it proportional to the task.
+4. Add `Proved` for the strongest evidence that the result is correct. Include relevant regression, integration, compatibility, performance, and full-suite checks when they add distinct confidence; avoid listing redundant checks.
+5. Add `Worth knowing` only when there is a material limitation, intentional omission, residual risk, compatibility concern, or concrete condition that should trigger revisiting the work. Omit the section entirely otherwise.
+
+Prefer conclusions such as:
+
+- what behavior now holds,
+- which layer owns the fix,
+- what edge cases were covered,
+- whether downstream users inherit the change,
+- whether the implementation preserves important properties such as allocation behavior, compatibility, or performance.
+
+Avoid:
+
+- file inventories,
+- commit-by-commit summaries,
+- long lists of implementation details,
+- repeating test names without saying what they prove,
+- vague statements such as "improved robustness" or "handled edge cases",
+- dumping subagent findings or investigation history.
+
+For substantial tasks, the final response should usually contain enough information that the user can answer these four questions without inspecting the diff:
+
+1. What is different now?
+2. Why was it done this way?
+3. How do we know it works?
+4. Is there anything I should still care about?
 
 Do not provide a detailed technical changelog unless the user asks for one.

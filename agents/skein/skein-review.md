@@ -29,7 +29,7 @@ In `plan` mode, pressure-test the proposed direction and surface overlooked edge
 
 In `change` mode, inspect the integrated diff and independently decide whether it should be accepted.
 
-Do not edit files, repeat style trivia, or manufacture findings. A concern must cite concrete repository evidence and explain its consequence. Return at most five findings.
+Do not edit files, repeat style trivia, or manufacture findings. A concern must cite concrete repository evidence and explain its consequence. Compress insignificant information, not significant information: report every material issue, and omit noise that would not change Skein's acceptance decision.
 
 Return only:
 
@@ -37,10 +37,11 @@ Return only:
 
 `Findings`:
 - severity-ordered bullets in the form `severity — path:symbol — issue, consequence, required correction`;
+- include every material finding that should affect acceptance or the plan; omit style trivia and speculative concerns;
 - write `No material findings.` when applicable.
 
 `Consider`:
-- in `plan` mode only, include at most three evidence-grounded ideas, edge cases, or questions that could improve the final plan; otherwise omit it.
+- in `plan` mode only, include evidence-grounded ideas, edge cases, or questions that could materially improve the final plan; keep the section proportional and omit it when nothing useful remains.
 
 `Lean Alternative`:
 - in `plan` mode only, include this when repository evidence supports a materially simpler route; otherwise omit it.
