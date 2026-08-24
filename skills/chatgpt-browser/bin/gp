@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+# gp - drive the ChatGPT tab of a running terminal-browser as a second-opinion agent.
+# Requires: terminal-browser with an open, logged-in chatgpt.com tab; python3.
+set -euo pipefail
+
+TIMEOUT="${GP_TIMEOUT:-300}"
+
+die() { echo "gp: $*" >&2; exit 1; }
+need_tb() { command -v terminal-browser >/dev/null || die "terminal-browser not installed"; }
+
+tb() { terminal-browser action -- "$@"; }
+
+# Resolve browser key + tab id for the ChatGPT session.
+# GP_SESSION="key:tab" wins; otherwise pick the active chatgpt.com tab.
+resolve_session() {
+  need_tb
+  if [[ -n "${GP_SESSION:-}" ]]; then
+    GB_KEY="${GP_SESSION%%:*}"
+    GB_TAB="${GP_SESSION##*:}"
+    return
+  fi
+  local kt
+  kt=$(terminal-browser ls --all --json | python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+tabs=[]
+for b in d.get("browsers",[]):
+    for t in b.get("tabs",[]):
+        u=t.get("url","")
+        if u.startswith("https://chatgpt.com"):
+            tabs.append((0 if t.get("active") else 1, b["key"], t["id"]))
+if not tabs: raise SystemExit(1)
+tabs.sort()
+print(tabs[0][1], tabs[0][2])
+') || die "no chatgpt.com tab found - run: terminal-browser action --browser \$(terminal-browser ls | head) -- open https://chatgpt.com"
+  GB_KEY="${kt%% *}"
+  GB_TAB="${kt##* }"
+}
+
+sel() { printf -- '--browser %s --tab %s' "$GB_KEY" "$GB_TAB"; }
+
+js() {
+  local code="$1" out
+  out=$(terminal-browser action $(sel) -- eval "$code")
+  # agent-browser may wrap eval output in a JSON array; unwrap one level.
+  printf '%s' "$out" | python3 -c 'import sys,json
+raw=sys.stdin.read().strip()
+try:
+    v=json.loads(raw)
+except Exception:
+    print(raw); raise SystemExit
+if isinstance(v,list) and len(v)==1: v=v[0]
+print(v if isinstance(v,str) else json.dumps(v))'
+}
+
+state_js='(() => { const s=!!document.querySelector("[data-testid=\"stop-button\"]"); const ms=[...document.querySelectorAll("[data-message-author-role]")]; const a=[...ms].reverse().find(m=>m.getAttribute("data-message-author-role")==="assistant"); return JSON.stringify({stop:s,msgs:ms.length,alen:a?a.innerText.length:0}); })()'
+
+# Probe page state, retrying across SPA navigation / context teardown.
+probe_state() {
+  local attempt st
+  for attempt in 1 2 3 4 5 6 7 8; do
+    st=$(js "$state_js" 2>/dev/null || true)
+    if python3 -c 'import json,sys;d=json.loads(sys.argv[1]);assert isinstance(d,dict) and "stop" in d' "$st" 2>/dev/null; then
+      echo "$st"
+      return 0
+    fi
+    sleep 1
+  done
+  echo '{}'
+}
+
+wait_done() {
+  local deadline=$(( SECONDS + TIMEOUT )) prev=-1 stable=0
+  while (( SECONDS < deadline )); do
+    local st; st=$(probe_state)
+    local stop alen
+    stop=$(python3 -c 'import json,sys;print(json.loads(sys.argv[1]).get("stop",True))' "$st" 2>/dev/null || echo "True")
+    alen=$(python3 -c 'import json,sys;print(json.loads(sys.argv[1]).get("alen",0))' "$st" 2>/dev/null || echo 0)
+    if [[ "$stop" == "False" ]]; then
+      if (( alen > 0 && alen == prev )); then stable=$((stable+1)); else stable=0; fi
+      prev=$alen
+      (( stable >= 2 )) && return 0
+    fi
+    sleep 2
+  done
+  die "timed out after ${TIMEOUT}s waiting for generation (GP_TIMEOUT to change)"
+}
+
+cmd="${1:-help}"; shift || true
+
+case "$cmd" in
+  status)
+    resolve_session
+    probe_state
+    echo "{\"session\":\"$GB_KEY:$GB_TAB\",\"url\":\"$(terminal-browser action $(sel) -- get url)\"}"
+    ;;
+  new)
+    need_tb
+    # Pick any running browser, then open a fresh chatgpt.com tab through CDP
+    # (plain `terminal-browser open` needs a ghostty pane and fails elsewhere).
+    host=$(terminal-browser ls --all --json | python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+for b in d.get("browsers",[]):
+    print(b["key"]); raise SystemExit
+raise SystemExit(1)
+') || die "no running terminal-browser found - open one first"
+    terminal-browser action --browser "$host" --tab 1 -- open https://chatgpt.com/ >/dev/null
+    sleep 3
+    terminal-browser ls --all --json | python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+best=None
+for b in d.get("browsers",[]):
+    for t in b.get("tabs",[]):
+        u=t.get("url","")
+        if u.rstrip("/")=="https://chatgpt.com" or u.startswith("https://chatgpt.com/?"):
+            best=(b["key"],t["id"])
+print(f"{best[0]}:{best[1]}" if best else "", end="")
+' > /tmp/gp-new-session.$$
+S=$(cat /tmp/gp-new-session.$$); rm -f /tmp/gp-new-session.$$
+[[ -n "$S" ]] || die "could not find fresh chatgpt.com tab"
+echo "export GP_SESSION=$S"
+    ;;
+  send)
+    resolve_session
+    TEXT=""
+    if [[ "${1:-}" == "-" ]]; then TEXT=$(cat); else TEXT="${1:?usage: gp send \"text\" | gp send - < prompt.txt}"; fi
+    terminal-browser action $(sel) -- fill '#prompt-textarea' "$TEXT"
+    terminal-browser action $(sel) -- click '[data-testid="send-button"]'
+    sleep 1
+    st=$(probe_state)
+    python3 -c 'import json,sys;d=json.loads(sys.argv[1]);print("sent; generating" if d.get("stop") else "sent; already finished")' "$st"
+    ;;
+  attach)
+    resolve_session
+    (($#)) || die "usage: gp attach FILE..."
+    for f in "$@"; do [[ -f $f ]] || die "not a file: $f"; done
+    terminal-browser action $(sel) -- upload 'input[type=file]' "$@"
+    sleep 1
+    echo "attached: $*"
+    ;;
+  wait)
+    resolve_session
+    wait_done
+    probe_state
+    ;;
+  read)
+    resolve_session
+    WHICH="last"; META=0
+    while getopts ":n:a" o; do case $o in n) WHICH="$OPTARG";; a) WHICH=all;; *) ;; esac; done
+    shift $((OPTIND-1))
+    READ_JS="(() => { const ms=[...document.querySelectorAll('[data-message-author-role]')]; const out=ms.map((m,i)=>({i:i+1,role:m.getAttribute('data-message-author-role'),text:m.innerText})); return JSON.stringify(out); })()"
+    DATA=$(js "$READ_JS")
+    READ_PY=$(mktemp)
+    cat >"$READ_PY" <<'PYEOF'
+import json,sys
+which=sys.argv[1]
+msgs=json.loads(sys.argv[2])
+if which=="all":
+    for m in msgs:
+        print(f"=== [{m['i']}] {m['role']} ===")
+        print(m["text"])
+else:
+    try:
+        n=int(which)
+    except ValueError:
+        n=None
+    picked=[m for m in msgs if m["i"]==n] if n else []
+    pool=picked or [m for m in msgs if m["role"]=="assistant"]
+    print(pool[-1]["text"] if pool else "", end="")
+PYEOF
+    python3 "$READ_PY" "${WHICH:-last}" "$DATA"
+    RC=$?
+    rm -f "$READ_PY"
+    exit $RC
+    ;;
+  url)
+    resolve_session
+    terminal-browser action $(sel) -- get url
+    ;;
+  resume)
+    resolve_session
+    URL="${1:?usage: gp resume https://chatgpt.com/c/<id>}"
+    terminal-browser action $(sel) -- goto "$URL"
+    sleep 3
+    probe_state
+    ;;
+  help|*)
+    cat <<'EOF'
+gp - use ChatGPT in terminal-browser as a second-opinion agent
+
+Session targeting: set GP_SESSION="browserKey:tabId" (printed by `gp new`),
+or let gp auto-pick the active chatgpt.com tab.
+
+  gp new              Open a clean session; prints `export GP_SESSION=key:tab`
+  gp status           Session info + message count + busy flag
+  gp send "text"      Fill composer and submit ("-" reads stdin)
+  gp attach F [F...]  Attach file(s) to composer BEFORE sending
+  gp wait             Block until reply finishes streaming
+  gp read [-a|-n N]   Last assistant message (-a whole thread, -n N message N)
+  gp url              Print resumable conversation URL
+  gp resume URL       Navigate current tab to a saved conversation
+
+Typical loop:
+  export GP_SESSION=$(gp new | sed 's/export GP_SESSION=//')
+  gp attach context.diff
+  gp send "Review this diff. Reply ONLY with JSON {\"verdict\":string,\"issues\":[string]}"
+  gp wait && gp read
+Env: GP_TIMEOUT seconds for wait (default 300).
+EOF
+    ;;
+esac
