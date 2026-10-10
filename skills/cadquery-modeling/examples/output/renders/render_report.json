@@ -1,0 +1,22 @@
+{
+  "parts": 2,
+  "bbox_mm": [
+    59.974,
+    60.0,
+    4.0
+  ],
+  "coordinates": "+Z = front visible face; +Y = top elevation",
+  "files": [
+    "examples/output/rosette_left.step",
+    "examples/output/rosette_right.step"
+  ],
+  "views": [
+    "iso.png",
+    "front.png",
+    "back.png",
+    "right.png",
+    "top.png",
+    "bottom.png",
+    "exploded_iso.png"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "units": "mm for STEP import and STL by project convention",
+  "checks": [
+    {
+      "file": "examples/output/rosette_left.stl",
+      "kind": "STL",
+      "errors": [],
+      "warnings": [],
+      "vertices": 4829,
+      "faces": 9654,
+      "watertight": true,
+      "winding_consistent": true,
+      "is_volume": true,
+      "connected_components": 1,
+      "signed_volume_mm3": 5111.21613,
+      "bbox_mm": [
+        32.48688,
+        59.99967,
+        4.0
+      ]
+    },
+    {
+      "file": "examples/output/rosette_right.stl",
+      "kind": "STL",
+      "errors": [],
+      "warnings": [],
+      "vertices": 4777,
+      "faces": 9550,
+      "watertight": true,
+      "winding_consistent": true,
+      "is_volume": true,
+      "connected_components": 1,
+      "signed_volume_mm3": 5075.83686,
+      "bbox_mm": [
+        29.88688,
+        59.99967,
+        4.0
+      ]
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "limitations": "No local wall thickness, interface fit, path simulation, or print test",
+  "status": "PASS"
+}

@@ -1,0 +1,56 @@
+{
+  "mounting_plate": {
+    "volume_mm3": 19657.2655,
+    "bbox_mm": [
+      80.00254,
+      50.00254,
+      5.00254
+    ],
+    "cad_valid": true
+  },
+  "revolved_ring": {
+    "volume_mm3": 903.43902,
+    "bbox_mm": [
+      27.00604,
+      27.00906,
+      4.01395
+    ],
+    "cad_valid": true
+  },
+  "lofted_transition": {
+    "volume_mm3": 10620.89765,
+    "bbox_mm": [
+      30.15786,
+      20.20122,
+      24.15786
+    ],
+    "cad_valid": true
+  },
+  "swept_tube": {
+    "volume_mm3": 358.1263,
+    "bbox_mm": [
+      25.62471,
+      4.10526,
+      14.01137
+    ],
+    "cad_valid": true
+  },
+  "shelled_enclosure": {
+    "volume_mm3": 10461.46897,
+    "bbox_mm": [
+      50.00254,
+      35.00254,
+      24.00254
+    ],
+    "cad_valid": true
+  },
+  "circular_pattern": {
+    "volume_mm3": 10907.60969,
+    "bbox_mm": [
+      60.01343,
+      60.02014,
+      4.02685
+    ],
+    "cad_valid": true
+  }
+}

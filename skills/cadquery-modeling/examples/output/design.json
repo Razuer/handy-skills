@@ -1,0 +1,34 @@
+{
+  "units": "mm",
+  "coordinate_frame": "XY wall plane, +Z front visible",
+  "parameters": {
+    "outer_diameter_mm": 60.0,
+    "pipe_diameter_mm": 18.0,
+    "radial_clearance_mm": 0.1,
+    "thickness_mm": 4.0,
+    "front_fillet_mm": 0.8,
+    "seam_width_mm": 0.2,
+    "alignment_pin_radius_mm": 0.9,
+    "pin_radial_clearance_mm": 0.15,
+    "pin_protrusion_mm": 2.6,
+    "hole_depth_mm": 3.2,
+    "pin_y_offset_mm": 20.0
+  },
+  "derived": {
+    "nominal_bore_diameter_mm": 18.2
+  },
+  "parts": [
+    "rosette_left",
+    "rosette_right"
+  ],
+  "expected_independent_solids": 2,
+  "assembly_bbox_mm": [
+    60.00218,
+    60.02809,
+    4.02733
+  ],
+  "known_limitations": [
+    "Alignment keys do not provide verified snap retention",
+    "Clearances not physically print-tested"
+  ]
+}

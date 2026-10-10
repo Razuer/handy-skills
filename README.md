@@ -1,10 +1,8 @@
-# handy-opencode
+# handy-skills
 
-[OpenCode](https://opencode.ai) skills and agents. Not affiliated with OpenCode.
+My personal skills and agents.
 
 ## Agents
-
-Pick one pack. Install only what you use.
 
 ### Skein
 
@@ -29,27 +27,3 @@ Execution. Takes a plan, splits it into dependency-ordered workstreams, runs ind
 ### Atlas
 
 Maps a repository into a sparse root + nested `AGENTS.md` network. Uses `cartographer` for subtree discovery. Start with the `agents-network` command.
-
-## Install
-
-```bash
-./install.sh
-```
-
-Interactive by default. Choose skills, agents, and/or commands. If you pick agents, you choose which packs.
-
-Symlinks into `~/.config/opencode/` so repo updates apply immediately.
-
-```bash
-./install.sh --skills
-./install.sh --agents              # all packs
-./install.sh --agent skein
-./install.sh --agent skein --agent atlas
-./install.sh --commands
-./install.sh --all
-./install.sh --all --force
-```
-
-```bash
-OPENCODE_DIR=/path/to/opencode ./install.sh --agent skein
-```

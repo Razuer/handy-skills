@@ -1,0 +1,12 @@
+{
+  "source": "STEP imports",
+  "models": [
+    "circular_pattern",
+    "lofted_transition",
+    "mounting_plate",
+    "revolved_ring",
+    "shelled_enclosure",
+    "swept_tube"
+  ],
+  "note": "Images generated; an agent/human must inspect them for visual acceptance"
+}

@@ -1,0 +1,45 @@
+# Parametric CadQuery agent task contract; linear dimensions in mm.
+project: ""
+modeling_backend: cadquery
+units: mm
+purpose: ""
+coordinate_frame:
+  origin: ""
+  x_axis: ""
+  y_axis: ""
+  z_axis: ""
+parameters:
+  nominal_pipe_diameter_mm: null
+  radial_clearance_mm: null  # PER SIDE, not total diametral difference
+  desired_outer_diameter_mm: null
+  thickness_mm: null
+assembly:
+  expected_independent_parts: null
+  installed_pose: ""
+  insertion_or_removal_motion: ""
+  connection_method: ""
+  connections: []
+materials:
+  process: FDM
+  plastic: ""
+  nozzle_diameter_mm: null
+  print_orientation: ""
+critical_dimensions: []
+# Example entries:
+# - name: bore_diameter_mm
+#   target: 18.2
+#   allowed_cad_deviation_mm: 0.05
+#   method: cylindrical_surface_measurement
+visual:
+  main_view: front
+  reference_image: null
+  aesthetic_criteria: []
+acceptance:
+  expected_valid_solids: null
+  requires_step: true
+  requires_separate_stls: true
+  requires_multi_view_renders: true
+  requires_actual_image_inspection: true
+  requires_brep_mesh_audit: true
+  requires_physical_test: false
+assumptions: []

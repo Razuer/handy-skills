@@ -1,0 +1,53 @@
+{
+  "units": "mm for STEP import and STL by project convention",
+  "checks": [
+    {
+      "file": "examples/output/rosette_left.step",
+      "kind": "STEP",
+      "solid_count": 1,
+      "solids": [
+        {
+          "index": 0,
+          "valid_brep": true,
+          "volume_mm3": 5114.25247,
+          "bbox_mm": [
+            32.5,
+            59.99967,
+            4.0
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "examples/output/rosette_left.stl",
+      "kind": "STL",
+      "errors": [],
+      "warnings": [],
+      "vertices": 4829,
+      "faces": 9654,
+      "watertight": true,
+      "winding_consistent": true,
+      "is_volume": true,
+      "connected_components": 1,
+      "signed_volume_mm3": 5111.21613,
+      "bbox_mm": [
+        32.48688,
+        59.99967,
+        4.0
+      ]
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "limitations": "No local wall thickness, interface fit, path simulation, or print test",
+  "step_stl_comparisons": [
+    {
+      "stem": "rosette_left",
+      "relative_volume_error": 0.0005937,
+      "max_bbox_delta_mm": 0.01312
+    }
+  ],
+  "status": "PASS"
+}

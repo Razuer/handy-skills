@@ -1,0 +1,45 @@
+{
+  "units": "mm for STEP import and STL by project convention",
+  "checks": [
+    {
+      "file": "examples/output/rosette_assembly.step",
+      "kind": "STEP",
+      "solid_count": 2,
+      "solids": [
+        {
+          "index": 0,
+          "valid_brep": true,
+          "volume_mm3": 5114.25247,
+          "bbox_mm": [
+            32.5,
+            59.99967,
+            4.0
+          ]
+        },
+        {
+          "index": 1,
+          "valid_brep": true,
+          "volume_mm3": 5078.85297,
+          "bbox_mm": [
+            29.9,
+            59.99967,
+            4.0
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "limitations": "No local wall thickness, interface fit, path simulation, or print test",
+  "pair_intersection_mm3": [
+    {
+      "a": "rosette_assembly.step:0",
+      "b": "rosette_assembly.step:1",
+      "intersection_volume_mm3": 0.0
+    }
+  ],
+  "status": "PASS"
+}
