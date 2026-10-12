@@ -1,0 +1,7 @@
+# Version ranges are intentionally flexible. Use a Python interpreter for which wheels exist.
+cadquery>=2.4,<3
+trimesh>=4,<6
+numpy>=1.26
+vtk>=9.2
+Pillow>=10
+pytest>=7

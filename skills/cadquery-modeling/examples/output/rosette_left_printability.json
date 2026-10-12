@@ -1,0 +1,29 @@
+{
+  "model": "/mnt/data/cadquery_v21_work/cadquery-modeling/examples/output/rosette_left.stl",
+  "status": "ANALYZED",
+  "coordinate_convention": "STL in manufacturing pose; bed at min Z; +Z upward",
+  "bbox_mm": [
+    32.4869,
+    59.9997,
+    4.0
+  ],
+  "build_height_mm": 4.0,
+  "bed_contact_area_mm2": 1278.714,
+  "first_layer_connected_patches_heuristic": 1,
+  "downward_overhang_area_mm2_proxy": 6.4402,
+  "severe_overhang_face_count": 92,
+  "parameters": {
+    "flat_tolerance_mm": 0.04,
+    "self_support_angle_deg_approx": 50.0,
+    "line_width_mm": 0.45
+  },
+  "warnings": [
+    "Downward-facing overhang candidates: review unsupported geometry and bridges in slicer"
+  ],
+  "limitations": [
+    "Only planar bottom triangle contact at tolerance, NOT adhesion or stability simulation",
+    "Downward face angle is a proxy, NOT support prediction; bridges/tunnels not classified",
+    "Thin-wall/toolpath and directional strength need slicer/material/load assessment",
+    "A print-ready PASS requires an actual slicer profile, layer review, and possibly test print"
+  ]
+}

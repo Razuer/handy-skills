@@ -34,3 +34,11 @@ assert release_motion_has_clear_path  # requires a real assembly-path test
 ```
 
 Keep these linked to named design parameters and document how each measured or derived value was obtained. Avoid turning a measured / specified 0.1 mm *fit tolerance* into a B-Rep intersection noise threshold.
+
+## v2.1 unified project audit — mandatory
+
+**Single entry point:** `python scripts/project_validate.py --manifest project.json --json validation_report.json`. Copy `assets/project-manifest.json` and declare each independently printable part's **matching-stem** manufacturing STEP/STL, plus its distinct assembly-pose STEP and print orientation. The tool requires the STEP/STL paired comparison to run, and requires exactly one connected component per printable STL. If files are missing/misaligned, geometry/assembly FAIL. It runs assembly collision checks **only against global-pose STEPs**, never manufacturing STLs. The final report has independent `geometry`, `assembly`, `function`, `manufacturing` gates. `UNVERIFIED` exits code 2 by default, not 0; `--allow-unverified` only changes exit code, never claim/state.
+
+Critical dimensions need additional targeted tests; generic volume/bbox comparison cannot certify hole location or bore sizing. Per-requirement PASS requires a method and existing evidence file, but the validator cannot verify the scientific validity of self-authored reports; evaluate those independently. Physical fit, design load and movement are not inferred from CAD body validity.
+
+For low-level one-off audits use `audit.py --expected-pairs N --expected-components-per-stl 1`. If files have different stems, rename paired local exports consistently; do not silently skip comparison.

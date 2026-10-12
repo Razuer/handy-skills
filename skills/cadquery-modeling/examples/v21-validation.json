@@ -1,0 +1,198 @@
+{
+  "manifest": "examples/v21-project.json",
+  "categories": {
+    "geometry": {
+      "status": "PASS",
+      "checks": [
+        {
+          "category": "geometry",
+          "name": "rosette_left: STEP/STL pair",
+          "status": "PASS",
+          "detail": "B-Rep, STL, and paired size/volume audit passed"
+        },
+        {
+          "category": "geometry",
+          "name": "rosette_right: STEP/STL pair",
+          "status": "PASS",
+          "detail": "B-Rep, STL, and paired size/volume audit passed"
+        }
+      ]
+    },
+    "assembly": {
+      "status": "UNVERIFIED",
+      "checks": [
+        {
+          "category": "assembly",
+          "name": "rosette_left: pose transform consistency",
+          "status": "PASS",
+          "detail": "centroid residual 0 mm, volume residual 0.0000%; checks mapping plausibility, not full exact surface identity"
+        },
+        {
+          "category": "assembly",
+          "name": "rosette_right: pose transform consistency",
+          "status": "PASS",
+          "detail": "centroid residual 0 mm, volume residual 0.0000%; checks mapping plausibility, not full exact surface identity"
+        },
+        {
+          "category": "assembly",
+          "name": "assembled pose collisions",
+          "status": "PASS",
+          "detail": "1 pairwise intersection checks in global assembly frame"
+        },
+        {
+          "category": "assembly",
+          "name": "installation-path",
+          "status": "UNVERIFIED",
+          "detail": "Collision-free final placement does not prove install"
+        }
+      ]
+    },
+    "function": {
+      "status": "UNVERIFIED",
+      "checks": [
+        {
+          "category": "function",
+          "name": "joint-retention",
+          "status": "UNVERIFIED",
+          "detail": "Registration pins are not validated snap joints"
+        }
+      ]
+    },
+    "manufacturing": {
+      "status": "UNVERIFIED",
+      "checks": [
+        {
+          "category": "manufacturing",
+          "name": "rosette_left: intentional print orientation",
+          "status": "PASS",
+          "detail": "+Z \u2014 Example only: flat front/back plate in XY; final orientation requires slicer inspection"
+        },
+        {
+          "category": "manufacturing",
+          "name": "rosette_left: printability scan",
+          "status": "PASS",
+          "detail": "Mesh orientation heuristics recorded (not slicer verification)"
+        },
+        {
+          "category": "manufacturing",
+          "name": "rosette_left: slicer execution",
+          "status": "UNVERIFIED",
+          "detail": "No slice report for actual profile/settings"
+        },
+        {
+          "category": "manufacturing",
+          "name": "rosette_right: intentional print orientation",
+          "status": "PASS",
+          "detail": "+Z \u2014 Example only: flat front/back plate in XY; final orientation requires slicer inspection"
+        },
+        {
+          "category": "manufacturing",
+          "name": "rosette_right: printability scan",
+          "status": "PASS",
+          "detail": "Mesh orientation heuristics recorded (not slicer verification)"
+        },
+        {
+          "category": "manufacturing",
+          "name": "rosette_right: slicer execution",
+          "status": "UNVERIFIED",
+          "detail": "No slice report for actual profile/settings"
+        },
+        {
+          "category": "manufacturing",
+          "name": "printing-fit",
+          "status": "UNVERIFIED",
+          "detail": "No slicer evidence or real print"
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "category": "geometry",
+      "name": "rosette_left: STEP/STL pair",
+      "status": "PASS",
+      "detail": "B-Rep, STL, and paired size/volume audit passed"
+    },
+    {
+      "category": "manufacturing",
+      "name": "rosette_left: intentional print orientation",
+      "status": "PASS",
+      "detail": "+Z \u2014 Example only: flat front/back plate in XY; final orientation requires slicer inspection"
+    },
+    {
+      "category": "manufacturing",
+      "name": "rosette_left: printability scan",
+      "status": "PASS",
+      "detail": "Mesh orientation heuristics recorded (not slicer verification)"
+    },
+    {
+      "category": "manufacturing",
+      "name": "rosette_left: slicer execution",
+      "status": "UNVERIFIED",
+      "detail": "No slice report for actual profile/settings"
+    },
+    {
+      "category": "geometry",
+      "name": "rosette_right: STEP/STL pair",
+      "status": "PASS",
+      "detail": "B-Rep, STL, and paired size/volume audit passed"
+    },
+    {
+      "category": "manufacturing",
+      "name": "rosette_right: intentional print orientation",
+      "status": "PASS",
+      "detail": "+Z \u2014 Example only: flat front/back plate in XY; final orientation requires slicer inspection"
+    },
+    {
+      "category": "manufacturing",
+      "name": "rosette_right: printability scan",
+      "status": "PASS",
+      "detail": "Mesh orientation heuristics recorded (not slicer verification)"
+    },
+    {
+      "category": "manufacturing",
+      "name": "rosette_right: slicer execution",
+      "status": "UNVERIFIED",
+      "detail": "No slice report for actual profile/settings"
+    },
+    {
+      "category": "assembly",
+      "name": "rosette_left: pose transform consistency",
+      "status": "PASS",
+      "detail": "centroid residual 0 mm, volume residual 0.0000%; checks mapping plausibility, not full exact surface identity"
+    },
+    {
+      "category": "assembly",
+      "name": "rosette_right: pose transform consistency",
+      "status": "PASS",
+      "detail": "centroid residual 0 mm, volume residual 0.0000%; checks mapping plausibility, not full exact surface identity"
+    },
+    {
+      "category": "assembly",
+      "name": "assembled pose collisions",
+      "status": "PASS",
+      "detail": "1 pairwise intersection checks in global assembly frame"
+    },
+    {
+      "category": "function",
+      "name": "joint-retention",
+      "status": "UNVERIFIED",
+      "detail": "Registration pins are not validated snap joints"
+    },
+    {
+      "category": "assembly",
+      "name": "installation-path",
+      "status": "UNVERIFIED",
+      "detail": "Collision-free final placement does not prove install"
+    },
+    {
+      "category": "manufacturing",
+      "name": "printing-fit",
+      "status": "UNVERIFIED",
+      "detail": "No slicer evidence or real print"
+    }
+  ],
+  "errors": [],
+  "rules": "PASS only with required positive evidence; no inferred print-fit/functional claims",
+  "overall": "UNVERIFIED"
+}

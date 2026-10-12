@@ -51,3 +51,11 @@ python scripts/render.py base.step lid.step --out-dir renders --explode 8
 The audit can recognize matching STEP/STL stems and compare bounds/volume, but **only** with matching filenames. It does not prove clearance or wall thickness. Its pairwise common-volume threshold is *numeric noise* and must not be interpreted as a fit allowance. Before claiming assembly fit, check critical gap in common coordinates, motion, potential thin bridges and collisions along installation path.
 
 Primary source: https://cadquery.readthedocs.io/en/latest/importexport.html and https://cadquery.readthedocs.io/en/latest/assy.html.
+
+## v2.1: Separate global assembly and per-part manufacturing exports
+
+**This supersedes the older example's same-frame assumption for printing.** For every printable component record one global `posed_<name>.step` and one *print-pose* `<name>.step`/`<name>.stl` pair (identical stems). Record a numeric **assembly-to-manufacturing 4×4 rigid transform** in `assets/project-manifest.json`. The project validator checks that its rotation is orthonormal, and compares transformed centroids and volumes for plausibility; this is not full B-Rep identity proof. Test further against datums and surfaces if precision matters.
+
+**Do not run intersections on local manufacturing STLs/STEPS whose origins overlap.** Collision/clearance checks always use the shared global-frame posed parts. The printed STEP/STL is used for mesh round-trip, build-direction preflight and slicer validation. See `references/imported-step.md` and `references/fdm-first.md`.
+
+Use the mandatory unified `python scripts/project_validate.py --manifest project.json`; the independent `audit.py base.step base.stl` command above is a development spot-check, not the required final project audit.

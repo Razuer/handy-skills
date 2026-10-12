@@ -1,0 +1,3 @@
+interface:
+  display_name: "Kitty rendering validation"
+  short_description: "Verify native image output, overlays and performance"

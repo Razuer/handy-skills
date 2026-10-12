@@ -1,0 +1,3 @@
+interface:
+  display_name: "Ghostty window lab"
+  short_description: "Launch and capture isolated, precisely sized windows"

@@ -32,4 +32,14 @@
 
 `python scripts/render.py a.step b.step --out-dir renders --explode 8` uses VTK offscreen, with fixed camera definitions and consistent framing, producing six static views plus contact sheet, and an exploded isometric (only when >1 solid and `--explode > 0`). VTK 9.5+ supports modern headless rendering in many supported environments; for older/container setups EGL or virtual display libraries may be needed. Use the PNGs as actual evidence, not a promise to the user.
 
-The simple exploded camera offsets parts along X **for presentation only**; it is not an assembly motion simulation. Use the original STEP coordinates for mating/collision tests.
+Legacy `--explode` offsets parts along X; `--explode-plan` supports individual XYZ offsets. Both are **for presentation only**, not assembly motion simulation. Use the original STEP coordinates for mating/collision tests.
+
+## v2.1 cameras, reference assemblies, explosions and fonts
+
+- `--preset wall`: XY wall plane, positive Z faces viewer; `--preset desk`: XY desk, positive Z up. `--camera-json views.json` overrides camera direction/up pairs (must include `iso`).
+- `--labels` shows per-solid identifiers (file-stem + solid index); match numbered STEP inventory to the render.
+- `--reference reference.step` draws contextual assembly components with reduced opacity. True sectioning/inner cavity checks require separate CAD analytical section or a specifically modeled clipped view; transparency alone does not prove internal wall integrity.
+- `--explode-plan explode.json`: mapping `{"base:0":[-25,0,0],"cradle:0":[0,0,18],"strut:0":[12,0,35]}` where keys match imported model labels. This is **visualization only**, never assembly-path proof. `--explode 10` retains legacy X-only separation for quick checks.
+- Missing DejaVu/Noto font is not a fatal error: Pillow built-in font fallback. If `vtk` rendering fails headless, preserve the failure and use supported EGL/OSMesa/X backend; never claim images were visually inspected without viewing them.
+
+Mandatory inspection: main front/isometric, back/underside, assembled context, hidden joints/access, print-bed orientation, visual seams/finish, relevant functional close-up and any exported cutaway. Record defects and edits before approval.

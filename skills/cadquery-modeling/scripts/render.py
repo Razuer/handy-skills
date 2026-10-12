@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Render actual STEP/STL solids to headless orthographic PNGs and a contact sheet.
+"""Render actual STEP/STL solids in wall/desk/custom camera conventions.
 
-Coordinate convention: +Z = visible/front face of a wall-mounted XY part.
-For a differently oriented model, rotate the STEP solids or adapt CAMERA_VIEWS.
+All inputs must be co-located in the assembly frame. Explosions are *visual only*.
+Use --reference for translucent context; --explode-plan JSON for per-body XYZ offsets.
 """
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 
 # Camera vector, vertical/up vector. These labels match the example wall-plane part.
-CAMERA_VIEWS = {
+WALL_VIEWS = {
     "iso": ((1.2, -1.45, 1.3), (0, 0, 1)),
     "front": ((0, 0, 1), (0, 1, 0)),
     "back": ((0, 0, -1), (0, 1, 0)),
@@ -22,6 +22,16 @@ CAMERA_VIEWS = {
     "top": ((0, 1, 0), (0, 0, 1)),
     "bottom": ((0, -1, 0), (0, 0, 1)),
 }
+DESK_VIEWS = {
+    "iso": ((1.2, -1.45, 1.3), (0, 0, 1)),
+    "front": ((0, -1, 0), (0, 0, 1)),
+    "back": ((0, 1, 0), (0, 0, 1)),
+    "right": ((1, 0, 0), (0, 0, 1)),
+    "left": ((-1, 0, 0), (0, 0, 1)),
+    "top": ((0, 0, 1), (0, 1, 0)),
+    "bottom": ((0, 0, -1), (0, 1, 0)),
+}
+CAMERA_VIEWS = WALL_VIEWS
 COLORS = [(0.48, 0.78, 0.92), (0.94, 0.68, 0.40), (0.70, 0.86, 0.62),
           (0.83, 0.66, 0.92), (0.93, 0.79, 0.45)]
 
@@ -85,9 +95,10 @@ def bounds_for(models: list[dict], offsets: list[np.ndarray]):
 
 
 def render_one(models: list[dict], camera: str, path: Path, width: int,
-               height: int, offsets: list[np.ndarray]) -> None:
+               height: int, offsets: list[np.ndarray], views: dict = None, labels: bool = False) -> None:
     import vtk
 
+    views = views or WALL_VIEWS
     renderer = vtk.vtkRenderer()
     renderer.SetBackground(0.085, 0.105, 0.14)
     window = vtk.vtkRenderWindow()
@@ -104,12 +115,24 @@ def render_one(models: list[dict], camera: str, path: Path, width: int,
         actor.SetMapper(mapper)
         actor.SetPosition(*[float(x) for x in offset])
         actor.GetProperty().SetColor(*COLORS[i % len(COLORS)])
+        if model.get("reference"):
+            actor.GetProperty().SetOpacity(.23)
         actor.GetProperty().SetAmbient(0.28)
         actor.GetProperty().SetDiffuse(0.68)
         actor.GetProperty().SetSpecular(0.22)
         actor.GetProperty().SetSpecularPower(28)
         renderer.AddActor(actor)
         mapper_keepalive.append((poly, mapper, actor))
+        if labels:
+            center_part = model["vertices"].mean(axis=0) + offset
+            marker = vtk.vtkBillboardTextActor3D()
+            marker.SetInput(model["label"])
+            marker.SetPosition(*[float(x) for x in center_part])
+            marker.GetTextProperty().SetFontSize(18)
+            marker.GetTextProperty().SetColor(1, 1, 1)
+            marker.GetTextProperty().SetBold(True)
+            renderer.AddActor(marker)
+            mapper_keepalive.append(marker)
         # Extract sharp, genuine CAD/profile edges; do not display every triangle edge.
         edges = vtk.vtkFeatureEdges()
         edges.SetInputData(poly)
@@ -126,13 +149,14 @@ def render_one(models: list[dict], camera: str, path: Path, width: int,
         edge_actor.SetPosition(*[float(x) for x in offset])
         edge_actor.GetProperty().SetColor(0.13, 0.2, 0.26)
         edge_actor.GetProperty().SetLineWidth(1.25)
-        renderer.AddActor(edge_actor)
-        mapper_keepalive.append((edges, edge_mapper, edge_actor))
+        if not model.get("reference"):
+            renderer.AddActor(edge_actor)
+            mapper_keepalive.append((edges, edge_mapper, edge_actor))
 
     low, high = bounds_for(models, offsets)
     center = (low + high) / 2
     extent = high - low
-    direction, up = CAMERA_VIEWS.get(camera, CAMERA_VIEWS["iso"])
+    direction, up = views[camera]
     direction = np.asarray(direction, dtype=float)
     direction /= np.linalg.norm(direction)
     up = np.asarray(up, dtype=float)
@@ -179,8 +203,20 @@ def make_sheet(out_dir: Path, images: list[Path], metadata: dict) -> None:
     im = Image.new("RGB", (cols * (thumb_w + pad) + pad,
                           rows * (thumb_h + pad + header) + pad + 52), (16, 23, 32))
     draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype("DejaVuSans.ttf", 19)
-    small = ImageFont.truetype("DejaVuSans.ttf", 14)
+    def get_font(size: int):
+        for candidate in (
+            "DejaVuSans.ttf", "NotoSans-Bold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/noto/NotoSans-Bold.ttf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+        ):
+            try:
+                return ImageFont.truetype(candidate, size)
+            except (OSError, ValueError):
+                continue
+        return ImageFont.load_default()
+    font = get_font(19)
+    small = get_font(14)
     for i, file in enumerate(images):
         x = pad + (i % cols) * (thumb_w + pad)
         y = pad + (i // cols) * (thumb_h + pad + header)
@@ -198,6 +234,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("files", nargs="+", type=Path, help="assembled STEP/STL solids")
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument("--preset", choices=("wall", "desk"), default="wall",
+                        help="wall: XY wall plane, +Z toward viewer; desk: XY desktop, +Z vertical")
+    parser.add_argument("--camera-json", type=Path,
+                        help='optional JSON of {"front": [[dx,dy,dz],[upx,upy,upz]], ...}')
+    parser.add_argument("--reference", type=Path, nargs="*", default=[], help="transparent reference STEP solids in assembly pose")
+    parser.add_argument("--labels", action="store_true", help="show model labels; numbers in STEP report can match component order")
+    parser.add_argument("--explode-plan", type=Path,
+                        help='JSON {"component_stem:0": [x,y,z], ...} offsets in mm, for exploded view')
     parser.add_argument("--explode", type=float, default=0,
                         help="X separation in mm per adjacent part, visualization only")
     parser.add_argument("--width", type=int, default=900)
@@ -206,24 +250,48 @@ def main() -> None:
     if args.width < 200 or args.height < 200:
         parser.error("Minimum image width and height: 200")
     models = load_models(args.files)
+    n_active = len(models)
+    ref_models = load_models(args.reference) if args.reference else []
+    for m in ref_models:
+        m['reference'] = True
+    models.extend(ref_models)
+    views = DESK_VIEWS if args.preset == "desk" else WALL_VIEWS
+    if args.camera_json:
+        views = json.loads(args.camera_json.read_text())
+        if 'iso' not in views:
+            parser.error('Custom views require an iso view')
+        for name, pair in views.items():
+            if len(pair) != 2 or any(len(vec) != 3 for vec in pair):
+                parser.error(f'Invalid vectors for view {name}')
+            if np.linalg.norm(pair[0]) < 1e-5 or np.linalg.norm(np.cross(pair[0], pair[1])) < 1e-5:
+                parser.error(f'Degenerate camera vectors for {name}')
     if not models:
         parser.error("No geometries loaded")
     args.out_dir.mkdir(parents=True, exist_ok=True)
     zero = [np.zeros(3, dtype=float) for _ in models]
     images = []
-    for camera in CAMERA_VIEWS:
+    for camera in views:
         target = args.out_dir / (camera + ".png")
-        render_one(models, camera, target, args.width, args.height, zero)
+        render_one(models, camera, target, args.width, args.height, zero, views, args.labels)
         images.append(target)
-    if args.explode > 0 and len(models) > 1:
-        offsets = [np.array([(i - (len(models)-1)/2) * args.explode, 0, 0], dtype=float)
-                   for i in range(len(models))]
+    if (args.explode > 0 or args.explode_plan) and n_active > 1:
+        if args.explode_plan:
+            data = json.loads(args.explode_plan.read_text())
+            invalid = set(data) - {m['label'] for m in models[:n_active]}
+            if invalid:
+                parser.error(f'Unknown explode-plan parts: {sorted(invalid)}')
+            offsets = [np.array(data.get(m['label'], [0,0,0]), dtype=float) for m in models[:n_active]]
+        else:
+            offsets = [np.array([(i - (n_active-1)/2) * args.explode, 0, 0], dtype=float)
+                       for i in range(n_active)]
+        offsets += [np.zeros(3) for _ in ref_models]
         target = args.out_dir / "exploded_iso.png"
-        render_one(models, "iso", target, args.width, args.height, offsets)
+        render_one(models, "iso", target, args.width, args.height, offsets, views, args.labels)
         images.append(target)
     low, high = bounds_for(models, zero)
     info = {"parts": len(models), "bbox_mm": [round(float(v), 3) for v in high-low],
-            "coordinates": "+Z = front visible face; +Y = top elevation",
+            "coordinates": "wall: +Z front +Y up; desk: +Z vertical +Y back",
+            "preset": args.preset, "references": len(ref_models), "labels": args.labels,
             "files": [str(p) for p in args.files],
             "views": [p.name for p in images]}
     make_sheet(args.out_dir, images, info)

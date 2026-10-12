@@ -35,7 +35,7 @@ def report_step(path: Path) -> tuple[dict, list]:
     return entry, bodies
 
 
-def report_stl(path: Path) -> dict:
+def report_stl(path: Path, expected_components: int | None = None) -> dict:
     import trimesh
 
     loaded = trimesh.load(str(path), force="mesh", process=True)
@@ -55,7 +55,9 @@ def report_stl(path: Path) -> dict:
     for key in ("watertight", "winding_consistent", "is_volume"):
         if not entry[key]:
             entry["errors"].append(f"Mesh not {key}")
-    if len(components) != 1:
+    if expected_components is not None and len(components) != expected_components:
+        entry["errors"].append(f"Expected {expected_components} STL connected components, found {len(components)}")
+    elif len(components) != 1:
         entry["warnings"].append(f"STL has {len(components)} connected pieces; verify intentional")
     if not math.isfinite(loaded.volume) or loaded.volume <= 0:
         entry["errors"].append("Nonpositive/invalid mesh volume")
@@ -65,6 +67,10 @@ def report_stl(path: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("files", type=Path, nargs="+", help=".step/.stp/.stl files")
+    parser.add_argument("--expected-components-per-stl", type=int,
+                        help="require exact disconnected mesh component count in each STL")
+    parser.add_argument("--expected-pairs", type=int,
+                        help="require STEP/STL comparisons by matching stems")
     parser.add_argument("--expected-solids", type=int,
                         help="expected total STEP solid count across specified STEP files")
     parser.add_argument("--check-intersections", action="store_true",
@@ -90,7 +96,7 @@ def main() -> int:
                 check, bodies = report_step(path)
                 solids.extend((path.name, i, shape) for i, shape in enumerate(bodies))
             elif path.suffix.lower() == ".stl":
-                check = report_stl(path)
+                check = report_stl(path, args.expected_components_per_stl)
             else:
                 results["errors"].append(f"Unsupported file extension: {path}")
                 continue
@@ -125,6 +131,8 @@ def main() -> int:
         if bbox_delta > args.max_bbox_error_mm:
             results["errors"].append(f"{stem}: STEP/STL bbox delta {bbox_delta:.4f} mm exceeds limit")
 
+    if args.expected_pairs is not None and len(results["step_stl_comparisons"]) != args.expected_pairs:
+        results["errors"].append(f"Expected {args.expected_pairs} STEP/STL comparisons; got {len(results['step_stl_comparisons'])}")
     if args.expected_solids is not None and len(solids) != args.expected_solids:
         results["errors"].append(f"Expected {args.expected_solids} STEP solids; found {len(solids)}")
     if args.check_intersections:

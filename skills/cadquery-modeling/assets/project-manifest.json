@@ -1,0 +1,38 @@
+{
+  "project": "example-design",
+  "units": "mm",
+  "frames": {
+    "assembly": "Global XYZ, all posed_* STEP files use this SAME frame",
+    "manufacturing": "One part per export, bed at min Z, +Z print direction",
+    "transform_records": "Store assembly-to-print transform for each part in part.print"
+  },
+  "parts": [
+    {
+      "name": "base",
+      "manufacturing_step": "output/base.step",
+      "manufacturing_stl": "output/base.stl",
+      "printability_report": "output/base_printability.json",
+      "slicer_report": "output/base_slice/slice_report.json",
+      "print": {
+        "build_direction": "+Z",
+        "orientation_reason": "Flat plate face on bed; major tension loading in XY",
+        "assembly_to_manufacturing_transform": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
+      }
+    },
+    {
+      "name": "lid",
+      "manufacturing_step": "output/lid.step",
+      "manufacturing_stl": "output/lid.stl",
+      "printability_report": "output/lid_printability.json",
+      "slicer_report": "output/lid_slice/slice_report.json",
+      "print": {"build_direction": "+Z", "orientation_reason": "Open side facing up", "assembly_to_manufacturing_transform": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]}
+    }
+  ],
+  "assembled_steps": ["output/posed_base.step", "output/posed_lid.step"],
+  "requirements": [
+    {"id":"all-critical-holes", "category":"geometry", "status":"UNVERIFIED", "method":"Measure STEP cylindrical surfaces", "evidence":"", "note":"No dimension check yet"},
+    {"id":"insertion-path", "category":"assembly", "status":"UNVERIFIED", "method":"Sampled path and physical test", "evidence":"", "note":"Final pose intersection checks are not sufficient"},
+    {"id":"functional-load", "category":"function", "status":"UNVERIFIED", "method":"Load calculation or actual experiment", "evidence":"", "note":"Geometry alone cannot prove this"},
+    {"id":"fit-coupon", "category":"manufacturing", "status":"UNVERIFIED", "method":"Physical calibrated test", "evidence":"", "note":"No print done"}
+  ]
+}

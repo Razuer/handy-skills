@@ -1,0 +1,102 @@
+{
+  "project": "rosette demonstration \u2014 deliberately unverified functional fit and slicer output",
+  "units": "mm",
+  "parts": [
+    {
+      "name": "rosette_left",
+      "manufacturing_step": "output/rosette_left.step",
+      "manufacturing_stl": "output/rosette_left.stl",
+      "printability_report": "output/rosette_left_printability.json",
+      "print": {
+        "build_direction": "+Z",
+        "orientation_reason": "Example only: flat front/back plate in XY; final orientation requires slicer inspection",
+        "assembly_to_manufacturing_transform": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "rosette_right",
+      "manufacturing_step": "output/rosette_right.step",
+      "manufacturing_stl": "output/rosette_right.stl",
+      "printability_report": "output/rosette_right_printability.json",
+      "print": {
+        "build_direction": "+Z",
+        "orientation_reason": "Example only: flat front/back plate in XY; final orientation requires slicer inspection",
+        "assembly_to_manufacturing_transform": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    }
+  ],
+  "assembled_steps": [
+    "output/rosette_left.step",
+    "output/rosette_right.step"
+  ],
+  "requirements": [
+    {
+      "id": "joint-retention",
+      "category": "function",
+      "status": "UNVERIFIED",
+      "note": "Registration pins are not validated snap joints"
+    },
+    {
+      "id": "installation-path",
+      "category": "assembly",
+      "status": "UNVERIFIED",
+      "note": "Collision-free final placement does not prove install"
+    },
+    {
+      "id": "printing-fit",
+      "category": "manufacturing",
+      "status": "UNVERIFIED",
+      "note": "No slicer evidence or real print"
+    }
+  ]
+}

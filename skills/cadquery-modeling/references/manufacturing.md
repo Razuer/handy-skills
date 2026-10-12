@@ -16,3 +16,5 @@ This guide prioritizes FDM/FFF desktop 3D printing and does not supply universal
 ## Source-backed context (see sources.md)
 
 Prusa recommends explicit model clearances and test prints; its guide notes clearances depend on size, XY/Z orientation, machine calibration, slicer settings and material. Its examples of wall thickness reflect extrusion width. Formlabs illustrates why fit types and flexible snap arms need different design decisions. Published numerical values should be treated as starting points, not certifications for a user's printer.
+
+**v2.1 rule:** Treat FDM as a first-sketch design constraint, not only an export target. Follow [FDM-first planning, printability preflight, and profile-backed slicing](fdm-first.md). Report a manufacturing gate of UNVERIFIED if print pose or slicer-layer inspection is missing, even if STEP/STL geometry is perfect.
