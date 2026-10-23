@@ -2,6 +2,16 @@
 
 My personal skills and agents.
 
+## Quick install
+
+Install skills with the [skills CLI](https://skills.sh/docs/cli). Requires Node.js and npm.
+
+```sh
+npx skills add Razuer/handy-opencode
+```
+
+Choose the skills and target agent in the prompts. This command installs skills from `skills/`. The OpenCode agent definitions and commands are in `opencode/` and need separate setup.
+
 ## Agents
 
 ### Skein

@@ -1,6 +1,13 @@
 # Dependencies
 node_modules/
 
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
 # Package manager logs and caches
 npm-debug.log*
 yarn-debug.log*
